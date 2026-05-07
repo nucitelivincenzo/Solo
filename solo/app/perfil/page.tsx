@@ -90,6 +90,12 @@ function Section({ title, hint, children }: { title: string; hint?: string; chil
 
 type SaveState = "idle" | "saving" | "saved" | "error";
 
+interface ReputacaoData {
+  grupos: number;
+  confirmacoes: number;
+  checkins: number;
+}
+
 export default function PerfilPage() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
@@ -105,6 +111,7 @@ export default function PerfilPage() {
   const [intencao, setIntencao] = useState<Intencao | null>(null);
   const [socialBehavior, setSocialBehavior] = useState<number | null>(null);
   const [saveState, setSaveState] = useState<SaveState>("idle");
+  const [reputacao, setReputacao] = useState<ReputacaoData | null>(null);
 
   useEffect(() => {
     async function init() {
@@ -128,6 +135,25 @@ export default function PerfilPage() {
       setAmbiente(profile.ambiente as Ambiente ?? null);
       setIntencao(profile.intencao as Intencao ?? null);
       setSocialBehavior(profile.social_behavior ?? null);
+
+      // Fetch reputation stats (graceful — tables may not exist yet)
+      try {
+        const [
+          { count: gruposCount },
+          { count: confirmCount },
+          { count: checkinCount },
+        ] = await Promise.all([
+          supabase.from("group_members").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+          supabase.from("group_confirmations").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+          supabase.from("group_checkins").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+        ]);
+        setReputacao({
+          grupos:       gruposCount      ?? 0,
+          confirmacoes: confirmCount     ?? 0,
+          checkins:     checkinCount     ?? 0,
+        });
+      } catch { /* tables not yet created */ }
+
       setReady(true);
     }
     init();
@@ -278,6 +304,37 @@ export default function PerfilPage() {
               >
                 Atualizar respostas →
               </Link>
+            </Section>
+          </>
+        )}
+
+        {/* Reputação */}
+        {reputacao !== null && (reputacao.grupos > 0 || reputacao.confirmacoes > 0 || reputacao.checkins > 0) && (
+          <>
+            <div className="h-px bg-zinc-200" />
+            <Section title="Sua jornada" hint="Histórico de participação nos grupos">
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { label: "Grupos participados",    value: reputacao.grupos,       icon: "👥" },
+                  { label: "Presenças confirmadas",  value: reputacao.confirmacoes, icon: "✅" },
+                  { label: "Encontros realizados",   value: reputacao.checkins,     icon: "📍" },
+                  {
+                    label: "Taxa de comparecimento",
+                    value: reputacao.confirmacoes > 0
+                      ? `${Math.round((reputacao.checkins / reputacao.confirmacoes) * 100)}%`
+                      : "—",
+                    icon: "📊",
+                  },
+                ].map(({ label, value, icon }) => (
+                  <div key={label} className="flex flex-col gap-2 px-4 py-3.5 bg-white border border-zinc-200 rounded-xl">
+                    <span className="text-xl leading-none">{icon}</span>
+                    <div>
+                      <span className="text-2xl font-black text-zinc-900 tabular-nums leading-none">{value}</span>
+                      <p className="text-[10px] font-medium text-zinc-400 uppercase tracking-wide mt-1 leading-tight">{label}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </Section>
           </>
         )}
