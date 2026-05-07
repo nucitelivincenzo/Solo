@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(New-Item *)",
+      "PowerShell(taskkill *)",
+      "PowerShell(netstat *)"
+    ]
+  }
+}

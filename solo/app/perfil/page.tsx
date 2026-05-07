@@ -1,0 +1,262 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
+import { Navbar } from "@/components/Navbar";
+import type { User } from "@supabase/supabase-js";
+import { isCompatComplete } from "@/lib/types";
+import type { Ambiente, Intencao } from "@/lib/types";
+
+const NIGHT_STYLES = [
+  { id: "balada",         label: "Balada",        emoji: "🎉" },
+  { id: "bar_descolado",  label: "Bar descolado",  emoji: "🍹" },
+  { id: "show_ao_vivo",   label: "Show ao vivo",   emoji: "🎸" },
+  { id: "rooftop",        label: "Rooftop",        emoji: "🌆" },
+  { id: "bar_de_bairro",  label: "Bar de bairro",  emoji: "🍺" },
+  { id: "festa_tematica", label: "Festa temática", emoji: "🎭" },
+];
+
+const LOOKING_FOR = [
+  { id: "novas_amizades", label: "Novas amizades",          emoji: "👋" },
+  { id: "rolar_algo",     label: "Rolar algo",              emoji: "🔥" },
+  { id: "networking",     label: "Networking descontraído", emoji: "💼" },
+  { id: "companhia",      label: "Companhia para sair",     emoji: "🤝" },
+];
+
+const GROUP_SIZES = [
+  { id: "pequeno", label: "Grupos pequenos",      sub: "4–6 pessoas",          emoji: "👥" },
+  { id: "medio",   label: "Grupos médios",        sub: "7–12 pessoas",         emoji: "🎊" },
+  { id: "grande",  label: "Quanto maior melhor!", sub: "Quanto mais, merrier", emoji: "🚀" },
+];
+
+function Chip({ emoji, label, sub, selected, onClick }: {
+  emoji: string; label: string; sub?: string; selected: boolean; onClick: () => void;
+}) {
+  return (
+    <button type="button" onClick={onClick}
+      className={`flex items-center gap-3 px-4 py-3 rounded-xl border text-left transition-all duration-150 w-full
+        ${selected
+          ? "bg-violet-50 border-violet-400 shadow-sm shadow-violet-100"
+          : "bg-white border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50"}`}
+    >
+      <span className="text-xl leading-none">{emoji}</span>
+      <span className="flex flex-col flex-1 min-w-0">
+        <span className={`font-semibold text-sm ${selected ? "text-violet-600" : "text-zinc-900"}`}>{label}</span>
+        {sub && <span className="text-xs text-zinc-400 mt-0.5 truncate">{sub}</span>}
+      </span>
+      {selected && (
+        <span className="flex-shrink-0 w-4 h-4 rounded-full bg-violet-500 flex items-center justify-center">
+          <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+        </span>
+      )}
+    </button>
+  );
+}
+
+function Section({ title, hint, children }: { title: string; hint?: string; children: React.ReactNode }) {
+  return (
+    <div className="flex flex-col gap-3">
+      <div>
+        <h2 className="text-xs font-bold text-zinc-400 uppercase tracking-wide">{title}</h2>
+        {hint && <p className="text-xs text-zinc-400 mt-0.5">{hint}</p>}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+type SaveState = "idle" | "saving" | "saved" | "error";
+
+export default function PerfilPage() {
+  const router = useRouter();
+  const [user, setUser] = useState<User | null>(null);
+  const [ready, setReady] = useState(false);
+  const [name, setName] = useState("");
+  const [nightStyles, setNightStyles] = useState<string[]>([]);
+  const [lookingFor, setLookingFor] = useState<string[]>([]);
+  const [groupSize, setGroupSize] = useState("");
+  const [vibe, setVibe] = useState<number | null>(null);
+  const [energia, setEnergia] = useState<number | null>(null);
+  const [grupo, setGrupo] = useState<number | null>(null);
+  const [ambiente, setAmbiente] = useState<Ambiente | null>(null);
+  const [intencao, setIntencao] = useState<Intencao | null>(null);
+  const [socialBehavior, setSocialBehavior] = useState<number | null>(null);
+  const [saveState, setSaveState] = useState<SaveState>("idle");
+
+  useEffect(() => {
+    async function init() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { router.replace("/login"); return; }
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("night_styles, looking_for, group_size, onboarding_completed, vibe, energia, grupo, ambiente, intencao, social_behavior")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (!profile?.onboarding_completed) { router.replace("/onboarding"); return; }
+      if (!isCompatComplete(profile)) { router.replace("/onboarding-compat"); return; }
+      setUser(user);
+      setName(user.user_metadata?.name || "");
+      setNightStyles(profile.night_styles ?? []);
+      setLookingFor(profile.looking_for ?? []);
+      setGroupSize(profile.group_size ?? "");
+      setVibe(profile.vibe ?? null);
+      setEnergia(profile.energia ?? null);
+      setGrupo(profile.grupo ?? null);
+      setAmbiente(profile.ambiente as Ambiente ?? null);
+      setIntencao(profile.intencao as Intencao ?? null);
+      setSocialBehavior(profile.social_behavior ?? null);
+      setReady(true);
+    }
+    init();
+  }, [router]);
+
+  function toggleNightStyle(id: string) {
+    setNightStyles((p) => p.includes(id) ? p.filter((s) => s !== id) : p.length < 3 ? [...p, id] : p);
+  }
+  function toggleLooking(id: string) {
+    setLookingFor((p) => p.includes(id) ? p.filter((s) => s !== id) : p.length < 2 ? [...p, id] : p);
+  }
+
+  async function handleSave() {
+    if (!user || saveState === "saving") return;
+    setSaveState("saving");
+    try {
+      const [authResult, profileResult] = await Promise.all([
+        supabase.auth.updateUser({ data: { name: name.trim() } }),
+        supabase.from("profiles").update({ night_styles: nightStyles, looking_for: lookingFor, group_size: groupSize, vibe, energia, grupo, ambiente, intencao, social_behavior: socialBehavior }).eq("user_id", user.id),
+      ]);
+      if (authResult.error) throw authResult.error;
+      if (profileResult.error) throw profileResult.error;
+      setSaveState("saved");
+      setTimeout(() => setSaveState("idle"), 2500);
+    } catch (e) {
+      console.error(e);
+      setSaveState("error");
+      setTimeout(() => setSaveState("idle"), 3000);
+    }
+  }
+
+  if (!ready) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  const initials = name.trim()
+    ? name.trim().split(" ").slice(0, 2).map((n) => n[0]).join("").toUpperCase()
+    : user!.email?.[0].toUpperCase() ?? "?";
+
+  return (
+    <div className="min-h-screen bg-zinc-50 text-zinc-900">
+      <Navbar />
+
+      <main className="max-w-xl mx-auto px-6 py-12 flex flex-col gap-10">
+
+        {/* Avatar + título */}
+        <div className="flex items-center gap-5">
+          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-violet-500 to-violet-700 flex items-center justify-center text-white text-2xl font-bold shadow-xl shadow-violet-500/20 flex-shrink-0">
+            {initials}
+          </div>
+          <div>
+            <h1 className="text-2xl font-black text-zinc-900" style={{ letterSpacing: "-0.02em" }}>Meu Perfil</h1>
+            <p className="text-zinc-500 text-sm mt-0.5">Edite suas informações e preferências</p>
+          </div>
+        </div>
+
+        <div className="h-px bg-zinc-200" />
+
+        {/* Informações pessoais */}
+        <Section title="Informações pessoais">
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wide" htmlFor="name">Nome</label>
+              <input
+                id="name" type="text" value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Seu nome"
+                className="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 text-zinc-900 placeholder-zinc-400 outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-colors text-sm"
+              />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wide">
+                Email
+                <span className="ml-2 text-zinc-400 normal-case font-normal tracking-normal">somente leitura</span>
+              </label>
+              <div className="w-full px-4 py-3 rounded-xl bg-zinc-50 border border-zinc-200 text-zinc-400 text-sm flex items-center gap-2 cursor-not-allowed select-none">
+                <svg className="w-4 h-4 text-zinc-300 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+                {user!.email}
+              </div>
+            </div>
+          </div>
+        </Section>
+
+        <div className="h-px bg-zinc-200" />
+
+        <Section title="Seu estilo de noite" hint="Escolha até 3 opções">
+          <div className="grid grid-cols-2 gap-2.5">
+            {NIGHT_STYLES.map((opt) => (
+              <Chip key={opt.id} emoji={opt.emoji} label={opt.label}
+                selected={nightStyles.includes(opt.id)} onClick={() => toggleNightStyle(opt.id)} />
+            ))}
+          </div>
+        </Section>
+
+        <div className="h-px bg-zinc-200" />
+
+        <Section title="O que você busca" hint="Escolha até 2 opções">
+          <div className="flex flex-col gap-2.5">
+            {LOOKING_FOR.map((opt) => (
+              <Chip key={opt.id} emoji={opt.emoji} label={opt.label}
+                selected={lookingFor.includes(opt.id)} onClick={() => toggleLooking(opt.id)} />
+            ))}
+          </div>
+        </Section>
+
+        <div className="h-px bg-zinc-200" />
+
+        <Section title="Com quantas pessoas você curte sair" hint="Escolha uma opção">
+          <div className="flex flex-col gap-2.5">
+            {GROUP_SIZES.map((opt) => (
+              <Chip key={opt.id} emoji={opt.emoji} label={opt.label} sub={opt.sub}
+                selected={groupSize === opt.id} onClick={() => setGroupSize(opt.id)} />
+            ))}
+          </div>
+        </Section>
+
+        {/* Botão salvar sticky */}
+        <div className="sticky bottom-6 pt-2">
+          <button
+            onClick={handleSave}
+            disabled={saveState === "saving" || saveState === "saved"}
+            className={`w-full py-4 rounded-2xl font-bold text-sm transition-all duration-300 flex items-center justify-center gap-2 shadow-lg
+              ${saveState === "saved"
+                ? "bg-green-500 shadow-green-500/20 text-white"
+                : saveState === "error"
+                ? "bg-red-500 shadow-red-500/20 text-white"
+                : saveState === "saving"
+                ? "bg-violet-400 shadow-violet-400/20 text-white cursor-not-allowed"
+                : "bg-violet-500 hover:bg-violet-400 shadow-violet-500/20 hover:shadow-violet-400/30 text-white hover:-translate-y-0.5 active:translate-y-0"
+              }`}
+          >
+            {saveState === "saving" && <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />}
+            {saveState === "saved"  && <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>}
+            {saveState === "error"  && <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>}
+            {saveState === "saving" ? "Salvando..."
+             : saveState === "saved"  ? "Salvo com sucesso!"
+             : saveState === "error"  ? "Erro ao salvar — tente novamente"
+             : "Salvar alterações"}
+          </button>
+        </div>
+
+      </main>
+    </div>
+  );
+}
