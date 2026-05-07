@@ -16,6 +16,26 @@ export interface Profile {
   social_behavior: number | null; // 1–4
 }
 
+// ─── Groups ────────────────────────────────────────────────────────────────────
+
+export type GroupStatus = 'forming' | 'complete';
+
+export interface Group {
+  id: string;
+  event_id: string;
+  status: GroupStatus;
+  created_at: string;
+}
+
+export interface GroupMember {
+  id: string;
+  group_id: string;
+  user_id: string;
+  joined_at: string;
+}
+
+// ─── Compat ────────────────────────────────────────────────────────────────────
+
 export function isCompatComplete(
   profile: Partial<Profile> | null | undefined
 ): boolean {
