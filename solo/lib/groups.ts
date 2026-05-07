@@ -46,64 +46,125 @@ function buildOptimalGroup(users: CompatUser[], targetSize = 4): CompatUser[] {
   return group;
 }
 
-export async function tentarFormarGrupo(eventId: string): Promise<void> {
+// Returns true if any group action occurred (new group created or existing filled)
+export async function tentarFormarGrupo(eventId: string): Promise<boolean> {
   try {
+    // 1. All users who expressed interest
     const { data: interests } = await supabase
       .from("event_group_interest")
       .select("user_id")
       .eq("event_id", eventId);
 
-    if (!interests || interests.length < 3) return;
+    if (!interests || interests.length < 3) return false;
 
     const allIds = interests.map((r: { user_id: string }) => r.user_id);
 
-    // Find users already assigned to a group for this event
+    // 2. Existing groups + members for this event
     const { data: existingGroups } = await supabase
       .from("groups")
-      .select("id")
+      .select("id, status")
       .eq("event_id", eventId);
 
     const assignedIds = new Set<string>();
+    type MemberRow = { group_id: string; user_id: string };
+    let allExistingMembers: MemberRow[] = [];
+
     if (existingGroups?.length) {
       const gids = existingGroups.map((g: { id: string }) => g.id);
       const { data: existingMembers } = await supabase
         .from("group_members")
-        .select("user_id")
+        .select("group_id, user_id")
         .in("group_id", gids);
-      existingMembers?.forEach((m: { user_id: string }) => assignedIds.add(m.user_id));
+      allExistingMembers = (existingMembers as MemberRow[]) ?? [];
+      allExistingMembers.forEach((m) => assignedIds.add(m.user_id));
     }
 
-    const unassigned = allIds.filter((id: string) => !assignedIds.has(id));
-    if (unassigned.length < 3) return;
-
+    // 3. Fetch compat profiles for everyone interested
     const { data: rawProfiles } = await supabase
       .from("profiles")
       .select("user_id, vibe, energia, grupo, ambiente, intencao, social_behavior")
-      .in("user_id", unassigned);
+      .in("user_id", allIds);
 
-    if (!rawProfiles) return;
+    if (!rawProfiles) return false;
 
-    const compatUsers = (rawProfiles as unknown as CompatUser[]).filter((p) =>
-      isCompatComplete(p)
+    const profileMap = new Map(
+      (rawProfiles as unknown as CompatUser[]).map((p) => [p.user_id, p])
     );
-    if (compatUsers.length < 3) return;
 
-    const groupMembers = buildOptimalGroup(compatUsers);
-    if (groupMembers.length < 3) return;
+    let acted = false;
 
-    const { data: newGroup, error } = await supabase
-      .from("groups")
-      .insert({ event_id: eventId, status: "forming" })
-      .select()
-      .single();
+    // 4. Try to fill existing "forming" groups first
+    const formingGroups = (existingGroups ?? [])
+      .filter((g: { id: string; status: string }) => g.status === "forming")
+      .map((g: { id: string; status: string }) => ({
+        id: g.id,
+        memberIds: allExistingMembers.filter((m) => m.group_id === g.id).map((m) => m.user_id),
+      }))
+      .filter((g) => g.memberIds.length < 5);
 
-    if (error || !newGroup) return;
+    // Track remaining unassigned as a mutable array
+    const unassigned = allIds.filter((id: string) => !assignedIds.has(id));
 
-    await supabase
-      .from("group_members")
-      .insert(groupMembers.map((u) => ({ group_id: newGroup.id, user_id: u.user_id })));
+    for (const fg of formingGroups) {
+      if (unassigned.length === 0) break;
 
+      const fgProfiles = fg.memberIds
+        .map((id) => profileMap.get(id))
+        .filter((p): p is CompatUser => !!p && isCompatComplete(p));
+
+      const candidates = unassigned
+        .map((id) => profileMap.get(id))
+        .filter((p): p is CompatUser => !!p && isCompatComplete(p));
+
+      if (fgProfiles.length === 0 || candidates.length === 0) continue;
+
+      let best: CompatUser | null = null, bestScore = -1;
+      for (const c of candidates) {
+        const score = calcGroupAvgCompat([...fgProfiles, c]);
+        if (score > bestScore) { bestScore = score; best = c; }
+      }
+      if (!best) continue;
+
+      await supabase.from("group_members").insert({ group_id: fg.id, user_id: best.user_id });
+      assignedIds.add(best.user_id);
+      unassigned.splice(unassigned.indexOf(best.user_id), 1);
+      acted = true;
+
+      // Mark complete when group reaches 4+
+      if (fg.memberIds.length + 1 >= 4) {
+        await supabase.from("groups").update({ status: "complete" }).eq("id", fg.id);
+      }
+    }
+
+    // 5. Form new groups from remaining unassigned users
+    const remaining = allIds.filter((id: string) => !assignedIds.has(id));
+    if (remaining.length >= 3) {
+      const compatPool = remaining
+        .map((id) => profileMap.get(id))
+        .filter((p): p is CompatUser => !!p && isCompatComplete(p));
+
+      if (compatPool.length >= 3) {
+        const newMembers = buildOptimalGroup(compatPool);
+        if (newMembers.length >= 3) {
+          const status = newMembers.length >= 4 ? "complete" : "forming";
+          const { data: newGroup, error } = await supabase
+            .from("groups")
+            .insert({ event_id: eventId, status })
+            .select()
+            .single();
+
+          if (!error && newGroup) {
+            await supabase
+              .from("group_members")
+              .insert(newMembers.map((u) => ({ group_id: newGroup.id, user_id: u.user_id })));
+            acted = true;
+          }
+        }
+      }
+    }
+
+    return acted;
   } catch {
-    // group formation is non-critical
+    return false;
   }
 }

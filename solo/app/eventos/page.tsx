@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { isCompatComplete } from "@/lib/types";
 import type { Ambiente, Intencao } from "@/lib/types";
@@ -337,6 +338,7 @@ export default function EventosPage() {
   const [matchAttempted, setMatchAttempted] = useState(false);
   const [grupoInteresses, setGrupoInteresses] = useState<Set<string>>(new Set());
   const [savingGrupoId, setSavingGrupoId] = useState<string | null>(null);
+  const [grupoFormadoToast, setGrupoFormadoToast] = useState(false);
 
   useEffect(() => {
     async function init() {
@@ -458,7 +460,11 @@ export default function EventosPage() {
         .insert({ user_id: userId, event_id: id });
       if (error) throw error;
       setGrupoInteresses((prev) => new Set([...prev, id]));
-      tentarFormarGrupo(id);
+      const formed = await tentarFormarGrupo(id);
+      if (formed) {
+        setGrupoFormadoToast(true);
+        setTimeout(() => setGrupoFormadoToast(false), 5000);
+      }
     } catch (e) {
       console.error("❌ Erro ao registrar interesse em grupo:", e);
     } finally {
@@ -550,6 +556,28 @@ export default function EventosPage() {
         </p>
       </main>
       {toast && <Toast nome={toast} onClose={() => setToast(null)} />}
+
+      {grupoFormadoToast && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-4 bg-white border border-violet-200 rounded-2xl shadow-xl shadow-violet-500/10 animate-in fade-in slide-in-from-bottom-2 duration-300">
+          <div className="w-8 h-8 rounded-full bg-violet-50 border border-violet-200 flex items-center justify-center flex-shrink-0">
+            <svg className="w-4 h-4 text-violet-500" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+            </svg>
+          </div>
+          <div>
+            <p className="text-zinc-900 text-sm font-semibold">Grupo formado! ✨</p>
+            <p className="text-zinc-500 text-xs mt-0.5">
+              Veja seu grupo em{" "}
+              <Link href="/grupos" className="text-violet-500 font-medium hover:text-violet-600">
+                /grupos →
+              </Link>
+            </p>
+          </div>
+          <button onClick={() => setGrupoFormadoToast(false)} className="ml-2 text-zinc-300 hover:text-zinc-500 transition-colors">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+          </button>
+        </div>
+      )}
     </div>
   );
 }

@@ -5,8 +5,28 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { Navbar } from "@/components/Navbar";
 import type { User } from "@supabase/supabase-js";
+import Link from "next/link";
 import { isCompatComplete } from "@/lib/types";
 import type { Ambiente, Intencao } from "@/lib/types";
+
+const VIBE_LABELS   = ["", "Observador — prefiro ver antes de agir", "Converso quando puxam assunto", "Consigo me soltar facilmente", "Já chego puxando conversa com todos"];
+const ENERGIA_LABELS = ["", "Tranquilo, drinks e conversa", "Moderado, animo conforme a noite", "Animado, danço e interajo bastante", "Alta energia — a noite não pode acabar"];
+const GRUPO_LABELS  = ["", "2–3 pessoas (bem íntimo)", "4–6 pessoas (pequeno com energia)", "7–10 pessoas (grupo maior)", "Quanto mais, melhor"];
+const SB_LABELS     = ["", "Fico perto de quem já conheço", "Perto de quem conheço, mas interajo com novos", "Me misturo com todos na mesma medida", "Foco em conhecer os novos"];
+
+const AMBIENTE_LABELS: Record<Ambiente, string> = {
+  bar:    "Bar tranquilo — dá pra ouvir a pessoa falar",
+  happy:  "Happy hour animado, sem ser barulhento demais",
+  balada: "Balada ou festa — o caos controlado",
+  evento: "Evento diferente: show, rooftop, experiência",
+};
+
+const INTENCAO_LABELS: Record<Intencao, string> = {
+  amizade:     "Fazer amizades de verdade",
+  social:      "Ampliar meu círculo social sem pressão",
+  romantico:   "Aberto(a) para algo mais romântico também",
+  experiencia: "Curtir experiências e sair da rotina",
+};
 
 const NIGHT_STYLES = [
   { id: "balada",         label: "Balada",        emoji: "🎉" },
@@ -230,6 +250,37 @@ export default function PerfilPage() {
             ))}
           </div>
         </Section>
+
+        {/* Compatibilidade */}
+        {isCompatComplete({ vibe, energia, grupo, ambiente, intencao, social_behavior: socialBehavior }) && (
+          <>
+            <div className="h-px bg-zinc-200" />
+
+            <Section title="Seu perfil de compatibilidade" hint="Como o SOLO te conecta com outras pessoas">
+              <div className="flex flex-col gap-2.5">
+                {[
+                  { label: "Vibe social",          value: vibe            != null ? VIBE_LABELS[vibe]            : null },
+                  { label: "Energia na noite",      value: energia         != null ? ENERGIA_LABELS[energia]      : null },
+                  { label: "Tamanho de grupo",      value: grupo           != null ? GRUPO_LABELS[grupo]          : null },
+                  { label: "Ambiente preferido",    value: ambiente        != null ? AMBIENTE_LABELS[ambiente]    : null },
+                  { label: "Intenção no app",       value: intencao        != null ? INTENCAO_LABELS[intencao]    : null },
+                  { label: "Comportamento social",  value: socialBehavior  != null ? SB_LABELS[socialBehavior]   : null },
+                ].map(({ label, value }) => value && (
+                  <div key={label} className="flex flex-col gap-1 px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">{label}</span>
+                    <span className="text-sm font-medium text-zinc-800">{value}</span>
+                  </div>
+                ))}
+              </div>
+              <Link
+                href="/onboarding-compat"
+                className="mt-1 text-xs text-violet-500 hover:text-violet-600 transition-colors font-medium"
+              >
+                Atualizar respostas →
+              </Link>
+            </Section>
+          </>
+        )}
 
         {/* Botão salvar sticky */}
         <div className="sticky bottom-6 pt-2">

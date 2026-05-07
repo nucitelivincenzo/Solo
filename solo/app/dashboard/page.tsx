@@ -12,6 +12,7 @@ export default function DashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [eventosCount, setEventosCount] = useState(0);
+  const [gruposCount, setGruposCount] = useState(0);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -21,9 +22,13 @@ export default function DashboardPage() {
       const { data: profile } = await supabase.from("profiles").select("onboarding_completed, vibe, energia, grupo, ambiente, intencao, social_behavior").eq("user_id", user.id).maybeSingle();
       if (!profile?.onboarding_completed) { router.replace("/onboarding"); return; }
       if (!isCompatComplete(profile)) { router.replace("/onboarding-compat"); return; }
-      const { count } = await supabase.from("inscricoes").select("id", { count: "exact", head: true }).eq("user_id", user.id);
+      const [{ count: eCount }, { count: gCount }] = await Promise.all([
+        supabase.from("inscricoes").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+        supabase.from("group_members").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+      ]);
       setUser(user);
-      setEventosCount(count ?? 0);
+      setEventosCount(eCount ?? 0);
+      setGruposCount(gCount ?? 0);
       setReady(true);
     }
     init();
@@ -69,10 +74,10 @@ export default function DashboardPage() {
             <span className="text-3xl font-bold text-violet-500">{eventosCount}</span>
             <span className="text-xs text-zinc-400 group-hover:text-zinc-600 font-medium uppercase tracking-wide transition-colors">Eventos</span>
           </Link>
-          <div className="bg-white border border-zinc-200 rounded-2xl px-4 py-5 flex flex-col items-center gap-1">
-            <span className="text-3xl font-bold text-violet-500">0</span>
-            <span className="text-xs text-zinc-400 font-medium uppercase tracking-wide">Conexões</span>
-          </div>
+          <Link href="/grupos" className="bg-white border border-zinc-200 hover:border-violet-300 rounded-2xl px-4 py-5 flex flex-col items-center gap-1 transition-colors group">
+            <span className="text-3xl font-bold text-violet-500">{gruposCount}</span>
+            <span className="text-xs text-zinc-400 group-hover:text-zinc-600 font-medium uppercase tracking-wide transition-colors">Grupos</span>
+          </Link>
           <div className="bg-white border border-zinc-200 rounded-2xl px-4 py-5 flex flex-col items-center gap-1">
             <span className="text-3xl font-bold text-violet-500">0</span>
             <span className="text-xs text-zinc-400 font-medium uppercase tracking-wide">Mensagens</span>
