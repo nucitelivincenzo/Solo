@@ -45,8 +45,8 @@ type RawCompatRow = {
   vibe: number | null;
   energia: number | null;
   grupo: number | null;
-  ambiente: string | null;
-  intencao: string | null;
+  ambiente: Ambiente | null;
+  intencao: Intencao | null;
   social_behavior: number | null;
 };
 
@@ -55,8 +55,8 @@ function toCompat(p: RawCompatRow) {
     vibe: p.vibe,
     energia: p.energia,
     grupo: p.grupo,
-    ambiente: p.ambiente as Ambiente | null,
-    intencao: p.intencao as Intencao | null,
+    ambiente: p.ambiente,
+    intencao: p.intencao,
     social_behavior: p.social_behavior,
   };
 }
@@ -260,7 +260,7 @@ export default function EventosPage() {
               .in("user_id", ids);
 
             if (coProfiles) {
-              const profMap = new Map((coProfiles as RawCompatRow[]).map((p) => [p.user_id, p]));
+              const profMap = new Map((coProfiles as unknown as RawCompatRow[]).map((p) => [p.user_id, p]));
               const myCompat = toCompat(profile as unknown as RawCompatRow);
               const seen = new Set<string>();
               const matches: MatchedUser[] = [];
