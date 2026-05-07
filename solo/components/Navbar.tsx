@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 
 const NAV_LINKS = [
   { href: "/eventos",   label: "Eventos"   },
@@ -14,6 +15,17 @@ const NAV_LINKS = [
 export function Navbar({ onLogout }: { onLogout?: () => void }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
+
+  async function handleLogout() {
+    setOpen(false);
+    if (onLogout) {
+      onLogout();
+    } else {
+      await supabase.auth.signOut();
+      router.push("/");
+    }
+  }
 
   return (
     <header className="relative border-b border-white/10 px-6 py-4 flex items-center justify-between sticky top-0 bg-[#0F0F11]/80 backdrop-blur-xl z-40">
@@ -38,15 +50,13 @@ export function Navbar({ onLogout }: { onLogout?: () => void }) {
             </Link>
           );
         })}
-        {onLogout && (
-          <button onClick={onLogout}
-            className="text-sm text-zinc-500 hover:text-[#FAFAFA] transition-colors flex items-center gap-1.5">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1" />
-            </svg>
-            Sair
-          </button>
-        )}
+        <button onClick={handleLogout}
+          className="text-sm text-zinc-500 hover:text-[#FAFAFA] transition-colors flex items-center gap-1.5">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1" />
+          </svg>
+          Sair
+        </button>
       </nav>
 
       {/* Hamburger button */}
@@ -87,20 +97,16 @@ export function Navbar({ onLogout }: { onLogout?: () => void }) {
                   </Link>
                 );
               })}
-              {onLogout && (
-                <>
-                  <div className="h-px bg-white/10 my-2" />
-                  <button
-                    onClick={() => { setOpen(false); onLogout(); }}
-                    className="flex items-center gap-2 px-3 py-3.5 rounded-xl text-sm font-medium text-zinc-400 hover:text-[#FAFAFA] hover:bg-white/5 transition-colors w-full text-left"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1" />
-                    </svg>
-                    Sair
-                  </button>
-                </>
-              )}
+              <div className="h-px bg-white/10 my-2" />
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 px-3 py-3.5 rounded-xl text-sm font-medium text-zinc-400 hover:text-[#FAFAFA] hover:bg-white/5 transition-colors w-full text-left"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1" />
+                </svg>
+                Sair
+              </button>
             </nav>
           </div>
         </>

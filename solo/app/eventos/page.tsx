@@ -339,6 +339,7 @@ export default function EventosPage() {
   const [grupoInteresses, setGrupoInteresses] = useState<Set<string>>(new Set());
   const [savingGrupoId, setSavingGrupoId] = useState<string | null>(null);
   const [grupoFormadoToast, setGrupoFormadoToast] = useState(false);
+  const [actionError, setActionError] = useState("");
 
   useEffect(() => {
     async function init() {
@@ -444,8 +445,9 @@ export default function EventosPage() {
       setInscritos((prev) => new Set([...prev, id]));
       setToast(evento.nome);
       setTimeout(() => setToast(null), 4000);
-    } catch (e) {
-      console.error("❌ Erro ao inscrever:", e);
+    } catch {
+      setActionError("Erro ao confirmar inscrição. Tente novamente.");
+      setTimeout(() => setActionError(""), 4000);
     } finally {
       setSavingId(null);
     }
@@ -465,8 +467,9 @@ export default function EventosPage() {
         setGrupoFormadoToast(true);
         setTimeout(() => setGrupoFormadoToast(false), 5000);
       }
-    } catch (e) {
-      console.error("❌ Erro ao registrar interesse em grupo:", e);
+    } catch {
+      setActionError("Erro ao entrar na fila de grupo. Tente novamente.");
+      setTimeout(() => setActionError(""), 4000);
     } finally {
       setSavingGrupoId(null);
     }
@@ -552,10 +555,24 @@ export default function EventosPage() {
 
         <p className="text-center text-zinc-500 text-sm mt-12">
           Novos eventos toda semana. Parceiro?{" "}
-          <span className="text-violet-400 cursor-pointer hover:text-violet-300 transition-colors">Cadastre seu estabelecimento →</span>
+          <span className="text-violet-400 hover:text-violet-300 transition-colors">Cadastre seu estabelecimento →</span>
         </p>
       </main>
       {toast && <Toast nome={toast} onClose={() => setToast(null)} />}
+
+      {actionError && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-4 bg-[#18181B] border border-red-500/20 rounded-2xl shadow-xl shadow-black/40">
+          <div className="w-8 h-8 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center flex-shrink-0">
+            <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+            </svg>
+          </div>
+          <p className="text-[#FAFAFA] text-sm font-medium">{actionError}</p>
+          <button onClick={() => setActionError("")} className="ml-2 text-zinc-600 hover:text-zinc-400 transition-colors">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+          </button>
+        </div>
+      )}
 
       {grupoFormadoToast && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-4 bg-[#18181B] border border-violet-500/20 rounded-2xl shadow-xl shadow-violet-500/20 animate-in fade-in slide-in-from-bottom-2 duration-300">
