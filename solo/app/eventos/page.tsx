@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { isCompatComplete } from "@/lib/types";
 import type { Ambiente, Intencao } from "@/lib/types";
 import { calcularMatch } from "@/lib/match";
+import { tentarFormarGrupo } from "@/lib/groups";
 import { Navbar } from "@/components/Navbar";
 
 type EventType = "balada" | "bar" | "rooftop" | "show";
@@ -457,6 +458,7 @@ export default function EventosPage() {
         .insert({ user_id: userId, event_id: id });
       if (error) throw error;
       setGrupoInteresses((prev) => new Set([...prev, id]));
+      tentarFormarGrupo(id);
     } catch (e) {
       console.error("❌ Erro ao registrar interesse em grupo:", e);
     } finally {
