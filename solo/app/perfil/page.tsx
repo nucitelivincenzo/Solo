@@ -57,13 +57,13 @@ function Chip({ emoji, label, sub, selected, onClick }: {
     <button type="button" onClick={onClick}
       className={`flex items-center gap-3 px-4 py-3 rounded-xl border text-left transition-all duration-150 w-full
         ${selected
-          ? "bg-violet-50 border-violet-400 shadow-sm shadow-violet-100"
-          : "bg-white border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50"}`}
+          ? "bg-violet-500/10 border-violet-500/40 shadow-sm shadow-violet-500/10"
+          : "bg-[#18181B] border-white/10 hover:border-white/20 hover:bg-white/5"}`}
     >
       <span className="text-xl leading-none">{emoji}</span>
       <span className="flex flex-col flex-1 min-w-0">
-        <span className={`font-semibold text-sm ${selected ? "text-violet-600" : "text-zinc-900"}`}>{label}</span>
-        {sub && <span className="text-xs text-zinc-400 mt-0.5 truncate">{sub}</span>}
+        <span className={`font-semibold text-sm ${selected ? "text-violet-400" : "text-[#FAFAFA]"}`}>{label}</span>
+        {sub && <span className="text-xs text-zinc-500 mt-0.5 truncate">{sub}</span>}
       </span>
       {selected && (
         <span className="flex-shrink-0 w-4 h-4 rounded-full bg-violet-500 flex items-center justify-center">
@@ -80,8 +80,8 @@ function Section({ title, hint, children }: { title: string; hint?: string; chil
   return (
     <div className="flex flex-col gap-3">
       <div>
-        <h2 className="text-xs font-bold text-zinc-400 uppercase tracking-wide">{title}</h2>
-        {hint && <p className="text-xs text-zinc-400 mt-0.5">{hint}</p>}
+        <h2 className="text-xs font-bold text-zinc-500 uppercase tracking-wide">{title}</h2>
+        {hint && <p className="text-xs text-zinc-500 mt-0.5">{hint}</p>}
       </div>
       {children}
     </div>
@@ -187,7 +187,7 @@ export default function PerfilPage() {
 
   if (!ready) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-[#0F0F11] flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -198,7 +198,7 @@ export default function PerfilPage() {
     : user!.email?.[0].toUpperCase() ?? "?";
 
   return (
-    <div className="min-h-screen bg-zinc-50 text-zinc-900">
+    <div className="min-h-screen bg-[#0F0F11] text-[#FAFAFA]">
       <Navbar />
 
       <main className="max-w-xl mx-auto px-6 py-12 flex flex-col gap-10">
@@ -209,33 +209,33 @@ export default function PerfilPage() {
             {initials}
           </div>
           <div>
-            <h1 className="text-2xl font-black text-zinc-900" style={{ letterSpacing: "-0.02em" }}>Meu Perfil</h1>
-            <p className="text-zinc-500 text-sm mt-0.5">Edite suas informações e preferências</p>
+            <h1 className="text-2xl font-black text-[#FAFAFA]" style={{ letterSpacing: "-0.02em" }}>Meu Perfil</h1>
+            <p className="text-[#A1A1AA] text-sm mt-0.5">Edite suas informações e preferências</p>
           </div>
         </div>
 
-        <div className="h-px bg-zinc-200" />
+        <div className="h-px bg-white/10" />
 
         {/* Informações pessoais */}
         <Section title="Informações pessoais">
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wide" htmlFor="name">Nome</label>
+              <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wide" htmlFor="name">Nome</label>
               <input
                 id="name" type="text" value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Seu nome"
-                className="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 text-zinc-900 placeholder-zinc-400 outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-colors text-sm"
+                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-[#FAFAFA] placeholder-zinc-600 outline-none focus:border-violet-500/60 focus:ring-1 focus:ring-violet-500/40 transition-colors text-sm"
               />
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wide">
+              <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wide">
                 Email
-                <span className="ml-2 text-zinc-400 normal-case font-normal tracking-normal">somente leitura</span>
+                <span className="ml-2 text-zinc-500 normal-case font-normal tracking-normal">somente leitura</span>
               </label>
-              <div className="w-full px-4 py-3 rounded-xl bg-zinc-50 border border-zinc-200 text-zinc-400 text-sm flex items-center gap-2 cursor-not-allowed select-none">
-                <svg className="w-4 h-4 text-zinc-300 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <div className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-zinc-500 text-sm flex items-center gap-2 cursor-not-allowed select-none">
+                <svg className="w-4 h-4 text-zinc-600 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
                 {user!.email}
@@ -244,7 +244,7 @@ export default function PerfilPage() {
           </div>
         </Section>
 
-        <div className="h-px bg-zinc-200" />
+        <div className="h-px bg-white/10" />
 
         <Section title="Seu estilo de noite" hint="Escolha até 3 opções">
           <div className="grid grid-cols-2 gap-2.5">
@@ -255,7 +255,7 @@ export default function PerfilPage() {
           </div>
         </Section>
 
-        <div className="h-px bg-zinc-200" />
+        <div className="h-px bg-white/10" />
 
         <Section title="O que você busca" hint="Escolha até 2 opções">
           <div className="flex flex-col gap-2.5">
@@ -266,7 +266,7 @@ export default function PerfilPage() {
           </div>
         </Section>
 
-        <div className="h-px bg-zinc-200" />
+        <div className="h-px bg-white/10" />
 
         <Section title="Com quantas pessoas você curte sair" hint="Escolha uma opção">
           <div className="flex flex-col gap-2.5">
@@ -280,7 +280,7 @@ export default function PerfilPage() {
         {/* Compatibilidade */}
         {isCompatComplete({ vibe, energia, grupo, ambiente, intencao, social_behavior: socialBehavior }) && (
           <>
-            <div className="h-px bg-zinc-200" />
+            <div className="h-px bg-white/10" />
 
             <Section title="Seu perfil de compatibilidade" hint="Como o SOLO te conecta com outras pessoas">
               <div className="flex flex-col gap-2.5">
@@ -292,15 +292,15 @@ export default function PerfilPage() {
                   { label: "Intenção no app",       value: intencao        != null ? INTENCAO_LABELS[intencao]    : null },
                   { label: "Comportamento social",  value: socialBehavior  != null ? SB_LABELS[socialBehavior]   : null },
                 ].map(({ label, value }) => value && (
-                  <div key={label} className="flex flex-col gap-1 px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">{label}</span>
-                    <span className="text-sm font-medium text-zinc-800">{value}</span>
+                  <div key={label} className="flex flex-col gap-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">{label}</span>
+                    <span className="text-sm font-medium text-[#FAFAFA]">{value}</span>
                   </div>
                 ))}
               </div>
               <Link
                 href="/onboarding-compat"
-                className="mt-1 text-xs text-violet-500 hover:text-violet-600 transition-colors font-medium"
+                className="mt-1 text-xs text-violet-400 hover:text-violet-300 transition-colors font-medium"
               >
                 Atualizar respostas →
               </Link>
@@ -311,7 +311,7 @@ export default function PerfilPage() {
         {/* Reputação */}
         {reputacao !== null && (reputacao.grupos > 0 || reputacao.confirmacoes > 0 || reputacao.checkins > 0) && (
           <>
-            <div className="h-px bg-zinc-200" />
+            <div className="h-px bg-white/10" />
             <Section title="Sua jornada" hint="Histórico de participação nos grupos">
               <div className="grid grid-cols-2 gap-3">
                 {[
@@ -326,11 +326,11 @@ export default function PerfilPage() {
                     icon: "📊",
                   },
                 ].map(({ label, value, icon }) => (
-                  <div key={label} className="flex flex-col gap-2 px-4 py-3.5 bg-white border border-zinc-200 rounded-xl">
+                  <div key={label} className="flex flex-col gap-2 px-4 py-3.5 bg-[#18181B] border border-white/10 rounded-xl">
                     <span className="text-xl leading-none">{icon}</span>
                     <div>
-                      <span className="text-2xl font-black text-zinc-900 tabular-nums leading-none">{value}</span>
-                      <p className="text-[10px] font-medium text-zinc-400 uppercase tracking-wide mt-1 leading-tight">{label}</p>
+                      <span className="text-2xl font-black text-[#FAFAFA] tabular-nums leading-none">{value}</span>
+                      <p className="text-[10px] font-medium text-zinc-500 uppercase tracking-wide mt-1 leading-tight">{label}</p>
                     </div>
                   </div>
                 ))}
@@ -350,7 +350,7 @@ export default function PerfilPage() {
                 : saveState === "error"
                 ? "bg-red-500 shadow-red-500/20 text-white"
                 : saveState === "saving"
-                ? "bg-violet-400 shadow-violet-400/20 text-white cursor-not-allowed"
+                ? "bg-violet-500/60 shadow-violet-500/10 text-white cursor-not-allowed"
                 : "bg-violet-500 hover:bg-violet-400 shadow-violet-500/20 hover:shadow-violet-400/30 text-white hover:-translate-y-0.5 active:translate-y-0"
               }`}
           >

@@ -39,13 +39,13 @@ function Chip({ emoji, label, sub, selected, onClick }: {
     <button type="button" onClick={onClick}
       className={`flex items-center gap-3 px-4 py-3.5 rounded-xl border text-left transition-all duration-150 w-full
         ${selected
-          ? "bg-violet-50 border-violet-400 shadow-sm shadow-violet-100"
-          : "bg-white border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50"}`}
+          ? "bg-violet-500/10 border-violet-500/40 shadow-sm shadow-violet-500/10"
+          : "bg-white/5 border-white/10 hover:border-white/20 hover:bg-white/10"}`}
     >
       <span className="text-xl leading-none">{emoji}</span>
       <span className="flex flex-col flex-1">
-        <span className={`font-semibold text-sm ${selected ? "text-violet-600" : "text-zinc-900"}`}>{label}</span>
-        {sub && <span className="text-xs text-zinc-400 mt-0.5">{sub}</span>}
+        <span className={`font-semibold text-sm ${selected ? "text-violet-400" : "text-[#FAFAFA]"}`}>{label}</span>
+        {sub && <span className="text-xs text-zinc-500 mt-0.5">{sub}</span>}
       </span>
       {selected && (
         <span className="flex-shrink-0 w-5 h-5 rounded-full bg-violet-500 flex items-center justify-center">
@@ -115,8 +115,8 @@ export default function OnboardingPage() {
   const currentStep = STEPS[step - 1];
 
   return (
-    <main className="min-h-screen bg-white flex flex-col items-center justify-center px-6 py-10 relative overflow-hidden">
-      <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 55% 45% at 50% 0%, rgba(139,92,246,0.07) 0%, transparent 70%)" }} />
+    <main className="min-h-screen bg-[#0F0F11] flex flex-col items-center justify-center px-6 py-10 relative overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 55% 45% at 50% 0%, rgba(139,92,246,0.12) 0%, transparent 70%)" }} />
 
       <div className="relative z-10 w-full max-w-sm flex flex-col gap-8">
         {/* Header */}
@@ -124,19 +124,19 @@ export default function OnboardingPage() {
           <span className="text-2xl font-black text-violet-500 glow-violet text-center" style={{ letterSpacing: "-0.04em" }}>SOLO</span>
           <div className="flex items-center gap-2">
             {STEPS.map((s) => (
-              <div key={s.number} className="flex-1 h-1 rounded-full overflow-hidden bg-zinc-100">
+              <div key={s.number} className="flex-1 h-1 rounded-full overflow-hidden bg-white/10">
                 <div className="h-full rounded-full bg-violet-500 transition-all duration-500" style={{ width: step >= s.number ? "100%" : "0%" }} />
               </div>
             ))}
           </div>
-          <p className="text-xs text-zinc-400 text-right">Passo {step} de {STEPS.length}</p>
+          <p className="text-xs text-zinc-500 text-right">Passo {step} de {STEPS.length}</p>
         </div>
 
         {/* Content */}
         <div className="flex flex-col gap-6 transition-opacity duration-180" style={{ opacity: animating ? 0 : 1 }}>
           <div>
-            <h1 className="text-2xl font-black text-zinc-900 leading-tight whitespace-pre-line">{currentStep.title}</h1>
-            <p className="text-sm text-zinc-400 mt-1">{currentStep.hint}</p>
+            <h1 className="text-2xl font-black text-[#FAFAFA] leading-tight whitespace-pre-line">{currentStep.title}</h1>
+            <p className="text-sm text-zinc-500 mt-1">{currentStep.hint}</p>
           </div>
 
           {step === 1 && (
@@ -162,18 +162,18 @@ export default function OnboardingPage() {
           )}
         </div>
 
-        {error && <div className="px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm">{error}</div>}
+        {error && <div className="px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">{error}</div>}
 
         {/* Navigation */}
         <div className="flex gap-3">
           {step > 1 && (
             <button onClick={goBack} disabled={saving}
-              className="flex-1 py-3.5 rounded-xl border border-zinc-200 text-zinc-700 font-semibold hover:bg-zinc-50 hover:border-zinc-300 transition-all duration-200 text-sm">
+              className="flex-1 py-3.5 rounded-xl border border-white/10 text-zinc-400 font-semibold hover:bg-white/5 hover:border-white/20 transition-all duration-200 text-sm">
               Voltar
             </button>
           )}
           <button onClick={goNext} disabled={!canAdvance() || saving}
-            className="flex-1 py-3.5 rounded-xl bg-violet-500 hover:bg-violet-400 disabled:bg-zinc-100 disabled:text-zinc-400 disabled:cursor-not-allowed text-white font-semibold transition-all duration-200 shadow-lg shadow-violet-500/20 hover:-translate-y-0.5 active:translate-y-0 text-sm">
+            className="flex-1 py-3.5 rounded-xl bg-violet-500 hover:bg-violet-400 disabled:bg-white/10 disabled:text-zinc-500 disabled:cursor-not-allowed text-white font-semibold transition-all duration-200 shadow-lg shadow-violet-500/20 hover:-translate-y-0.5 active:translate-y-0 text-sm">
             {saving ? (
               <span className="flex items-center justify-center gap-2">
                 <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />

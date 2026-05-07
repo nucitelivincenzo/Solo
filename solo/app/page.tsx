@@ -52,14 +52,14 @@ export default function Home() {
 
       {/* ── Navbar ─────────────────────────────────────────────────────────── */}
       <header className="fixed top-0 left-0 right-0 z-50 px-6 py-4 flex items-center justify-between border-b border-white/5 bg-black/60 backdrop-blur-xl">
-        <span className="text-2xl font-black text-orange-500 glow-orange select-none" style={{ letterSpacing: "-0.04em" }}>
+        <span className="text-2xl font-black text-violet-500 glow-violet select-none" style={{ letterSpacing: "-0.04em" }}>
           SOLO
         </span>
         <div className="flex items-center gap-3">
           <Link href="/login" className="text-sm text-zinc-400 hover:text-white transition-colors font-medium px-4 py-2">
             Entrar
           </Link>
-          <Link href="/cadastro" className="text-sm font-semibold px-4 py-2 bg-orange-500 hover:bg-orange-400 text-white rounded-xl transition-all duration-200 shadow-lg shadow-orange-500/20 hover:-translate-y-0.5">
+          <Link href="/cadastro" className="text-sm font-semibold px-4 py-2 bg-violet-500 hover:bg-violet-400 text-white rounded-xl transition-all duration-200 shadow-lg shadow-violet-500/20 hover:-translate-y-0.5">
             Criar conta
           </Link>
         </div>
@@ -68,16 +68,16 @@ export default function Home() {
       {/* ── Hero ───────────────────────────────────────────────────────────── */}
       <section className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-20 text-center overflow-hidden">
         {/* Background layers */}
-        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 80% 60% at 50% 40%, rgba(249,115,22,0.15) 0%, transparent 65%)" }} />
+        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 80% 60% at 50% 40%, rgba(139,92,246,0.15) 0%, transparent 65%)" }} />
         <div className="absolute inset-0 pointer-events-none opacity-[0.035]" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)", backgroundSize: "50px 50px" }} />
         {/* Floating orbs */}
-        <div className="absolute top-32 left-1/4 w-64 h-64 rounded-full bg-orange-500/5 blur-3xl pointer-events-none" />
-        <div className="absolute bottom-32 right-1/4 w-48 h-48 rounded-full bg-orange-600/8 blur-3xl pointer-events-none" />
+        <div className="absolute top-32 left-1/4 w-64 h-64 rounded-full bg-violet-500/5 blur-3xl pointer-events-none" />
+        <div className="absolute bottom-32 right-1/4 w-48 h-48 rounded-full bg-violet-600/8 blur-3xl pointer-events-none" />
 
         <div className="relative z-10 max-w-3xl flex flex-col items-center gap-8">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-900 border border-zinc-700 text-sm text-zinc-300">
-            <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-violet-500 animate-pulse" />
             🔥 Para quem quer curtir com pessoas novas — São Paulo
           </div>
 
@@ -85,7 +85,7 @@ export default function Home() {
           <h1 className="text-6xl sm:text-7xl md:text-8xl font-black leading-[0.95] tracking-tight">
             <span className="text-white">Encontre sua</span>
             <br />
-            <span className="text-orange-500 glow-orange">turma pra noite.</span>
+            <span className="text-violet-500 glow-violet">turma pra noite.</span>
           </h1>
 
           {/* Subtitle */}
@@ -96,7 +96,7 @@ export default function Home() {
 
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row gap-3 w-full max-w-sm">
-            <Link href="/cadastro" className="flex-1 py-4 px-8 bg-orange-500 hover:bg-orange-400 text-white font-bold rounded-2xl text-center transition-all duration-200 shadow-xl shadow-orange-500/25 hover:shadow-orange-400/40 hover:-translate-y-1 active:translate-y-0 text-base">
+            <Link href="/cadastro" className="flex-1 py-4 px-8 bg-violet-500 hover:bg-violet-400 text-white font-bold rounded-2xl text-center transition-all duration-200 shadow-xl shadow-violet-500/25 hover:shadow-violet-400/40 hover:-translate-y-1 active:translate-y-0 text-base">
               Criar conta grátis
             </Link>
             <Link href="/login" className="flex-1 py-4 px-8 bg-zinc-900 hover:bg-zinc-800 text-white font-bold rounded-2xl text-center transition-all duration-200 border border-zinc-700 hover:border-zinc-500 hover:-translate-y-1 active:translate-y-0 text-base">
@@ -125,7 +125,7 @@ export default function Home() {
             { value: "100%",  label: "Gratuito" },
           ].map((s) => (
             <div key={s.label} className="flex flex-col gap-1">
-              <span className="text-3xl sm:text-4xl font-black text-orange-500">{s.value}</span>
+              <span className="text-3xl sm:text-4xl font-black text-violet-500">{s.value}</span>
               <span className="text-xs text-zinc-500 uppercase tracking-wide font-medium">{s.label}</span>
             </div>
           ))}
@@ -136,7 +136,7 @@ export default function Home() {
       <section className="py-24 px-6">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16">
-            <span className="text-xs font-semibold uppercase tracking-widest text-orange-500">Simples assim</span>
+            <span className="text-xs font-semibold uppercase tracking-widest text-violet-500">Simples assim</span>
             <h2 className="text-4xl sm:text-5xl font-black text-white mt-3 tracking-tight">
               Como funciona
             </h2>
@@ -147,13 +147,13 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
             {/* Connector line (desktop) */}
-            <div className="hidden md:block absolute top-12 left-[calc(16.67%+1rem)] right-[calc(16.67%+1rem)] h-px bg-gradient-to-r from-transparent via-orange-500/30 to-transparent pointer-events-none" />
+            <div className="hidden md:block absolute top-12 left-[calc(16.67%+1rem)] right-[calc(16.67%+1rem)] h-px bg-gradient-to-r from-transparent via-violet-500/30 to-transparent pointer-events-none" />
 
             {STEPS.map((step, i) => (
               <div key={i} className="relative flex flex-col gap-5 p-7 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-zinc-700 transition-colors duration-200 group">
                 {/* Number + icon */}
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-orange-500/15 border border-orange-500/30 flex items-center justify-center text-orange-500 flex-shrink-0 group-hover:bg-orange-500/20 transition-colors">
+                  <div className="w-12 h-12 rounded-2xl bg-violet-500/15 border border-violet-500/30 flex items-center justify-center text-violet-500 flex-shrink-0 group-hover:bg-violet-500/20 transition-colors">
                     {step.icon}
                   </div>
                   <span className="text-4xl font-black text-zinc-800 group-hover:text-zinc-700 transition-colors select-none">
@@ -175,12 +175,12 @@ export default function Home() {
         <div className="max-w-4xl mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
             <div>
-              <span className="text-xs font-semibold uppercase tracking-widest text-orange-500">Esta semana</span>
+              <span className="text-xs font-semibold uppercase tracking-widest text-violet-500">Esta semana</span>
               <h2 className="text-4xl sm:text-5xl font-black text-white mt-3 tracking-tight">
                 Parceiros
               </h2>
             </div>
-            <Link href="/eventos" className="self-start sm:self-auto flex items-center gap-2 text-sm text-orange-400 hover:text-orange-300 font-semibold transition-colors group">
+            <Link href="/eventos" className="self-start sm:self-auto flex items-center gap-2 text-sm text-violet-400 hover:text-violet-300 font-semibold transition-colors group">
               Ver todos os eventos
               <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
@@ -200,15 +200,15 @@ export default function Home() {
                     <span className="text-xs text-zinc-600">{p.dia}</span>
                   </div>
                   <div className="flex flex-col gap-1 flex-1">
-                    <h3 className="font-black text-white group-hover:text-orange-400 transition-colors">{p.nome}</h3>
+                    <h3 className="font-black text-white group-hover:text-violet-400 transition-colors">{p.nome}</h3>
                     <p className="text-xs text-zinc-500">{p.bairro}</p>
                   </div>
                   <div className="flex items-center justify-between pt-3 border-t border-zinc-800">
                     <div className="flex items-center gap-1.5">
-                      <span className={`w-1.5 h-1.5 rounded-full ${p.vagas <= 6 ? "bg-orange-500 animate-pulse" : "bg-green-500"}`} />
+                      <span className={`w-1.5 h-1.5 rounded-full ${p.vagas <= 6 ? "bg-violet-500 animate-pulse" : "bg-green-500"}`} />
                       <span className="text-xs font-semibold text-white">{p.vagas} vagas</span>
                     </div>
-                    <Link href="/cadastro" className="text-xs text-orange-400 hover:text-orange-300 font-semibold transition-colors">
+                    <Link href="/cadastro" className="text-xs text-violet-400 hover:text-violet-300 font-semibold transition-colors">
                       Quero ir →
                     </Link>
                   </div>
@@ -221,11 +221,11 @@ export default function Home() {
 
       {/* ── Final CTA ──────────────────────────────────────────────────────── */}
       <section className="py-32 px-6 relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 70% 80% at 50% 50%, rgba(249,115,22,0.12) 0%, transparent 70%)" }} />
+        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 70% 80% at 50% 50%, rgba(139,92,246,0.12) 0%, transparent 70%)" }} />
         <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
 
         <div className="relative z-10 max-w-2xl mx-auto text-center flex flex-col items-center gap-8">
-          <div className="w-16 h-16 rounded-2xl bg-orange-500 flex items-center justify-center shadow-2xl shadow-orange-500/40 mx-auto">
+          <div className="w-16 h-16 rounded-2xl bg-violet-500 flex items-center justify-center shadow-2xl shadow-violet-500/40 mx-auto">
             <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
               <path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402C1 3.759 4.03 2 6.5 2c1.922 0 3.752 1.049 4.5 2.25C12.498 3.049 14.15 2 16.5 2 18.97 2 22 3.759 22 7.191c0 4.105-5.37 8.863-11 14.402z" />
             </svg>
@@ -234,7 +234,7 @@ export default function Home() {
           <div className="flex flex-col gap-4">
             <h2 className="text-5xl sm:text-6xl font-black tracking-tight leading-tight">
               Chega de planejar{" "}
-              <span className="text-orange-500 glow-orange">sozinho.</span>
+              <span className="text-violet-500 glow-violet">sozinho.</span>
             </h2>
             <p className="text-zinc-400 text-lg max-w-md mx-auto leading-relaxed">
               Crie sua conta em 30 segundos e entre no próximo rolê com pessoas que também querem curtir a noite.
@@ -243,7 +243,7 @@ export default function Home() {
 
           <Link
             href="/cadastro"
-            className="inline-flex items-center gap-2 px-10 py-5 bg-orange-500 hover:bg-orange-400 text-white font-black text-lg rounded-2xl transition-all duration-200 shadow-2xl shadow-orange-500/30 hover:shadow-orange-400/50 hover:-translate-y-1 active:translate-y-0"
+            className="inline-flex items-center gap-2 px-10 py-5 bg-violet-500 hover:bg-violet-400 text-white font-black text-lg rounded-2xl transition-all duration-200 shadow-2xl shadow-violet-500/30 hover:shadow-violet-400/50 hover:-translate-y-1 active:translate-y-0"
           >
             Quero entrar agora
             <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
@@ -258,7 +258,7 @@ export default function Home() {
       {/* ── Footer ─────────────────────────────────────────────────────────── */}
       <footer className="border-t border-zinc-900 px-6 py-8">
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <span className="text-xl font-black text-orange-500 glow-orange select-none" style={{ letterSpacing: "-0.04em" }}>
+          <span className="text-xl font-black text-violet-500 glow-violet select-none" style={{ letterSpacing: "-0.04em" }}>
             SOLO
           </span>
           <p className="text-zinc-600 text-sm">© 2026 SOLO. Feito para quem curte a noite.</p>
