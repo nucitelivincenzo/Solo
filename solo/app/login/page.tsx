@@ -12,6 +12,12 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    console.log("[SOLO] Login page - env check:", {
+      NEXT_PUBLIC_SUPABASE_URL: supabaseUrl ? `${supabaseUrl}` : "MISSING",
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: supabaseKey ? `${supabaseKey.slice(0, 12)}...` : "MISSING",
+    });
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) router.replace("/dashboard");
     });
@@ -26,6 +32,12 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
     if (!form.email || !form.password) { setError("Preencha todos os campos."); return; }
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    if (!supabaseUrl || !supabaseKey) {
+      setError("Configuração do Supabase ausente em produção.");
+      return;
+    }
     setLoading(true);
     try {
       const { data, error: sbError } = await supabase.auth.signInWithPassword({ email: form.email, password: form.password });
@@ -33,8 +45,13 @@ export default function LoginPage() {
       const { data: profile } = await supabase.from("profiles").select("onboarding_completed").eq("user_id", data.user.id).maybeSingle();
       router.push(profile?.onboarding_completed ? "/dashboard" : "/onboarding");
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "Erro ao entrar.";
-      setError(msg === "Invalid login credentials" ? "Email ou senha incorretos." : msg);
+      console.error("[SOLO] Login error:", e);
+      if (e instanceof TypeError && e.message.toLowerCase().includes("fetch")) {
+        setError("Não foi possível conectar ao Supabase. Verifique as variáveis de ambiente da Vercel.");
+      } else {
+        const msg = e instanceof Error ? e.message : "Erro ao entrar.";
+        setError(msg === "Invalid login credentials" ? "Email ou senha incorretos." : msg);
+      }
       setLoading(false);
     }
   }
