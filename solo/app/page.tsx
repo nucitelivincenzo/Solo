@@ -1,49 +1,100 @@
 import Link from "next/link";
 
-// SVG fractal noise texture — same technique used in approved mockups
+// ── Design tokens ──────────────────────────────────────────────────────────────
+
 const NOISE = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")`;
 
-// Avatar gradient fills (warm, varied, human-feeling)
-const AVATARS = [
+// Avatar fills — warm, human-feeling gradients
+const AVS = [
   "linear-gradient(135deg,#3a2b22,#9a5a3a 65%,#FFB37A)",
   "linear-gradient(135deg,#1a1620,#4d3a52 50%,#a07a8e)",
   "linear-gradient(135deg,#2a1a14,#6e2c1c 60%,#FF7A35)",
   "linear-gradient(135deg,#3a0a18,#8a1c34 60%,#ff7090)",
 ];
 
+// ── Inline style helpers ───────────────────────────────────────────────────────
+
+const mono = (sz = "9px", cl = "rgba(255,255,255,0.50)"): React.CSSProperties => ({
+  fontFamily: "var(--font-geist-mono,'Courier New',monospace)",
+  fontSize: sz,
+  letterSpacing: "0.40em",
+  textTransform: "uppercase" as const,
+  color: cl,
+  lineHeight: 1.4,
+});
+
+const serif = (sz: string, cl = "#fff"): React.CSSProperties => ({
+  fontFamily: "var(--font-dm-serif,Georgia,serif)",
+  fontStyle: "italic",
+  fontSize: sz,
+  letterSpacing: "-0.030em",
+  color: cl,
+  lineHeight: "0.92",
+});
+
+// Photo layer: CSS background-image — shows real photo when file exists,
+// transparent when missing (CSS gradient fallback is always the base layer).
+const photo = (n: number): React.CSSProperties => ({
+  position: "absolute",
+  inset: 0,
+  backgroundImage: `url('/images/lifestyle-${n}.jpg')`,
+  backgroundSize: "cover",
+  backgroundPosition: "center",
+});
+
+// ── Section data ───────────────────────────────────────────────────────────────
+
 const MOMENTS = [
   {
-    bg: "radial-gradient(80% 70% at 30% 0%, rgba(197,60,90,.80), rgba(92,26,44,.55) 60%, transparent 80%), linear-gradient(160deg, #180812, #0a0608)",
+    n: 3, // lifestyle-3.jpg — intimate candlelit bar
+    fallback: "radial-gradient(80% 70% at 30% 0%,rgba(197,60,90,.85),rgba(92,26,44,.55) 60%,transparent 80%),linear-gradient(160deg,#180812,#0a0608)",
+    overlay: "radial-gradient(80% 60% at 30% 0%,rgba(197,60,90,.55),transparent 70%),linear-gradient(180deg,transparent 20%,rgba(0,0,0,.85) 100%)",
     when: "Qui · 21:30",
     title: "Mesa pequena,\nvinho longo.",
-    local: "Jantar íntimo · Pinheiros",
-    count: "6 pessoas",
+    local: "Jantar · Pinheiros",
+    tag: "Íntimo",
   },
   {
-    bg: "radial-gradient(80% 70% at 70% 0%, rgba(255,178,89,.70), transparent 65%), radial-gradient(60% 60% at 30% 100%, rgba(162,90,30,.55), transparent 70%), linear-gradient(160deg, #1a1208, #0a0608)",
+    n: 2, // lifestyle-2.jpg — women outdoor bar, blue city skyline
+    fallback: "radial-gradient(80% 70% at 70% 0%,rgba(255,178,89,.75),transparent 65%),radial-gradient(60% 60% at 30% 100%,rgba(162,90,30,.55),transparent 70%),linear-gradient(160deg,#1a1208,#0a0608)",
+    overlay: "radial-gradient(80% 60% at 70% 0%,rgba(255,160,60,.40),transparent 70%),linear-gradient(180deg,transparent 20%,rgba(0,0,0,.82) 100%)",
     when: "Sáb · 18:00",
-    title: "Vista aberta,\ntarde vira noite.",
-    local: "Rooftop · Itaim Bibi",
-    count: "8 pessoas",
+    title: "Vista do alto,\ngente do bem.",
+    local: "Rooftop · Itaim",
+    tag: "Rooftop",
   },
   {
-    bg: "radial-gradient(70% 60% at 50% 30%, rgba(255,122,53,.80), transparent 65%), radial-gradient(60% 60% at 50% 100%, rgba(162,49,11,.65), transparent 70%), linear-gradient(160deg, #1a0a06, #0a0608)",
+    n: 1, // lifestyle-1.jpg — men at rooftop, warm city at night
+    fallback: "radial-gradient(70% 60% at 50% 30%,rgba(255,122,53,.85),transparent 65%),radial-gradient(60% 60% at 50% 100%,rgba(162,49,11,.70),transparent 70%),linear-gradient(160deg,#1a0a06,#0a0608)",
+    overlay: "radial-gradient(70% 50% at 50% 30%,rgba(255,100,20,.45),transparent 65%),linear-gradient(180deg,transparent 20%,rgba(0,0,0,.82) 100%)",
     when: "Sex · 22:00",
-    title: "Música ao vivo,\nperto de tudo.",
-    local: "Bar ao vivo · Vila Madalena",
-    count: "10 pessoas",
+    title: "Bar sem filtro,\nnoite sem pressa.",
+    local: "Ao vivo · Vila Madalena",
+    tag: "Show",
   },
 ];
 
 const STEPS = [
-  { num: "01", title: "Crie seu perfil", desc: "30 segundos. Monte seu perfil de noite — vibe, estilo, o que te move." },
-  { num: "02", title: "Escolha o rolê", desc: "Bares, rooftops, jantares íntimos. Você define a noite que quer ter." },
-  { num: "03", title: "Conheça sua turma", desc: "Chegue sabendo quem mais vai. Conexões reais ainda antes de sair." },
+  {
+    num: "01",
+    title: "Monte seu perfil de noite",
+    desc: "Duas perguntas. Você conta quem é e qual tipo de noite te move. Sem questionários infinitos.",
+  },
+  {
+    num: "02",
+    title: "Escolha onde aparecer",
+    desc: "Bares novos, rooftops com vista, jantares com menos de 8 pessoas. Você escolhe o rolê.",
+  },
+  {
+    num: "03",
+    title: "Apareça sabendo quem vai",
+    desc: "Antes de sair você já viu quem mais estará lá. Chega com intenção, sem awkwardness.",
+  },
 ];
 
 const EVENTS = [
   {
-    bg: "radial-gradient(80% 70% at 50% 30%, rgba(255,122,53,.85), transparent 65%), radial-gradient(60% 70% at 50% 100%, rgba(162,49,11,.70), transparent 80%), linear-gradient(180deg, #1a0a06, #0a0608)",
+    bg: "radial-gradient(80% 70% at 50% 30%,rgba(255,122,53,.90),transparent 65%),radial-gradient(60% 70% at 50% 100%,rgba(162,49,11,.72),transparent 80%),linear-gradient(180deg,#1a0a06,#0a0608)",
     live: true,
     when: "Hoje · 22:00",
     title: "A noite está\naberta.",
@@ -51,7 +102,7 @@ const EVENTS = [
     match: "98%",
   },
   {
-    bg: "radial-gradient(80% 70% at 30% 0%, rgba(197,60,90,.75), rgba(92,26,44,.55) 60%, transparent 80%), linear-gradient(180deg, #180812, #0a0608)",
+    bg: "radial-gradient(80% 70% at 30% 0%,rgba(197,60,90,.80),rgba(92,26,44,.55) 60%,transparent 80%),linear-gradient(180deg,#180812,#0a0608)",
     live: false,
     when: "Sex · 21:30",
     title: "Mesa pequena.",
@@ -59,7 +110,7 @@ const EVENTS = [
     match: "94%",
   },
   {
-    bg: "radial-gradient(80% 70% at 70% 0%, rgba(255,178,89,.70), transparent 65%), radial-gradient(60% 60% at 30% 100%, rgba(162,90,30,.55), transparent 70%), linear-gradient(180deg, #1a1208, #0a0608)",
+    bg: "radial-gradient(80% 70% at 70% 0%,rgba(255,178,89,.72),transparent 65%),radial-gradient(60% 60% at 30% 100%,rgba(162,90,30,.55),transparent 70%),linear-gradient(180deg,#1a1208,#0a0608)",
     live: false,
     when: "Sáb · 18:00",
     title: "Vista aberta.",
@@ -68,70 +119,48 @@ const EVENTS = [
   },
 ];
 
-// Shared inline style helpers
-const monoSm = (color = "rgba(255,255,255,0.55)"): React.CSSProperties => ({
-  fontFamily: "var(--font-geist-mono, 'Courier New', monospace)",
-  fontSize: "9px",
-  letterSpacing: "0.38em",
-  textTransform: "uppercase" as const,
-  color,
-});
-
-const monoXs = (color = "rgba(255,255,255,0.45)"): React.CSSProperties => ({
-  fontFamily: "var(--font-geist-mono, 'Courier New', monospace)",
-  fontSize: "8px",
-  letterSpacing: "0.28em",
-  textTransform: "uppercase" as const,
-  color,
-});
+// ── Component ──────────────────────────────────────────────────────────────────
 
 export default function Home() {
   return (
     <div style={{ background: "#050506", color: "#fff", overflowX: "hidden" }}>
 
-      {/* ────────────────── NAVBAR ────────────────── */}
+      {/* ══ NAVBAR ══════════════════════════════════════════════════════════════ */}
       <header
         className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4"
         style={{
-          background: "rgba(5,5,6,0.80)",
+          background: "rgba(5,5,6,0.82)",
           borderBottom: "1px solid rgba(255,255,255,0.07)",
-          backdropFilter: "blur(24px)",
-          WebkitBackdropFilter: "blur(24px)",
+          backdropFilter: "blur(28px)",
+          WebkitBackdropFilter: "blur(28px)",
         }}
       >
-        {/* Logo */}
-        <div className="flex items-center gap-2.5">
+        <Link href="/" className="flex items-center gap-2.5">
           <div
             className="relative w-5 h-5 rounded-full flex-shrink-0"
             style={{
-              background: "linear-gradient(135deg, #F8FAFC 0%, #94A3B8 100%)",
-              boxShadow: "0 0 18px rgba(226,232,240,.28), inset 0 0 0 1px rgba(255,255,255,.45)",
+              background: "linear-gradient(135deg,#F8FAFC 0%,#94A3B8 100%)",
+              boxShadow: "0 0 18px rgba(226,232,240,.28),inset 0 0 0 1px rgba(255,255,255,.45)",
             }}
           >
             <div className="absolute inset-[5px] rounded-full" style={{ background: "#050506" }} />
           </div>
-          <span
-            className="font-serif italic text-white"
-            style={{ fontSize: "20px", letterSpacing: "-0.02em", lineHeight: 1 }}
-          >
-            SOLO
-          </span>
-        </div>
+          <span style={{ ...serif("20px"), lineHeight: 1 }}>SOLO</span>
+        </Link>
 
-        {/* Nav actions */}
-        <div className="flex items-center gap-3">
-          <Link href="/login" className="transition-colors" style={monoSm("rgba(255,255,255,0.45)")}>
-            <span className="hover:text-white/70">Entrar</span>
+        <div className="flex items-center gap-4">
+          <Link href="/login" className="hover:opacity-70 transition-opacity" style={mono("10px","rgba(255,255,255,0.48)")}>
+            Entrar
           </Link>
           <Link
             href="/cadastro"
-            className="flex items-center gap-2 rounded-full px-4 py-2.5"
+            className="flex items-center gap-2 rounded-full"
             style={{
-              background: "linear-gradient(135deg, #F8FAFC 0%, #94A3B8 100%)",
+              padding: "10px 20px",
+              background: "linear-gradient(135deg,#F8FAFC 0%,#94A3B8 100%)",
               color: "#080808",
               boxShadow: "0 0 22px rgba(255,255,255,.14)",
-              ...monoSm("#080808"),
-              fontSize: "10px",
+              ...mono("10px","#080808"),
             }}
           >
             Criar conta
@@ -139,214 +168,288 @@ export default function Home() {
         </div>
       </header>
 
-      {/* ────────────────── HERO ────────────────── */}
-      <section
-        className="relative min-h-screen flex flex-col justify-end overflow-hidden"
-        style={{ paddingTop: "96px", paddingBottom: "64px", paddingLeft: "24px", paddingRight: "24px" }}
-      >
-        {/* Ember atmospheric background */}
+      {/* ══ HERO ════════════════════════════════════════════════════════════════ */}
+      <section className="relative overflow-hidden" style={{ minHeight: "100svh", paddingTop: "72px" }}>
+
+        {/* Ember atmospheric BG */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: `
-              radial-gradient(65% 45% at 12% 0%, rgba(255,178,89,.20), transparent 70%),
-              radial-gradient(55% 45% at 88% 28%, rgba(197,60,90,.20), transparent 70%),
-              radial-gradient(75% 55% at 50% 105%, rgba(255,122,53,.25), transparent 70%),
-              radial-gradient(45% 40% at 92% 98%, rgba(122,91,255,.18), transparent 70%)
-            `,
+            background:
+              "radial-gradient(65% 45% at 12% 0%,rgba(255,178,89,.20),transparent 70%)," +
+              "radial-gradient(55% 45% at 88% 28%,rgba(197,60,90,.20),transparent 70%)," +
+              "radial-gradient(75% 55% at 50% 110%,rgba(255,122,53,.24),transparent 70%)," +
+              "radial-gradient(45% 40% at 92% 98%,rgba(122,91,255,.18),transparent 70%)",
           }}
         />
-        {/* Noise grain */}
+        <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: NOISE, opacity: 0.06, mixBlendMode: "overlay" }} />
         <div
-          className="absolute inset-0 pointer-events-none"
-          style={{ backgroundImage: NOISE, opacity: 0.06, mixBlendMode: "overlay" }}
-        />
-        {/* Bottom fade to section below */}
-        <div
-          className="absolute inset-x-0 bottom-0 h-32 pointer-events-none"
-          style={{ background: "linear-gradient(to bottom, transparent, #050506)" }}
+          className="absolute inset-x-0 bottom-0 h-40 pointer-events-none"
+          style={{ background: "linear-gradient(to bottom,transparent,#050506)" }}
         />
 
-        <div className="relative z-10 w-full max-w-lg mx-auto flex flex-col gap-7">
-          {/* Eyebrow */}
-          <div className="flex items-center gap-2.5">
-            <span
-              className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-              style={{ background: "#FF7A35", boxShadow: "0 0 10px rgba(255,122,53,.85)" }}
-            />
-            <span style={monoSm("rgba(255,255,255,0.62)")}>27 SOLOs essa semana</span>
-          </div>
+        {/* Inner — 2-col on md+ */}
+        <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between min-h-[calc(100svh-72px)] px-6 md:px-12 pb-16 max-w-6xl mx-auto gap-12">
 
-          {/* Headline */}
-          <div>
-            <h1
-              className="font-serif italic text-white leading-none"
-              style={{ fontSize: "clamp(58px, 15vw, 92px)", letterSpacing: "-0.032em" }}
-            >
-              Sua noite,
-            </h1>
-            <h1
-              className="font-serif italic leading-none"
-              style={{
-                fontSize: "clamp(58px, 15vw, 92px)",
-                letterSpacing: "-0.032em",
-                background: "linear-gradient(180deg, #FFE3CC 0%, #FF9659 100%)",
-                WebkitBackgroundClip: "text",
-                backgroundClip: "text",
-                color: "transparent",
-              }}
-            >
-              começa aqui.
-            </h1>
-          </div>
+          {/* LEFT — content */}
+          <div className="flex flex-col gap-7 max-w-lg pt-16 md:pt-24 flex-shrink-0">
 
-          {/* Subtitle */}
-          <p
-            style={{
-              fontFamily: "Inter, var(--font-geist-sans), sans-serif",
-              fontWeight: 300,
-              fontSize: "15px",
-              color: "rgba(255,255,255,0.70)",
-              lineHeight: "1.6",
-              maxWidth: "300px",
-            }}
-          >
-            Pequenos grupos curados. Bares e mesas que você ainda não conhece. Experiências reais com pessoas reais.
-          </p>
-
-          {/* Social proof */}
-          <div
-            className="flex items-center gap-3 w-fit rounded-full"
-            style={{
-              background: "rgba(255,255,255,0.05)",
-              border: "1px solid rgba(255,255,255,0.10)",
-              backdropFilter: "blur(20px)",
-              WebkitBackdropFilter: "blur(20px)",
-              padding: "10px 16px 10px 10px",
-            }}
-          >
-            <div className="flex" style={{ gap: "-8px" }}>
-              {AVATARS.map((bg, i) => (
-                <div
-                  key={i}
-                  className="w-8 h-8 rounded-full flex-shrink-0"
-                  style={{
-                    background: bg,
-                    border: "1.5px solid rgba(0,0,0,.65)",
-                    marginLeft: i > 0 ? "-10px" : undefined,
-                  }}
-                />
-              ))}
-            </div>
-            <div className="flex flex-col">
-              <span style={{ fontSize: "12px", fontWeight: 500, color: "#fff" }}>+ 2.4k em São Paulo</span>
-              <span style={monoXs("rgba(255,255,255,0.45)")}>Lista aberta</span>
-            </div>
-          </div>
-
-          {/* CTAs */}
-          <div className="flex flex-col gap-3">
-            <Link
-              href="/cadastro"
-              className="flex items-center justify-between rounded-full"
-              style={{
-                height: "56px",
-                paddingLeft: "24px",
-                paddingRight: "8px",
-                background: "linear-gradient(135deg, #F8FAFC 0%, #94A3B8 100%)",
-                color: "#080808",
-                boxShadow: "0 0 36px rgba(255,255,255,.16)",
-                ...monoSm("#080808"),
-                fontSize: "11px",
-              }}
-            >
-              <span>Pedir convite</span>
+            {/* Eyebrow */}
+            <div className="flex items-center gap-2.5">
               <span
-                className="flex items-center justify-center w-9 h-9 rounded-full"
-                style={{ background: "#080808", color: "#fff", fontSize: "15px" }}
+                className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                style={{ background: "#FF7A35", boxShadow: "0 0 10px rgba(255,122,53,.88)" }}
+              />
+              <span style={mono("9px","rgba(255,255,255,0.62)")}>São Paulo · esta semana</span>
+            </div>
+
+            {/* Headline */}
+            <div>
+              <h1 style={{ ...serif("clamp(52px,13vw,88px)"), display: "block" }}>
+                A melhor parte
+              </h1>
+              <h1
+                style={{
+                  ...serif("clamp(52px,13vw,88px)"),
+                  display: "block",
+                  background: "linear-gradient(180deg,#FFE3CC 0%,#FF9659 100%)",
+                  WebkitBackgroundClip: "text",
+                  backgroundClip: "text",
+                  color: "transparent",
+                }}
               >
-                →
-              </span>
-            </Link>
-            <Link
-              href="/login"
-              className="flex items-center justify-center"
-              style={{ height: "44px", ...monoSm("rgba(255,255,255,0.48)") }}
+                da cidade
+              </h1>
+              <h1 style={{ ...serif("clamp(52px,13vw,88px)"), display: "block", color: "rgba(255,255,255,0.55)" }}>
+                ainda não é sua.
+              </h1>
+            </div>
+
+            {/* Sub */}
+            <p style={{ fontWeight: 300, fontSize: "15px", color: "rgba(255,255,255,0.68)", lineHeight: 1.65, maxWidth: "310px" }}>
+              Grupos de até 8 pessoas, lugares que você ainda não conhece, conexões de verdade — toda semana, em SP.
+            </p>
+
+            {/* Social proof */}
+            <div
+              className="flex items-center gap-3 w-fit rounded-full"
+              style={{
+                background: "rgba(255,255,255,0.05)",
+                border: "1px solid rgba(255,255,255,0.10)",
+                backdropFilter: "blur(20px)",
+                WebkitBackdropFilter: "blur(20px)",
+                padding: "10px 16px 10px 10px",
+              }}
             >
-              já tenho uma conta
-            </Link>
+              <div className="flex">
+                {AVS.map((bg, i) => (
+                  <div
+                    key={i}
+                    className="w-8 h-8 rounded-full flex-shrink-0"
+                    style={{ background: bg, border: "1.5px solid rgba(0,0,0,.65)", marginLeft: i > 0 ? "-10px" : undefined }}
+                  />
+                ))}
+              </div>
+              <div className="flex flex-col">
+                <span style={{ fontSize: "12px", fontWeight: 500, color: "#fff", lineHeight: 1.3 }}>+ 2.4k pessoas já estão dentro</span>
+                <span style={mono("8px","rgba(255,255,255,0.42)")}>lista aberta</span>
+              </div>
+            </div>
+
+            {/* CTAs */}
+            <div className="flex flex-col gap-3">
+              <Link
+                href="/cadastro"
+                className="flex items-center justify-between rounded-full"
+                style={{
+                  height: "56px",
+                  paddingLeft: "24px",
+                  paddingRight: "8px",
+                  background: "linear-gradient(135deg,#F8FAFC 0%,#94A3B8 100%)",
+                  color: "#080808",
+                  boxShadow: "0 0 40px rgba(255,255,255,.16)",
+                  ...mono("11px","#080808"),
+                }}
+              >
+                <span>Pedir convite</span>
+                <span
+                  className="flex items-center justify-center w-9 h-9 rounded-full"
+                  style={{ background: "#080808", color: "#fff", fontSize: "16px" }}
+                >
+                  →
+                </span>
+              </Link>
+              <Link
+                href="/login"
+                className="flex items-center justify-center hover:opacity-70 transition-opacity"
+                style={{ height: "44px", ...mono("9px","rgba(255,255,255,0.45)") }}
+              >
+                já tenho uma conta
+              </Link>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <div style={{ flex: 1, height: "1px", background: "rgba(255,255,255,0.07)" }} />
+              <span style={mono("8px","rgba(255,255,255,0.28)")}>Por convite · SP</span>
+              <div style={{ flex: 1, height: "1px", background: "rgba(255,255,255,0.07)" }} />
+            </div>
           </div>
 
-          {/* Invite tag */}
-          <div className="flex items-center gap-3">
-            <div style={{ flex: 1, height: "1px", background: "rgba(255,255,255,0.07)" }} />
-            <span style={monoXs("rgba(255,255,255,0.30)")}>Por convite · SP</span>
-            <div style={{ flex: 1, height: "1px", background: "rgba(255,255,255,0.07)" }} />
+          {/* RIGHT — floating photo cards, desktop only */}
+          <div className="hidden md:flex flex-col items-end self-end pb-4 flex-shrink-0" style={{ width: "260px", position: "relative", height: "420px" }}>
+
+            {/* Card 1 — background */}
+            <div
+              className="absolute rounded-2xl overflow-hidden"
+              style={{
+                width: "200px",
+                height: "270px",
+                bottom: 0,
+                right: "24px",
+                transform: "rotate(-3.5deg)",
+                border: "1px solid rgba(255,255,255,0.12)",
+                boxShadow: "0 32px 64px rgba(0,0,0,.8)",
+                background: "radial-gradient(80% 70% at 30% 0%,rgba(197,60,90,.85),rgba(92,26,44,.55) 60%,transparent 80%),linear-gradient(160deg,#180812,#0a0608)",
+              }}
+            >
+              <div style={photo(5)} />
+              <div className="absolute inset-0" style={{ background: "radial-gradient(80% 60% at 30% 0%,rgba(197,60,90,.45),transparent 70%),linear-gradient(180deg,transparent 30%,rgba(0,0,0,.80) 100%)" }} />
+              <div className="absolute inset-0" style={{ backgroundImage: NOISE, opacity: 0.07, mixBlendMode: "overlay" }} />
+              <div className="absolute bottom-3 left-3 right-3 z-10">
+                <span style={mono("7.5px","rgba(255,255,255,0.62)")}>Sáb · Pinheiros</span>
+                <p style={{ ...serif("17px"), marginTop: "4px" }}>Jantar com<br />gente nova.</p>
+              </div>
+            </div>
+
+            {/* Card 2 — foreground */}
+            <div
+              className="absolute rounded-2xl overflow-hidden"
+              style={{
+                width: "210px",
+                height: "290px",
+                bottom: "20px",
+                right: 0,
+                transform: "rotate(2deg)",
+                border: "1px solid rgba(255,255,255,0.12)",
+                boxShadow: "0 40px 80px rgba(0,0,0,.9), 0 0 0 1px rgba(255,255,255,0.05)",
+                background: "radial-gradient(70% 60% at 50% 30%,rgba(255,122,53,.85),transparent 65%),linear-gradient(160deg,#1a0a06,#0a0608)",
+              }}
+            >
+              <div style={photo(4)} />
+              <div className="absolute inset-0" style={{ background: "radial-gradient(70% 50% at 50% 30%,rgba(255,100,20,.40),transparent 65%),linear-gradient(180deg,transparent 25%,rgba(0,0,0,.82) 100%)" }} />
+              <div className="absolute inset-0" style={{ backgroundImage: NOISE, opacity: 0.07, mixBlendMode: "overlay" }} />
+              {/* Live badge */}
+              <div
+                className="absolute top-3 left-3 flex items-center gap-1.5 rounded-full z-10"
+                style={{ padding: "5px 10px", background: "rgba(0,0,0,.50)", border: "1px solid rgba(255,255,255,.22)", backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)", ...mono("7.5px","#fff") }}
+              >
+                <span className="w-1.5 h-1.5 rounded-full" style={{ background: "#FF7A35", boxShadow: "0 0 8px rgba(255,122,53,.9)" }} />
+                acontece hoje
+              </div>
+              <div className="absolute bottom-3 left-3 right-3 z-10">
+                <span style={mono("7.5px","rgba(255,255,255,0.62)")}>Qui · Vila Madalena</span>
+                <p style={{ ...serif("19px"), marginTop: "4px" }}>Noite<br />aberta.</p>
+                <div className="flex items-center gap-2 mt-2">
+                  <div className="flex">
+                    {AVS.slice(0,3).map((bg,i) => (
+                      <div key={i} className="w-5 h-5 rounded-full" style={{ background: bg, border: "1px solid rgba(0,0,0,.7)", marginLeft: i > 0 ? "-7px" : undefined }} />
+                    ))}
+                  </div>
+                  <span style={mono("7px","rgba(255,255,255,0.55)")}>6 pessoas</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Match badge */}
+            <div
+              className="absolute rounded-full z-20"
+              style={{
+                top: "80px",
+                left: "10px",
+                padding: "8px 14px",
+                background: "rgba(5,5,6,0.85)",
+                border: "1px solid rgba(255,255,255,0.16)",
+                backdropFilter: "blur(20px)",
+                WebkitBackdropFilter: "blur(20px)",
+                boxShadow: "0 8px 24px rgba(0,0,0,.6)",
+                ...mono("8px","#fff"),
+              }}
+            >
+              98% match
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ────────────────── LIFESTYLE MOMENTS ────────────────── */}
-      <section style={{ padding: "80px 24px 96px" }}>
+      {/* ══ LIFESTYLE MOMENTS ═══════════════════════════════════════════════════ */}
+      <section style={{ padding: "96px 24px" }}>
         <div className="max-w-4xl mx-auto">
-          {/* Header */}
-          <div className="flex flex-col gap-3 mb-12">
-            <span style={monoSm("rgba(255,255,255,0.40)")}>O que te espera</span>
-            <h2
-              className="font-serif italic text-white leading-none"
-              style={{ fontSize: "clamp(38px, 8vw, 58px)", letterSpacing: "-0.028em" }}
-            >
-              Noites que<br />valem a história.
+
+          <div className="flex flex-col gap-3 mb-14">
+            <span style={mono("9px","rgba(255,255,255,0.38)")}>O SOLO na vida real</span>
+            <h2 style={{ ...serif("clamp(38px,8vw,58px)"), display: "block" }}>
+              Três ambientes.<br />Uma noite que fica.
             </h2>
           </div>
 
-          {/* Cards grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {MOMENTS.map((m, i) => (
+            {MOMENTS.map((m) => (
               <div
-                key={i}
+                key={m.n}
                 className="relative rounded-2xl overflow-hidden flex flex-col justify-end"
                 style={{
                   aspectRatio: "3 / 4",
-                  background: m.bg,
+                  background: m.fallback,
                   border: "1px solid rgba(255,255,255,0.08)",
                   padding: "20px",
                 }}
               >
+                {/* Real photo layer — transparent if file missing, gradient fallback always visible */}
+                <div style={photo(m.n)} />
+                {/* Cinematic overlay */}
+                <div className="absolute inset-0" style={{ background: m.overlay }} />
                 {/* Noise */}
+                <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: NOISE, opacity: 0.08, mixBlendMode: "overlay" }} />
+
+                {/* Tag badge */}
                 <div
-                  className="absolute inset-0 pointer-events-none"
-                  style={{ backgroundImage: NOISE, opacity: 0.07, mixBlendMode: "overlay" }}
-                />
-                {/* Gradient grade */}
-                <div
-                  className="absolute inset-0"
-                  style={{ background: "linear-gradient(180deg, transparent 30%, rgba(0,0,0,.72) 100%)" }}
-                />
+                  className="absolute top-4 left-4 rounded-full z-10"
+                  style={{
+                    padding: "5px 11px",
+                    ...mono("7.5px","#fff"),
+                    background: "rgba(0,0,0,.45)",
+                    border: "1px solid rgba(255,255,255,.20)",
+                    backdropFilter: "blur(14px)",
+                    WebkitBackdropFilter: "blur(14px)",
+                  }}
+                >
+                  {m.tag}
+                </div>
+
                 {/* Content */}
                 <div className="relative z-10">
-                  <span style={monoXs("rgba(255,255,255,0.65)")}>{m.when}</span>
+                  <span style={mono("8px","rgba(255,255,255,0.65)")}>{m.when}</span>
                   <h3
-                    className="font-serif italic text-white leading-none mt-2"
-                    style={{ fontSize: "27px", letterSpacing: "-0.022em", whiteSpace: "pre-line" }}
+                    style={{ ...serif("27px"), display: "block", marginTop: "8px", whiteSpace: "pre-line" }}
                   >
                     {m.title}
                   </h3>
                   <div className="flex items-center justify-between mt-3 gap-2">
-                    <span style={monoXs("rgba(255,255,255,0.52)")}>{m.local}</span>
-                    <span
-                      className="flex-shrink-0 rounded-full"
+                    <span style={mono("7.5px","rgba(255,255,255,0.52)")}>{m.local}</span>
+                    <Link
+                      href="/cadastro"
+                      className="flex-shrink-0 rounded-full hover:opacity-80 transition-opacity"
                       style={{
-                        padding: "5px 10px",
-                        ...monoXs("#fff"),
-                        background: "rgba(255,255,255,0.08)",
-                        border: "1px solid rgba(255,255,255,0.16)",
+                        padding: "6px 12px",
+                        ...mono("7.5px","#fff"),
+                        background: "rgba(255,255,255,0.10)",
+                        border: "1px solid rgba(255,255,255,0.20)",
                         backdropFilter: "blur(14px)",
                         WebkitBackdropFilter: "blur(14px)",
                       }}
                     >
-                      {m.count}
-                    </span>
+                      Quero ir →
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -355,7 +458,77 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ────────────────── STATS STRIP ────────────────── */}
+      {/* ══ PHOTO COLLAGE ═══════════════════════════════════════════════════════ */}
+      <section style={{ padding: "0 24px 96px" }}>
+        <div className="max-w-4xl mx-auto">
+
+          <div className="grid grid-cols-2 gap-4">
+
+            {/* Left — tall */}
+            <div
+              className="relative rounded-2xl overflow-hidden"
+              style={{
+                aspectRatio: "3 / 4",
+                background: "radial-gradient(80% 70% at 50% 30%,rgba(255,122,53,.82),transparent 65%),radial-gradient(60% 70% at 50% 100%,rgba(162,49,11,.70),transparent 80%),linear-gradient(180deg,#1a0a06,#0a0608)",
+                border: "1px solid rgba(255,255,255,0.08)",
+              }}
+            >
+              <div style={photo(4)} />
+              <div className="absolute inset-0" style={{ background: "radial-gradient(70% 50% at 50% 30%,rgba(255,80,0,.30),transparent 65%),linear-gradient(180deg,transparent 30%,rgba(0,0,0,.70) 100%)" }} />
+              <div className="absolute inset-0" style={{ backgroundImage: NOISE, opacity: 0.08, mixBlendMode: "overlay" }} />
+              <div className="absolute bottom-5 left-5 right-5 z-10">
+                <p style={{ ...serif("22px"), marginBottom: "6px" }}>
+                  Conexões que<br />ficam depois.
+                </p>
+                <span style={mono("8px","rgba(255,255,255,0.55)")}>Pessoas reais · SP</span>
+              </div>
+            </div>
+
+            {/* Right — two stacked */}
+            <div className="flex flex-col gap-4">
+
+              <div
+                className="relative rounded-2xl overflow-hidden flex-1"
+                style={{
+                  background: "radial-gradient(80% 70% at 30% 0%,rgba(197,60,90,.85),rgba(92,26,44,.55) 60%,transparent 80%),linear-gradient(160deg,#180812,#0a0608)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  minHeight: "140px",
+                }}
+              >
+                <div style={photo(5)} />
+                <div className="absolute inset-0" style={{ background: "radial-gradient(80% 60% at 30% 0%,rgba(197,60,90,.45),transparent 70%),linear-gradient(180deg,transparent 35%,rgba(0,0,0,.78) 100%)" }} />
+                <div className="absolute inset-0" style={{ backgroundImage: NOISE, opacity: 0.08, mixBlendMode: "overlay" }} />
+                <div className="absolute bottom-4 left-4 right-4 z-10">
+                  <p style={{ ...serif("18px") }}>Noites que<br />você conta.</p>
+                </div>
+              </div>
+
+              <div
+                className="relative rounded-2xl overflow-hidden flex items-end p-5"
+                style={{
+                  minHeight: "140px",
+                  background: "rgba(255,255,255,0.03)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                }}
+              >
+                <div className="flex flex-col gap-3 w-full">
+                  <div className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: "#FF7A35", boxShadow: "0 0 8px rgba(255,122,53,.85)" }} />
+                    <span style={mono("8px","rgba(255,255,255,0.55)")}>ao vivo · SP</span>
+                  </div>
+                  <p style={{ ...serif("22px") }}>27 rolês<br />esta semana.</p>
+                  <Link href="/cadastro" style={mono("8px","rgba(255,255,255,0.45)")}>
+                    Ver eventos →
+                  </Link>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ══ STATS ═══════════════════════════════════════════════════════════════ */}
       <div
         style={{
           borderTop: "1px solid rgba(255,255,255,0.07)",
@@ -365,47 +538,34 @@ export default function Home() {
       >
         <div className="max-w-4xl mx-auto grid grid-cols-3 gap-6 text-center">
           {[
-            { value: "2.4k+", label: "Pessoas ativas" },
-            { value: "18",    label: "Estabelecimentos" },
-            { value: "100%",  label: "Gratuito" },
+            { v: "2.4k+", l: "em São Paulo" },
+            { v: "18",    l: "parceiros ativos" },
+            { v: "100%",  l: "gratuito" },
           ].map((s) => (
-            <div key={s.label} className="flex flex-col gap-2">
-              <span
-                className="font-serif italic text-white leading-none"
-                style={{ fontSize: "clamp(30px, 7vw, 52px)", letterSpacing: "-0.028em" }}
-              >
-                {s.value}
-              </span>
-              <span style={monoXs("rgba(255,255,255,0.40)")}>{s.label}</span>
+            <div key={s.l} className="flex flex-col gap-2">
+              <span style={{ ...serif("clamp(30px,7vw,52px)") }}>{s.v}</span>
+              <span style={mono("8px","rgba(255,255,255,0.38)")}>{s.l}</span>
             </div>
           ))}
         </div>
       </div>
 
-      {/* ────────────────── HOW IT WORKS ────────────────── */}
+      {/* ══ HOW IT WORKS ════════════════════════════════════════════════════════ */}
       <section style={{ padding: "96px 24px" }}>
         <div className="max-w-4xl mx-auto">
-          {/* Header */}
+
           <div className="flex flex-col gap-3 mb-14">
-            <span style={monoSm("rgba(255,255,255,0.38)")}>Como funciona</span>
-            <h2
-              className="font-serif italic text-white leading-none"
-              style={{ fontSize: "clamp(38px, 8vw, 54px)", letterSpacing: "-0.028em" }}
-            >
-              Simples assim,<br />sério.
+            <span style={mono("9px","rgba(255,255,255,0.38)")}>Como funciona</span>
+            <h2 style={{ ...serif("clamp(38px,8vw,54px)"), display: "block" }}>
+              Menos planejamento,<br />mais vida.
             </h2>
           </div>
 
-          {/* Steps grid */}
           <div
             className="grid grid-cols-1 md:grid-cols-3"
-            style={{
-              border: "1px solid rgba(255,255,255,0.08)",
-              borderRadius: "20px",
-              overflow: "hidden",
-            }}
+            style={{ border: "1px solid rgba(255,255,255,0.08)", borderRadius: "20px", overflow: "hidden" }}
           >
-            {STEPS.map((step, i) => (
+            {STEPS.map((s, i) => (
               <div
                 key={i}
                 className="flex flex-col gap-5 p-7"
@@ -415,34 +575,11 @@ export default function Home() {
                   borderTop: i > 0 ? "1px solid rgba(255,255,255,0.08)" : undefined,
                 }}
               >
-                <span
-                  className="font-serif italic text-white leading-none"
-                  style={{ fontSize: "52px", letterSpacing: "-0.025em", opacity: 0.18 }}
-                >
-                  {step.num}
-                </span>
+                <span style={{ ...serif("52px"), opacity: 0.18 }}>{s.num}</span>
                 <div>
-                  <h3
-                    className="text-white"
-                    style={{
-                      fontFamily: "var(--font-geist-sans), sans-serif",
-                      fontWeight: 500,
-                      fontSize: "15px",
-                    }}
-                  >
-                    {step.title}
-                  </h3>
-                  <p
-                    style={{
-                      fontFamily: "Inter, var(--font-geist-sans), sans-serif",
-                      fontWeight: 300,
-                      fontSize: "13px",
-                      color: "rgba(255,255,255,0.52)",
-                      lineHeight: "1.65",
-                      marginTop: "8px",
-                    }}
-                  >
-                    {step.desc}
+                  <h3 style={{ fontWeight: 500, fontSize: "15px", color: "#fff" }}>{s.title}</h3>
+                  <p style={{ fontWeight: 300, fontSize: "13px", color: "rgba(255,255,255,0.50)", lineHeight: 1.7, marginTop: "8px" }}>
+                    {s.desc}
                   </p>
                 </div>
               </div>
@@ -451,30 +588,20 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ────────────────── EVENTS PREVIEW ────────────────── */}
+      {/* ══ EVENTS PREVIEW ══════════════════════════════════════════════════════ */}
       <section style={{ padding: "0 0 96px" }}>
         <div className="max-w-4xl mx-auto">
-          {/* Header */}
+
           <div className="flex items-end justify-between mb-8 px-6">
             <div className="flex flex-col gap-2">
-              <span style={monoSm("rgba(255,255,255,0.38)")}>Esta semana</span>
-              <h2
-                className="font-serif italic text-white leading-none"
-                style={{ fontSize: "clamp(32px, 7vw, 48px)", letterSpacing: "-0.025em" }}
-              >
-                Próximos rolês.
-              </h2>
+              <span style={mono("9px","rgba(255,255,255,0.38)")}>Esta semana · São Paulo</span>
+              <h2 style={{ ...serif("clamp(32px,7vw,48px)"), display: "block" }}>Só aparecer.</h2>
             </div>
-            <Link
-              href="/cadastro"
-              className="flex-shrink-0"
-              style={{ ...monoXs("rgba(255,255,255,0.45)"), fontSize: "9px" }}
-            >
+            <Link href="/cadastro" className="hover:opacity-70 transition-opacity flex-shrink-0" style={mono("8.5px","rgba(255,255,255,0.40)")}>
               Ver todos →
             </Link>
           </div>
 
-          {/* Horizontal scroll on mobile, grid on desktop */}
           <div
             className="flex md:grid md:grid-cols-3 gap-4 overflow-x-auto md:overflow-visible px-6"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
@@ -491,60 +618,30 @@ export default function Home() {
                   padding: "14px",
                 }}
               >
-                {/* Noise */}
-                <div
-                  className="absolute inset-0 pointer-events-none"
-                  style={{ backgroundImage: NOISE, opacity: 0.07, mixBlendMode: "overlay" }}
-                />
-                {/* Grade */}
-                <div
-                  className="absolute inset-0"
-                  style={{ background: "linear-gradient(180deg, transparent 35%, rgba(0,0,0,.78) 100%)" }}
-                />
-                {/* Live badge */}
-                {ev.live && (
+                <div className="absolute inset-0" style={{ backgroundImage: NOISE, opacity: 0.08, mixBlendMode: "overlay" }} />
+                <div className="absolute inset-0" style={{ background: "linear-gradient(180deg,transparent 35%,rgba(0,0,0,.80) 100%)" }} />
+
+                {ev.live ? (
                   <div
                     className="absolute top-3 left-3 flex items-center gap-1.5 z-10 rounded-full"
-                    style={{
-                      padding: "5px 10px",
-                      background: "rgba(0,0,0,.50)",
-                      border: "1px solid rgba(255,255,255,.20)",
-                      backdropFilter: "blur(16px)",
-                      WebkitBackdropFilter: "blur(16px)",
-                      ...monoXs("#fff"),
-                    }}
+                    style={{ padding: "5px 10px", background: "rgba(0,0,0,.50)", border: "1px solid rgba(255,255,255,.22)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", ...mono("7.5px","#fff") }}
                   >
-                    <span
-                      className="w-1.5 h-1.5 rounded-full"
-                      style={{ background: "#FF7A35", boxShadow: "0 0 8px rgba(255,122,53,.9)" }}
-                    />
+                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: "#FF7A35", boxShadow: "0 0 8px rgba(255,122,53,.92)" }} />
                     Acontece hoje
                   </div>
-                )}
-                {/* When (non-live) */}
-                {!ev.live && (
-                  <div className="absolute top-3 left-3 z-10" style={monoXs("rgba(255,255,255,0.65)")}>
+                ) : (
+                  <div className="absolute top-3 left-3 z-10" style={mono("7.5px","rgba(255,255,255,0.62)")}>
                     {ev.when}
                   </div>
                 )}
-                {/* Content */}
+
                 <div className="relative z-10">
-                  <h3
-                    className="font-serif italic text-white leading-none"
-                    style={{ fontSize: "22px", letterSpacing: "-0.020em", whiteSpace: "pre-line" }}
-                  >
-                    {ev.title}
-                  </h3>
-                  <div className="flex items-center justify-between mt-2.5">
-                    <span style={monoXs("rgba(255,255,255,0.55)")}>{ev.local}</span>
+                  <h3 style={{ ...serif("22px"), display: "block", whiteSpace: "pre-line" }}>{ev.title}</h3>
+                  <div className="flex items-center justify-between mt-2.5 gap-2">
+                    <span style={mono("7.5px","rgba(255,255,255,0.52)")}>{ev.local}</span>
                     <span
-                      className="rounded-full"
-                      style={{
-                        padding: "4px 9px",
-                        ...monoXs("#fff"),
-                        background: "rgba(255,255,255,0.08)",
-                        border: "1px solid rgba(255,255,255,0.16)",
-                      }}
+                      className="rounded-full flex-shrink-0"
+                      style={{ padding: "4px 9px", ...mono("7.5px","#fff"), background: "rgba(255,255,255,0.09)", border: "1px solid rgba(255,255,255,0.18)" }}
                     >
                       {ev.match} match
                     </span>
@@ -556,44 +653,28 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ────────────────── FINAL CTA ────────────────── */}
+      {/* ══ FINAL CTA ═══════════════════════════════════════════════════════════ */}
       <section className="relative overflow-hidden" style={{ padding: "112px 24px" }}>
         {/* Twilight atmosphere */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: `
-              radial-gradient(80% 55% at 50% 105%, rgba(122,91,255,.32), transparent 70%),
-              radial-gradient(70% 50% at 25% 0%, rgba(197,60,90,.22), transparent 70%)
-            `,
+            background:
+              "radial-gradient(80% 55% at 50% 110%,rgba(122,91,255,.34),transparent 70%)," +
+              "radial-gradient(70% 50% at 22% 0%,rgba(197,60,90,.22),transparent 70%)",
           }}
         />
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{ backgroundImage: NOISE, opacity: 0.06, mixBlendMode: "overlay" }}
-        />
+        <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: NOISE, opacity: 0.06, mixBlendMode: "overlay" }} />
 
         <div className="relative z-10 max-w-xl mx-auto flex flex-col items-center text-center gap-8">
-          <span style={monoSm("rgba(255,255,255,0.40)")}>Sua próxima noite</span>
+          <span style={mono("9px","rgba(255,255,255,0.40)")}>Comece hoje</span>
 
-          <h2
-            className="font-serif italic text-white leading-none"
-            style={{ fontSize: "clamp(46px, 11vw, 76px)", letterSpacing: "-0.032em" }}
-          >
-            Chega de planejar<br />sozinho.
+          <h2 style={{ ...serif("clamp(46px,11vw,76px)"), display: "block" }}>
+            A próxima história<br />é a sua.
           </h2>
 
-          <p
-            style={{
-              fontFamily: "Inter, var(--font-geist-sans), sans-serif",
-              fontWeight: 300,
-              fontSize: "15px",
-              color: "rgba(255,255,255,0.62)",
-              lineHeight: "1.65",
-              maxWidth: "320px",
-            }}
-          >
-            Crie sua conta em 30 segundos e entre no próximo rolê com pessoas que combinam com você.
+          <p style={{ fontWeight: 300, fontSize: "15px", color: "rgba(255,255,255,0.62)", lineHeight: 1.7, maxWidth: "300px" }}>
+            30 segundos para criar sua conta. O próximo grupo te espera.
           </p>
 
           <Link
@@ -603,63 +684,44 @@ export default function Home() {
               height: "56px",
               paddingLeft: "24px",
               paddingRight: "8px",
-              background: "linear-gradient(135deg, #F8FAFC 0%, #94A3B8 100%)",
+              background: "linear-gradient(135deg,#F8FAFC 0%,#94A3B8 100%)",
               color: "#080808",
-              boxShadow: "0 0 48px rgba(255,255,255,.14)",
-              ...monoSm("#080808"),
-              fontSize: "11px",
+              boxShadow: "0 0 52px rgba(255,255,255,.15)",
+              ...mono("11px","#080808"),
             }}
           >
-            <span>Começar agora</span>
+            <span>Entrar na lista</span>
             <span
               className="flex items-center justify-center w-9 h-9 rounded-full"
-              style={{ background: "#080808", color: "#fff", fontSize: "15px" }}
+              style={{ background: "#080808", color: "#fff", fontSize: "16px" }}
             >
               →
             </span>
           </Link>
 
-          <span style={monoXs("rgba(255,255,255,0.28)")}>Gratuito · São Paulo · 2026</span>
+          <span style={mono("8px","rgba(255,255,255,0.26)")}>Gratuito · São Paulo · 2026</span>
         </div>
       </section>
 
-      {/* ────────────────── FOOTER ────────────────── */}
-      <footer
-        style={{
-          borderTop: "1px solid rgba(255,255,255,0.07)",
-          padding: "28px 24px",
-        }}
-      >
+      {/* ══ FOOTER ══════════════════════════════════════════════════════════════ */}
+      <footer style={{ borderTop: "1px solid rgba(255,255,255,0.07)", padding: "28px 24px" }}>
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-5">
-          {/* Logo */}
-          <div className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
             <div
               className="relative w-4 h-4 rounded-full flex-shrink-0"
-              style={{
-                background: "linear-gradient(135deg, #F8FAFC 0%, #94A3B8 100%)",
-              }}
+              style={{ background: "linear-gradient(135deg,#F8FAFC 0%,#94A3B8 100%)" }}
             >
               <div className="absolute inset-[4px] rounded-full" style={{ background: "#050506" }} />
             </div>
-            <span
-              className="font-serif italic text-white"
-              style={{ fontSize: "16px", letterSpacing: "-0.02em" }}
-            >
-              SOLO
-            </span>
-          </div>
+            <span style={{ ...serif("16px"), lineHeight: 1 }}>SOLO</span>
+          </Link>
 
-          <span style={monoXs("rgba(255,255,255,0.28)")}>São Paulo · BR · 2026</span>
+          <span style={mono("8px","rgba(255,255,255,0.26)")}>São Paulo · BR · 2026</span>
 
           <div className="flex items-center gap-6">
-            {([["Entrar", "/login"], ["Cadastro", "/cadastro"], ["Eventos", "/eventos"]] as const).map(
+            {([ ["Entrar","/login"], ["Cadastro","/cadastro"], ["Eventos","/eventos"] ] as const).map(
               ([label, href]) => (
-                <Link
-                  key={href}
-                  href={href}
-                  className="hover:opacity-70 transition-opacity"
-                  style={monoXs("rgba(255,255,255,0.35)")}
-                >
+                <Link key={href} href={href} className="hover:opacity-60 transition-opacity" style={mono("8.5px","rgba(255,255,255,0.35)")}>
                   {label}
                 </Link>
               )
@@ -667,6 +729,7 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
     </div>
   );
 }
