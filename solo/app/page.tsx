@@ -1,10 +1,11 @@
 import Link from "next/link";
 import Image from "next/image";
+import { FaqAccordion } from "@/components/FaqAccordion";
 
-// ── Noise texture (SVG grain, same as approved mockups) ───────────────────────
+// ── Noise texture ─────────────────────────────────────────────────────────────
 const NOISE = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")`;
 
-// ── Style helpers ──────────────────────────────────────────────────────────────
+// ── Style helpers ─────────────────────────────────────────────────────────────
 const mono = (sz = "9px", cl = "rgba(255,255,255,0.50)"): React.CSSProperties => ({
   fontFamily: "var(--font-geist-mono,'Courier New',monospace)",
   fontSize: sz, letterSpacing: "0.40em",
@@ -17,7 +18,7 @@ const serif = (sz: string, cl = "#fff"): React.CSSProperties => ({
   letterSpacing: "-0.030em", color: cl, lineHeight: "0.92",
 });
 
-// ── Data ───────────────────────────────────────────────────────────────────────
+// ── Data ──────────────────────────────────────────────────────────────────────
 
 const AVS = [
   "linear-gradient(135deg,#3a2b22,#9a5a3a 65%,#FFB37A)",
@@ -26,27 +27,30 @@ const AVS = [
   "linear-gradient(135deg,#3a0a18,#8a1c34 60%,#ff7090)",
 ];
 
-// Moments: photo ↔ copy ↔ atmosphere aligned
+// Moments: photo ↔ copy ↔ atmosphere — each image matched to correct environment
 const MOMENTS = [
   {
-    src: "/images/lifestyle-3.jpg",      // intimate candlelit bar → wine overlay
-    overlay: "radial-gradient(90% 65% at 20% 0%,rgba(197,60,90,.38),transparent 65%),linear-gradient(180deg,transparent 22%,rgba(0,0,0,.72) 100%)",
+    src: "/images/jantar.jpg",
+    pos: "center 40%",
+    overlay: "radial-gradient(90% 65% at 20% 0%,rgba(197,60,90,.30),transparent 65%),linear-gradient(180deg,transparent 28%,rgba(0,0,0,.68) 100%)",
     when: "Qui · 21:30", tag: "Jantar íntimo",
-    title: "Mesa pequena,\nvinho longo.",
+    title: "Mesa pequena,\nconversa longa.",
     local: "Jantar · Pinheiros",
   },
   {
-    src: "/images/lifestyle-2.jpg",      // women outdoor, city skyline → perfect for rooftop
-    overlay: "radial-gradient(80% 55% at 55% 5%,rgba(122,91,255,.30),transparent 65%),linear-gradient(180deg,transparent 22%,rgba(0,0,0,.72) 100%)",
+    src: "/images/scene-rooftop.jpg",
+    pos: "center 50%",
+    overlay: "radial-gradient(80% 55% at 55% 5%,rgba(122,91,255,.24),transparent 65%),linear-gradient(180deg,transparent 28%,rgba(0,0,0,.68) 100%)",
     when: "Sáb · 18:00", tag: "Rooftop",
-    title: "Noite a céu aberto,\ncidade aos pés.",
+    title: "Cidade acesa,\nnoite aberta.",
     local: "Rooftop · Itaim",
   },
   {
-    src: "/images/lifestyle-5.jpg",      // diverse mixed group dinner → warm energy
-    overlay: "radial-gradient(80% 55% at 70% 5%,rgba(255,165,60,.28),transparent 65%),linear-gradient(180deg,transparent 22%,rgba(0,0,0,.72) 100%)",
+    src: "/images/scene-bar-social.jpg",
+    pos: "center 40%",
+    overlay: "radial-gradient(80% 55% at 70% 5%,rgba(255,165,60,.20),transparent 65%),linear-gradient(180deg,transparent 28%,rgba(0,0,0,.68) 100%)",
     when: "Sex · 22:00", tag: "Bar social",
-    title: "Mesa boa,\ngente melhor.",
+    title: "Bar certo,\ngente nova.",
     local: "Bar · Vila Madalena",
   },
 ];
@@ -80,22 +84,7 @@ const STEPS = [
   { num: "03", title: "Apareça sabendo quem vai",    desc: "Antes de sair você já viu quem mais estará lá. Chega com intenção, sem awkwardness." },
 ];
 
-const EVENTS = [
-  { bg: "radial-gradient(80% 70% at 50% 30%,rgba(255,122,53,.90),transparent 65%),radial-gradient(60% 70% at 50% 100%,rgba(162,49,11,.72),transparent 80%),linear-gradient(180deg,#1a0a06,#0a0608)", live: true,  when: "Hoje · 22:00", title: "A noite está\naberta.",  local: "Vila Madalena", match: "98%" },
-  { bg: "radial-gradient(80% 70% at 30% 0%,rgba(197,60,90,.80),rgba(92,26,44,.55) 60%,transparent 80%),linear-gradient(180deg,#180812,#0a0608)",                                                     live: false, when: "Sex · 21:30",  title: "Mesa pequena.", local: "Pinheiros",     match: "94%" },
-  { bg: "radial-gradient(80% 70% at 70% 0%,rgba(255,178,89,.72),transparent 65%),radial-gradient(60% 60% at 30% 100%,rgba(162,90,30,.55),transparent 70%),linear-gradient(180deg,#1a1208,#0a0608)",  live: false, when: "Sáb · 18:00",  title: "Vista aberta.",  local: "Itaim Bibi",    match: "91%" },
-];
-
-const FAQS = [
-  { q: "O SOLO é um dating app?",                   a: "Não. O SOLO é sobre experiências sociais em grupo. Você vai conhecer pessoas novas em bares e jantares incríveis — o que acontecer depois é por conta própria." },
-  { q: "Preciso ir sozinho?",                        a: "Esse é o ponto. Você vai sozinho, mas chega sabendo quem mais estará lá. Grupos de 4 a 8 pessoas curados por compatibilidade de vibe." },
-  { q: "Como o SOLO monta os grupos?",               a: "Com base no seu perfil de noite — vibe, interesses, ritmo social. O algoritmo monta o grupo. Você só aparece." },
-  { q: "A SOLO é gratuita?",                         a: "Você pode criar sua conta, montar seu perfil e participar da experiência inicial gratuitamente. Os planos Plus e Black desbloqueiam mais convites, prioridade nos grupos e acesso a experiências mais exclusivas." },
-  { q: "Qual a diferença entre Free, Plus e Black?", a: "Free é para começar. Plus é para quem quer sair mais vezes e ter prioridade nos grupos certos. Black é para quem quer acesso aos rolês mais disputados, grupos mais curados e experiências especiais." },
-  { q: "O Premium garante grupo?",                   a: "Não força conexões. Ele aumenta sua prioridade e acesso, mas os grupos continuam sendo formados por compatibilidade, disponibilidade e interesse no mesmo rolê." },
-];
-
-// ── Page ───────────────────────────────────────────────────────────────────────
+// ── Page ──────────────────────────────────────────────────────────────────────
 
 export default function Home() {
   return (
@@ -122,29 +111,28 @@ export default function Home() {
         </div>
       </header>
 
-      {/* ══════════════════════════════════════════ HERO — full-bleed photo */}
+      {/* ══════════════════════════════════════════ HERO */}
       <section className="relative overflow-hidden" style={{ minHeight: "100svh" }}>
 
-        {/* Real photo — lifestyle-4: most diverse group (mixed gender, multiple races) */}
+        {/* hero-main.jpg — chosen manually for diverse group / social energy */}
         <Image
-          src="/images/lifestyle-4.jpg"
+          src="/images/hero-main.jpg"
           fill
           sizes="100vw"
           className="object-cover"
-          style={{ objectPosition: "center 30%" }}
+          style={{ objectPosition: "center 40%" }}
           alt=""
           priority
         />
 
-        {/* Cinematic overlay stack */}
-        {/* 1. Top dark — navbar readability, reduced to let photo breathe */}
+        {/* 1. Vignette — navbar legibility + bottom copy readability */}
         <div className="absolute inset-0 pointer-events-none"
-          style={{ background: "linear-gradient(to bottom,rgba(5,5,6,.50) 0%,rgba(5,5,6,.08) 28%,rgba(5,5,6,.04) 48%,rgba(5,5,6,.45) 68%,rgba(5,5,6,.95) 88%,#050506 100%)" }} />
-        {/* 2. Subtle atmospheric tint */}
+          style={{ background: "linear-gradient(to bottom,rgba(5,5,6,.46) 0%,rgba(5,5,6,.06) 28%,rgba(5,5,6,.04) 50%,rgba(5,5,6,.38) 68%,rgba(5,5,6,.94) 86%,#050506 100%)" }} />
+        {/* 2. Warm ember accent — very subtle, bottom-left only */}
         <div className="absolute inset-0 pointer-events-none"
-          style={{ background: "radial-gradient(70% 50% at 20% 90%,rgba(255,100,30,.12),transparent 70%),radial-gradient(60% 40% at 80% 0%,rgba(197,60,90,.10),transparent 65%)" }} />
+          style={{ background: "radial-gradient(60% 40% at 10% 100%,rgba(255,100,30,.09),transparent 70%)" }} />
         {/* 3. Noise grain */}
-        <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: NOISE, opacity: 0.07, mixBlendMode: "overlay" }} />
+        <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: NOISE, opacity: 0.055, mixBlendMode: "overlay" }} />
 
         {/* Content — pinned to bottom */}
         <div className="absolute inset-0 flex flex-col justify-end pb-14 pt-20 px-6 md:px-12">
@@ -155,21 +143,21 @@ export default function Home() {
               <span style={mono("9px","rgba(255,255,255,0.65)")}>São Paulo · 2.4k pessoas</span>
             </div>
 
-            {/* Headline — human, social, relatable */}
+            {/* Headline */}
             <div className="mb-6">
-              <h1 style={{ ...serif("clamp(52px,13vw,90px)"), display: "block" }}>Sua turma existe.</h1>
+              <h1 style={{ ...serif("clamp(50px,12vw,86px)"), display: "block" }}>A noite muda</h1>
               <h1 style={{
-                ...serif("clamp(52px,13vw,90px)"), display: "block",
+                ...serif("clamp(50px,12vw,86px)"), display: "block",
                 background: "linear-gradient(180deg,#FFE3CC 0%,#FF9040 100%)",
                 WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent",
-              }}>Vocês só ainda não se encontraram.</h1>
+              }}>com as pessoas certas.</h1>
             </div>
 
-            <p style={{ fontWeight: 300, fontSize: "15px", color: "rgba(255,255,255,0.72)", lineHeight: 1.65, maxWidth: "340px", marginBottom: "28px" }}>
-              O SOLO reúne grupos de até 8 pessoas em bares, rooftops e jantares em SP — toda semana, lugares novos, pessoas novas.
+            <p style={{ fontWeight: 300, fontSize: "15px", color: "rgba(255,255,255,0.70)", lineHeight: 1.65, maxWidth: "360px", marginBottom: "28px" }}>
+              A SOLO monta pequenos grupos compatíveis para você conhecer gente nova em bares, rooftops e jantares pela cidade.
             </p>
 
-            {/* Social proof */}
+            {/* Social proof pill */}
             <div className="flex items-center gap-3 w-fit rounded-full mb-7"
               style={{ background: "rgba(0,0,0,0.35)", border: "1px solid rgba(255,255,255,0.14)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", padding: "10px 16px 10px 10px" }}>
               <div className="flex">
@@ -188,7 +176,7 @@ export default function Home() {
             <div className="flex flex-col gap-3 max-w-xs">
               <Link href="/cadastro" className="flex items-center justify-between rounded-full"
                 style={{ height: "56px", paddingLeft: "24px", paddingRight: "8px", background: "linear-gradient(135deg,#F8FAFC 0%,#94A3B8 100%)", color: "#080808", boxShadow: "0 0 40px rgba(255,255,255,.18)", ...mono("11px","#080808") }}>
-                <span>Comece grátis</span>
+                <span>Começar grátis</span>
                 <span className="flex items-center justify-center w-9 h-9 rounded-full" style={{ background: "#080808", color: "#fff", fontSize: "16px" }}>→</span>
               </Link>
               <Link href="/login" className="flex items-center justify-center hover:opacity-70 transition-opacity"
@@ -213,8 +201,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* ══════════════════════════════════════════ LIFESTYLE MOMENTS */}
-      {/* Photo ↔ copy ↔ atmosphere fully aligned */}
+      {/* ══════════════════════════════════════════ TRÊS AMBIENTES */}
       <section style={{ padding: "96px 24px" }}>
         <div className="max-w-4xl mx-auto">
           <div className="flex flex-col gap-3 mb-14">
@@ -226,13 +213,12 @@ export default function Home() {
             {MOMENTS.map((m) => (
               <div key={m.src} className="relative overflow-hidden rounded-2xl flex flex-col justify-end"
                 style={{ aspectRatio: "3 / 4", border: "1px solid rgba(255,255,255,0.08)", padding: "20px" }}>
-                <Image src={m.src} fill sizes="(max-width:768px) 100vw, 33vw" className="object-cover object-center" alt="" />
+                <Image src={m.src} fill sizes="(max-width:768px) 100vw, 33vw" className="object-cover" style={{ objectPosition: m.pos }} alt="" />
                 <div className="absolute inset-0" style={{ background: m.overlay }} />
-                <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: NOISE, opacity: 0.09, mixBlendMode: "overlay" }} />
+                <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: NOISE, opacity: 0.07, mixBlendMode: "overlay" }} />
 
-                {/* Environment tag */}
                 <div className="absolute top-4 left-4 z-10 rounded-full"
-                  style={{ padding: "5px 11px", ...mono("7.5px","#fff"), background: "rgba(0,0,0,.45)", border: "1px solid rgba(255,255,255,.22)", backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)" }}>
+                  style={{ padding: "5px 11px", ...mono("7.5px","#fff"), background: "rgba(0,0,0,.42)", border: "1px solid rgba(255,255,255,.20)", backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)" }}>
                   {m.tag}
                 </div>
 
@@ -253,43 +239,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════ TESTIMONIALS */}
-      <section style={{ padding: "0 24px 96px" }}>
-        <div className="max-w-4xl mx-auto">
-          <div className="flex flex-col gap-3 mb-14">
-            <span style={mono("9px","rgba(255,255,255,0.38)")}>Quem já foi</span>
-            <h2 style={{ ...serif("clamp(38px,8vw,58px)"), display: "block" }}>2.4k pessoas.<br />Milhares de noites.</h2>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {TESTIMONIALS.map((t, i) => (
-              <div key={i} className="flex flex-col gap-5 rounded-2xl p-6"
-                style={{ background: "rgba(255,255,255,0.034)", border: "1px solid rgba(255,255,255,0.08)" }}>
-                {/* Stars */}
-                <div className="flex gap-1">
-                  {[...Array(5)].map((_, si) => (
-                    <span key={si} style={{ color: "#FFB259", fontSize: "12px" }}>★</span>
-                  ))}
-                </div>
-                {/* Quote */}
-                <p style={{ fontWeight: 300, fontSize: "14px", color: "rgba(255,255,255,0.80)", lineHeight: 1.7, flex: 1 }}>
-                  &ldquo;{t.quote}&rdquo;
-                </p>
-                {/* Reviewer */}
-                <div className="flex items-center gap-3 pt-2" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
-                  <div className="w-8 h-8 rounded-full flex-shrink-0" style={{ background: t.av, border: "1px solid rgba(255,255,255,0.12)" }} />
-                  <div className="flex flex-col">
-                    <span style={{ fontSize: "13px", fontWeight: 500, color: "#fff" }}>{t.name}, {t.age}</span>
-                    <span style={mono("7.5px","rgba(255,255,255,0.40)")}>{t.event}</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════ HOW IT WORKS */}
+      {/* ══════════════════════════════════════════ COMO FUNCIONA */}
       <section style={{ padding: "0 24px 96px" }}>
         <div className="max-w-4xl mx-auto">
           <div className="flex flex-col gap-3 mb-14">
@@ -312,7 +262,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════ PRICING */}
+      {/* ══════════════════════════════════════════ PLANOS */}
       <section style={{ padding: "0 24px 96px" }}>
         <div className="max-w-4xl mx-auto">
           <div className="flex flex-col gap-2 mb-4 text-center">
@@ -403,45 +353,38 @@ export default function Home() {
             </div>
 
           </div>
+
+          <p style={{ fontWeight: 300, fontSize: "13px", color: "rgba(255,255,255,0.28)", textAlign: "center", marginTop: "28px", lineHeight: 1.6 }}>
+            Comece grátis. Faça upgrade quando quiser viver mais experiências.
+          </p>
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════ EVENTS PREVIEW */}
-      <section style={{ padding: "0 0 96px" }}>
+      {/* ══════════════════════════════════════════ DEPOIMENTOS */}
+      <section style={{ padding: "0 24px 96px" }}>
         <div className="max-w-4xl mx-auto">
-          <div className="flex items-end justify-between mb-8 px-6">
-            <div className="flex flex-col gap-2">
-              <span style={mono("9px","rgba(255,255,255,0.38)")}>Esta semana · São Paulo</span>
-              <h2 style={{ ...serif("clamp(32px,7vw,48px)"), display: "block" }}>Só aparecer.</h2>
-            </div>
-            <Link href="/cadastro" className="hover:opacity-70 transition-opacity flex-shrink-0" style={mono("8.5px","rgba(255,255,255,0.40)")}>
-              Ver todos →
-            </Link>
+          <div className="flex flex-col gap-3 mb-14">
+            <span style={mono("9px","rgba(255,255,255,0.38)")}>Quem já foi</span>
+            <h2 style={{ ...serif("clamp(38px,8vw,58px)"), display: "block" }}>2.4k pessoas.<br />Milhares de noites.</h2>
           </div>
-          <div className="flex md:grid md:grid-cols-3 gap-4 overflow-x-auto md:overflow-visible px-6"
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
-            {EVENTS.map((ev, i) => (
-              <div key={i} className="relative overflow-hidden rounded-2xl flex flex-col justify-end flex-shrink-0"
-                style={{ width: "240px", aspectRatio: "3 / 4", background: ev.bg, border: "1px solid rgba(255,255,255,0.08)", padding: "14px" }}>
-                <div className="absolute inset-0" style={{ backgroundImage: NOISE, opacity: 0.08, mixBlendMode: "overlay" }} />
-                <div className="absolute inset-0" style={{ background: "linear-gradient(180deg,transparent 35%,rgba(0,0,0,.80) 100%)" }} />
-                {ev.live ? (
-                  <div className="absolute top-3 left-3 flex items-center gap-1.5 z-10 rounded-full"
-                    style={{ padding: "5px 10px", background: "rgba(0,0,0,.50)", border: "1px solid rgba(255,255,255,.22)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", ...mono("7.5px","#fff") }}>
-                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: "#FF7A35", boxShadow: "0 0 8px rgba(255,122,53,.92)" }} />
-                    Acontece hoje
-                  </div>
-                ) : (
-                  <div className="absolute top-3 left-3 z-10" style={mono("7.5px","rgba(255,255,255,0.62)")}>{ev.when}</div>
-                )}
-                <div className="relative z-10">
-                  <h3 style={{ ...serif("22px"), display: "block", whiteSpace: "pre-line" }}>{ev.title}</h3>
-                  <div className="flex items-center justify-between mt-2.5 gap-2">
-                    <span style={mono("7.5px","rgba(255,255,255,0.52)")}>{ev.local}</span>
-                    <span className="rounded-full flex-shrink-0"
-                      style={{ padding: "4px 9px", ...mono("7.5px","#fff"), background: "rgba(255,255,255,0.09)", border: "1px solid rgba(255,255,255,0.18)" }}>
-                      {ev.match} match
-                    </span>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {TESTIMONIALS.map((t, i) => (
+              <div key={i} className="flex flex-col gap-5 rounded-2xl p-6"
+                style={{ background: "rgba(255,255,255,0.034)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                <div className="flex gap-1">
+                  {[...Array(5)].map((_, si) => (
+                    <span key={si} style={{ color: "#FFB259", fontSize: "12px" }}>★</span>
+                  ))}
+                </div>
+                <p style={{ fontWeight: 300, fontSize: "14px", color: "rgba(255,255,255,0.80)", lineHeight: 1.7, flex: 1 }}>
+                  &ldquo;{t.quote}&rdquo;
+                </p>
+                <div className="flex items-center gap-3 pt-2" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+                  <div className="w-8 h-8 rounded-full flex-shrink-0" style={{ background: t.av, border: "1px solid rgba(255,255,255,0.12)" }} />
+                  <div className="flex flex-col">
+                    <span style={{ fontSize: "13px", fontWeight: 500, color: "#fff" }}>{t.name}, {t.age}</span>
+                    <span style={mono("7.5px","rgba(255,255,255,0.40)")}>{t.event}</span>
                   </div>
                 </div>
               </div>
@@ -455,7 +398,6 @@ export default function Home() {
         <div className="max-w-4xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-start md:gap-24 gap-14">
 
-            {/* Left — header */}
             <div className="flex flex-col gap-3 md:w-72 flex-shrink-0">
               <span style={mono("9px","rgba(255,255,255,0.38)")}>Perguntas frequentes</span>
               <h2 style={{ ...serif("clamp(38px,8vw,54px)"), display: "block" }}>Tudo que você<br />quer saber.</h2>
@@ -464,23 +406,7 @@ export default function Home() {
               </p>
             </div>
 
-            {/* Right — Q&A list */}
-            <div className="flex-1 flex flex-col">
-              {FAQS.map((faq, i) => (
-                <div key={i} style={{ padding: "24px 0", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
-                  <p style={{ fontWeight: 500, fontSize: "15px", color: "#fff", marginBottom: "10px" }}>{faq.q}</p>
-                  <p style={{ fontWeight: 300, fontSize: "14px", color: "rgba(255,255,255,0.55)", lineHeight: 1.75 }}>{faq.a}</p>
-                </div>
-              ))}
-              <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: "24px" }}>
-                <p style={{ fontWeight: 300, fontSize: "14px", color: "rgba(255,255,255,0.40)", lineHeight: 1.7 }}>
-                  Outra pergunta?{" "}
-                  <Link href="/cadastro" className="hover:opacity-80 transition-opacity" style={{ color: "rgba(255,255,255,0.75)", textDecoration: "underline", textDecorationColor: "rgba(255,255,255,0.25)" }}>
-                    Entre e descubra.
-                  </Link>
-                </p>
-              </div>
-            </div>
+            <FaqAccordion />
 
           </div>
         </div>
@@ -501,7 +427,7 @@ export default function Home() {
           </p>
           <Link href="/cadastro" className="flex items-center justify-between rounded-full w-full max-w-xs"
             style={{ height: "56px", paddingLeft: "24px", paddingRight: "8px", background: "linear-gradient(135deg,#F8FAFC 0%,#94A3B8 100%)", color: "#080808", boxShadow: "0 0 52px rgba(255,255,255,.15)", ...mono("11px","#080808") }}>
-            <span>Entrar na lista</span>
+            <span>Começar grátis</span>
             <span className="flex items-center justify-center w-9 h-9 rounded-full" style={{ background: "#080808", color: "#fff", fontSize: "16px" }}>→</span>
           </Link>
           <span style={mono("8px","rgba(255,255,255,0.26)")}>Comece grátis · São Paulo · 2026</span>
