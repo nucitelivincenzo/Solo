@@ -339,6 +339,44 @@ export default function PerfilPage() {
           </>
         )}
 
+        {/* Plano */}
+        <div className="h-px bg-white/10" />
+
+        <div className="rounded-2xl border border-white/10 bg-[#18181B] overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-white/8">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Seu plano</p>
+              <p className="text-base font-black text-[#FAFAFA] mt-0.5">SOLO Free</p>
+            </div>
+            <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-white/5 border border-white/10 text-zinc-400">
+              Ativo
+            </span>
+          </div>
+          <div className="px-5 py-4 flex flex-col gap-3">
+            <div className="flex items-center gap-3 text-sm">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0" />
+              <span className="text-zinc-400">Experiência inicial incluída</span>
+            </div>
+            <div className="flex items-center gap-3 text-sm">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0" />
+              <span className="text-zinc-400">1 convite gratuito por semana</span>
+            </div>
+            <p className="text-xs text-zinc-500 leading-relaxed pt-1">
+              Quer sair mais vezes? O Plus aumenta seus convites e sua prioridade nos grupos compatíveis.
+            </p>
+            <div className="flex items-center gap-3 pt-1">
+              <Link href="/cadastro"
+                className="flex-1 flex items-center justify-center py-2.5 rounded-xl bg-violet-500 hover:bg-violet-400 transition-colors text-white text-xs font-semibold">
+                Conhecer Plus →
+              </Link>
+              <Link href="/cadastro"
+                className="flex-1 flex items-center justify-center py-2.5 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 transition-colors text-zinc-400 hover:text-zinc-300 text-xs font-medium">
+                Ver Black
+              </Link>
+            </div>
+          </div>
+        </div>
+
         {/* Botão salvar sticky */}
         <div className="sticky bottom-6 pt-2">
           <button

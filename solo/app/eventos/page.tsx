@@ -303,6 +303,10 @@ function EventoCard({ evento, inscrito, saving, onQueroIr, interesseGrupo, savin
             )}
           </button>
         )}
+        <p className="text-center text-[11px] text-zinc-600 leading-relaxed">
+          Free inclui 1 convite/semana.{" "}
+          <span className="text-violet-500/70">Plus aumenta sua prioridade.</span>
+        </p>
       </div>
     </div>
   );

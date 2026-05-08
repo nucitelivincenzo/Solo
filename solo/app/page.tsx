@@ -87,10 +87,12 @@ const EVENTS = [
 ];
 
 const FAQS = [
-  { q: "O SOLO é um dating app?",      a: "Não. O SOLO é sobre experiências sociais em grupo. Você vai conhecer pessoas novas em bares e jantares incríveis — o que acontecer depois é por conta própria." },
-  { q: "Preciso ir sozinho?",           a: "Esse é o ponto. Você vai sozinho, mas chega sabendo quem mais estará lá. Grupos de 4 a 8 pessoas curados por compatibilidade de vibe." },
-  { q: "Como o SOLO monta os grupos?",  a: "Com base no seu perfil de noite — vibe, interesses, ritmo social. O algoritmo monta o grupo. Você só aparece." },
-  { q: "Quanto custa?",                 a: "Criar conta, montar perfil e participar dos primeiros rolês é gratuito — sem cartão. O SOLO Premium desbloqueia prioridade em convites, acesso antecipado e experiências exclusivas. Você decide se quer ir mais fundo." },
+  { q: "O SOLO é um dating app?",                   a: "Não. O SOLO é sobre experiências sociais em grupo. Você vai conhecer pessoas novas em bares e jantares incríveis — o que acontecer depois é por conta própria." },
+  { q: "Preciso ir sozinho?",                        a: "Esse é o ponto. Você vai sozinho, mas chega sabendo quem mais estará lá. Grupos de 4 a 8 pessoas curados por compatibilidade de vibe." },
+  { q: "Como o SOLO monta os grupos?",               a: "Com base no seu perfil de noite — vibe, interesses, ritmo social. O algoritmo monta o grupo. Você só aparece." },
+  { q: "A SOLO é gratuita?",                         a: "Você pode criar sua conta, montar seu perfil e participar da experiência inicial gratuitamente. Os planos Plus e Black desbloqueiam mais convites, prioridade nos grupos e acesso a experiências mais exclusivas." },
+  { q: "Qual a diferença entre Free, Plus e Black?", a: "Free é para começar. Plus é para quem quer sair mais vezes e ter prioridade nos grupos certos. Black é para quem quer acesso aos rolês mais disputados, grupos mais curados e experiências especiais." },
+  { q: "O Premium garante grupo?",                   a: "Não força conexões. Ele aumenta sua prioridade e acesso, mas os grupos continuam sendo formados por compatibilidade, disponibilidade e interesse no mesmo rolê." },
 ];
 
 // ── Page ───────────────────────────────────────────────────────────────────────
@@ -306,6 +308,100 @@ export default function Home() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════ PRICING */}
+      <section style={{ padding: "0 24px 96px" }}>
+        <div className="max-w-4xl mx-auto">
+          <div className="flex flex-col gap-2 mb-4 text-center">
+            <span style={mono("9px","rgba(255,255,255,0.38)")}>Acesso</span>
+            <h2 style={{ ...serif("clamp(36px,8vw,56px)"), display: "block" }}>Comece grátis.<br />Viva mais com SOLO.</h2>
+          </div>
+          <p style={{ fontWeight: 300, fontSize: "15px", color: "rgba(255,255,255,0.48)", lineHeight: 1.65, textAlign: "center", maxWidth: "440px", margin: "0 auto 52px" }}>
+            Free para experimentar. Plus para sair mais. Black para quem quer o melhor.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-start">
+
+            {/* ── FREE ── */}
+            <div style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "20px", padding: "28px 24px" }}>
+              <span style={mono("8px","rgba(255,255,255,0.38)")}>SOLO Free</span>
+              <div style={{ marginTop: "14px", marginBottom: "10px" }}>
+                <span style={{ ...serif("44px") }}>R$ 0</span>
+                <span style={{ fontWeight: 300, fontSize: "14px", color: "rgba(255,255,255,0.35)", marginLeft: "8px" }}>/ sempre</span>
+              </div>
+              <p style={{ fontWeight: 300, fontSize: "13px", color: "rgba(255,255,255,0.48)", lineHeight: 1.65, marginBottom: "20px" }}>
+                Comece grátis e descubra como a SOLO funciona na prática.
+              </p>
+              <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)", paddingTop: "18px", marginBottom: "22px", display: "flex", flexDirection: "column", gap: "9px" }}>
+                {["Criar conta e montar perfil","Ver todos os eventos","1 convite / rolê por semana","Chat, confirmação e check-in","Feedback após o rolê"].map((f) => (
+                  <div key={f} style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
+                    <span style={{ color: "rgba(255,255,255,0.28)", flexShrink: 0, fontSize: "12px", lineHeight: "1.6" }}>○</span>
+                    <span style={{ fontWeight: 300, fontSize: "13px", color: "rgba(255,255,255,0.52)", lineHeight: 1.5 }}>{f}</span>
+                  </div>
+                ))}
+              </div>
+              <Link href="/cadastro" className="flex items-center justify-center hover:opacity-80 transition-opacity"
+                style={{ height: "46px", borderRadius: "100px", border: "1px solid rgba(255,255,255,0.14)", ...mono("9.5px","rgba(255,255,255,0.62)") }}>
+                Começar grátis
+              </Link>
+            </div>
+
+            {/* ── PLUS — featured ── */}
+            <div style={{ background: "rgba(139,92,246,0.06)", border: "1px solid rgba(139,92,246,0.38)", borderRadius: "20px", padding: "28px 24px", position: "relative", boxShadow: "0 0 48px rgba(139,92,246,0.09)" }}>
+              <div style={{ position: "absolute", top: "-12px", left: "50%", transform: "translateX(-50%)", background: "#8B5CF6", borderRadius: "100px", padding: "4px 14px", whiteSpace: "nowrap", ...mono("8px","#fff") }}>
+                Mais escolhido
+              </div>
+              <span style={mono("8px","rgba(139,92,246,0.90)")}>SOLO Plus</span>
+              <div style={{ marginTop: "14px", marginBottom: "10px" }}>
+                <span style={{ ...serif("44px") }}>R$ 19</span>
+                <span style={{ fontWeight: 300, fontSize: "20px", color: "rgba(255,255,255,0.65)" }}>,90</span>
+                <span style={{ fontWeight: 300, fontSize: "14px", color: "rgba(255,255,255,0.35)", marginLeft: "8px" }}>/ mês</span>
+              </div>
+              <p style={{ fontWeight: 300, fontSize: "13px", color: "rgba(255,255,255,0.55)", lineHeight: 1.65, marginBottom: "20px" }}>
+                Mais convites, mais prioridade e mais chances de estar nos grupos certos.
+              </p>
+              <div style={{ borderTop: "1px solid rgba(139,92,246,0.14)", paddingTop: "18px", marginBottom: "22px", display: "flex", flexDirection: "column", gap: "9px" }}>
+                {["Tudo do Free","Convites ilimitados por semana","Prioridade em grupos compatíveis","Acesso antecipado a eventos","Vantagens em parceiros SOLO","Mais detalhes da experiência"].map((f, i) => (
+                  <div key={f} style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
+                    <span style={{ color: i === 0 ? "rgba(139,92,246,0.55)" : "#8B5CF6", flexShrink: 0, fontSize: "12px", lineHeight: "1.6" }}>✦</span>
+                    <span style={{ fontWeight: i === 0 ? 400 : 300, fontSize: "13px", color: i === 0 ? "rgba(255,255,255,0.80)" : "rgba(255,255,255,0.65)", lineHeight: 1.5 }}>{f}</span>
+                  </div>
+                ))}
+              </div>
+              <Link href="/cadastro" className="flex items-center justify-center hover:opacity-90 transition-opacity"
+                style={{ height: "46px", borderRadius: "100px", background: "linear-gradient(135deg,#8B5CF6,#7C3AED)", ...mono("9.5px","#fff"), boxShadow: "0 0 32px rgba(139,92,246,0.35)" }}>
+                Entrar na lista Plus
+              </Link>
+            </div>
+
+            {/* ── BLACK ── */}
+            <div style={{ background: "rgba(255,255,255,0.018)", border: "1px solid rgba(255,255,255,0.11)", borderRadius: "20px", padding: "28px 24px" }}>
+              <span style={mono("8px","rgba(255,255,255,0.52)")}>SOLO Black</span>
+              <div style={{ marginTop: "14px", marginBottom: "10px" }}>
+                <span style={{ ...serif("44px") }}>R$ 49</span>
+                <span style={{ fontWeight: 300, fontSize: "20px", color: "rgba(255,255,255,0.65)" }}>,90</span>
+                <span style={{ fontWeight: 300, fontSize: "14px", color: "rgba(255,255,255,0.35)", marginLeft: "8px" }}>/ mês</span>
+              </div>
+              <p style={{ fontWeight: 300, fontSize: "13px", color: "rgba(255,255,255,0.48)", lineHeight: 1.65, marginBottom: "20px" }}>
+                Acesso aos rolês mais disputados, grupos mais curados e experiências especiais.
+              </p>
+              <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)", paddingTop: "18px", marginBottom: "22px", display: "flex", flexDirection: "column", gap: "9px" }}>
+                {["Tudo do Plus","Prioridade máxima em grupos","Acesso primeiro aos melhores eventos","Experiências exclusivas SOLO","Mesas menores e mais curadas","Badge discreto opcional"].map((f, i) => (
+                  <div key={f} style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
+                    <span style={{ color: i === 0 ? "rgba(255,255,255,0.30)" : "rgba(255,255,255,0.55)", flexShrink: 0, fontSize: "12px", lineHeight: "1.6" }}>◆</span>
+                    <span style={{ fontWeight: 300, fontSize: "13px", color: i === 0 ? "rgba(255,255,255,0.70)" : "rgba(255,255,255,0.55)", lineHeight: 1.5 }}>{f}</span>
+                  </div>
+                ))}
+              </div>
+              <Link href="/cadastro" className="flex items-center justify-center hover:opacity-90 transition-opacity"
+                style={{ height: "46px", borderRadius: "100px", background: "linear-gradient(135deg,#F8FAFC 0%,#94A3B8 100%)", ...mono("9.5px","#080808") }}>
+                Quero acesso Black
+              </Link>
+            </div>
+
           </div>
         </div>
       </section>
