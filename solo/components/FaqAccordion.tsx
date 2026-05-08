@@ -6,27 +6,27 @@ import Link from "next/link";
 const FAQS = [
   {
     q: "A SOLO é um dating app?",
-    a: "Não. A SOLO é sobre experiências sociais em grupo. Você conhece pessoas novas em bares, rooftops e jantares, mas o foco é viver uma noite boa — o que acontece depois é por conta própria.",
+    a: "Não. A SOLO é sobre experiências sociais em grupo. Você conhece pessoas novas em bares, rooftops e jantares, mas o foco é viver uma noite boa — não forçar encontros.",
   },
   {
     q: "Preciso ir sozinho?",
-    a: "Sim, e esse é o ponto. Você chega sozinho, mas encontra um grupo montado por compatibilidade de vibe, interesse e disponibilidade.",
+    a: "Sim. A ideia é justamente essa: você chega sozinho, mas encontra um grupo pequeno formado por interesses, disponibilidade e estilo de rolê.",
   },
   {
     q: "A SOLO é gratuita?",
-    a: "Você pode criar sua conta, montar seu perfil e participar da experiência inicial gratuitamente. Os planos Plus e Black desbloqueiam mais convites, prioridade nos grupos e acesso a experiências mais exclusivas.",
+    a: "Você pode começar gratuitamente: criar perfil, explorar eventos e participar da experiência inicial. Os planos Plus e Black são para quem quer mais convites, prioridade e experiências mais exclusivas.",
   },
   {
     q: "Qual a diferença entre Free, Plus e Black?",
-    a: "Free é para começar. Plus é para quem quer sair mais vezes e ter prioridade. Black é para quem quer acesso aos rolês mais disputados, grupos mais curados e experiências especiais.",
+    a: "Free é para experimentar. Plus é para sair mais vezes e ter prioridade. Black é para acessar experiências mais disputadas, grupos mais curados e benefícios premium.",
   },
   {
     q: "O Premium garante grupo?",
-    a: "Não força conexões. Ele aumenta sua prioridade e acesso, mas os grupos continuam sendo formados por compatibilidade, disponibilidade e interesse no mesmo rolê.",
+    a: "Não força conexões nem garante grupo artificialmente. Ele aumenta sua prioridade e acesso, mas os grupos continuam sendo formados por compatibilidade, disponibilidade e interesse no mesmo rolê.",
   },
   {
     q: "Como a SOLO monta os grupos?",
-    a: "A SOLO cruza seu perfil de noite, preferências, intenção social e interesse no mesmo evento para formar grupos pequenos e mais compatíveis.",
+    a: "A SOLO considera sua vibe, preferências, intenção social e interesse no mesmo evento para formar grupos pequenos com mais chance de conversa boa.",
   },
 ];
 
@@ -73,7 +73,7 @@ export function FaqAccordion() {
       ))}
       <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: "24px" }}>
         <p style={{ fontWeight: 300, fontSize: "14px", color: "rgba(255,255,255,0.40)", lineHeight: 1.7 }}>
-          Outra pergunta?{" "}
+          Ainda tem dúvida?{" "}
           <Link
             href="/cadastro"
             className="hover:opacity-80 transition-opacity"

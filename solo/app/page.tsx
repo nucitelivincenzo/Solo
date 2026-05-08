@@ -35,14 +35,13 @@ const AVS = [
   "linear-gradient(135deg,#3a0a18,#8a1c34 60%,#ff7090)",
 ];
 
-// Moments: photo ↔ copy ↔ atmosphere — each image matched to correct environment
 const MOMENTS = [
   {
     src: landingImages.jantar,
     pos: "center 40%",
     overlay: "radial-gradient(90% 65% at 20% 0%,rgba(197,60,90,.30),transparent 65%),linear-gradient(180deg,transparent 28%,rgba(0,0,0,.68) 100%)",
     when: "Qui · 21:30", tag: "Jantar íntimo",
-    title: "Mesa pequena,\nconversa longa.",
+    title: "Jantar",
     local: "Jantar · Pinheiros",
   },
   {
@@ -50,7 +49,7 @@ const MOMENTS = [
     pos: "center 50%",
     overlay: "radial-gradient(80% 55% at 55% 5%,rgba(122,91,255,.24),transparent 65%),linear-gradient(180deg,transparent 28%,rgba(0,0,0,.68) 100%)",
     when: "Sáb · 18:00", tag: "Rooftop",
-    title: "Cidade acesa,\nnoite aberta.",
+    title: "Rooftop",
     local: "Rooftop · Itaim",
   },
   {
@@ -58,38 +57,38 @@ const MOMENTS = [
     pos: "center 40%",
     overlay: "radial-gradient(80% 55% at 70% 5%,rgba(255,165,60,.20),transparent 65%),linear-gradient(180deg,transparent 28%,rgba(0,0,0,.68) 100%)",
     when: "Sex · 22:00", tag: "Bar social",
-    title: "Bar certo,\ngente nova.",
+    title: "Bar",
     local: "Bar · Vila Madalena",
   },
 ];
 
 const TESTIMONIALS = [
   {
-    quote: "Cheguei sozinha achando que ia ser estranho. Em 15 minutos já estava rindo com todo mundo. Voltei na semana seguinte.",
+    quote: "Fui sem conhecer ninguém e achei que ia ser estranho. No fim, fiquei até o bar fechar.",
     name: "Larissa", age: 27, event: "Jantar · Pinheiros",
     av: "linear-gradient(135deg,#3a0a18,#8a1c34 60%,#ff7090)",
   },
   {
-    quote: "A curadoria é real. Todo mundo ali tinha algo em comum. Não pareceu um app — pareceu uma descoberta.",
+    quote: "Não parecia networking nem date. Era só uma mesa boa com gente interessante.",
     name: "Pedro", age: 31, event: "Rooftop · Itaim",
     av: "linear-gradient(135deg,#0e1a24,#2e4a66 60%,#7a90a8)",
   },
   {
-    quote: "Já fui em 4 rolês. Virei amiga de duas pessoas que conheci lá. Não foi forçado — foi totalmente orgânico.",
+    quote: "Eu queria sair mais, mas meus amigos nunca combinavam nada. A SOLO resolveu isso.",
     name: "Ana Clara", age: 29, event: "Bar · Vila Madalena",
     av: "linear-gradient(135deg,#1a1620,#4d3a52 50%,#a07a8e)",
   },
   {
-    quote: "Minha semana não faz sentido sem pelo menos um SOLO. Virou rotina boa.",
+    quote: "O grupo já chegou com assunto. Isso mudou tudo.",
     name: "Thiago", age: 33, event: "Jantar · Moema",
     av: "linear-gradient(135deg,#2a1a14,#6e2c1c 60%,#FF7A35)",
   },
 ];
 
 const STEPS = [
-  { num: "01", title: "Monte seu perfil de noite",  desc: "Duas perguntas. Você conta quem é e qual tipo de noite te move. Sem questionários infinitos." },
-  { num: "02", title: "Escolha onde aparecer",       desc: "Bares novos, rooftops com vista, jantares com menos de 8 pessoas. Você escolhe o rolê." },
-  { num: "03", title: "Apareça sabendo quem vai",    desc: "Antes de sair você já viu quem mais estará lá. Chega com intenção, sem awkwardness." },
+  { num: "01", title: "Monte sua vibe",  desc: "Responda poucas perguntas sobre o tipo de noite que você curte, seu ritmo social e o que você quer viver." },
+  { num: "02", title: "Escolha onde ir", desc: "Veja bares, rooftops e jantares disponíveis na semana. Escolha o rolê que combina com você." },
+  { num: "03", title: "Chegue com grupo", desc: "A SOLO aproxima pessoas com interesses parecidos para você não chegar no escuro — nem depender dos amigos de sempre." },
 ];
 
 // ── Page ──────────────────────────────────────────────────────────────────────
@@ -147,21 +146,21 @@ export default function Home() {
 
             <div className="flex items-center gap-2.5 mb-7">
               <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: "#FF7A35", boxShadow: "0 0 10px rgba(255,122,53,.88)" }} />
-              <span style={mono("9px","rgba(255,255,255,0.65)")}>São Paulo · 2.4k pessoas</span>
+              <span style={mono("9px","rgba(255,255,255,0.65)")}>São Paulo · grupos toda semana</span>
             </div>
 
             {/* Headline */}
             <div className="mb-6">
-              <h1 style={{ ...serif("clamp(50px,12vw,86px)"), display: "block" }}>A noite muda</h1>
+              <h1 style={{ ...serif("clamp(50px,12vw,86px)"), display: "block" }}>Sua próxima noite</h1>
               <h1 style={{
                 ...serif("clamp(50px,12vw,86px)"), display: "block",
                 background: "linear-gradient(180deg,#FFE3CC 0%,#FF9040 100%)",
                 WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent",
-              }}>com as pessoas certas.</h1>
+              }}>com pessoas que combinam com a sua vibe.</h1>
             </div>
 
             <p style={{ fontWeight: 300, fontSize: "15px", color: "rgba(255,255,255,0.70)", lineHeight: 1.65, maxWidth: "360px", marginBottom: "28px" }}>
-              A SOLO monta pequenos grupos compatíveis para você conhecer gente nova em bares, rooftops e jantares pela cidade.
+              Escolha um rolê. A SOLO forma um grupo pequeno com pessoas na mesma vibe para você sair, conversar e descobrir novos lugares em São Paulo.
             </p>
 
             {/* Social proof pill */}
@@ -174,8 +173,8 @@ export default function Home() {
                 ))}
               </div>
               <div className="flex flex-col">
-                <span style={{ fontSize: "12px", fontWeight: 500, color: "#fff", lineHeight: 1.3 }}>+ 2.4k já estão dentro</span>
-                <span style={mono("8px","rgba(255,255,255,0.45)")}>lista aberta · SP</span>
+                <span style={{ fontSize: "12px", fontWeight: 500, color: "#fff", lineHeight: 1.3 }}>+2.4k pessoas em SP</span>
+                <span style={mono("8px","rgba(255,255,255,0.45)")}>lista aberta · comece grátis</span>
               </div>
             </div>
 
@@ -188,7 +187,7 @@ export default function Home() {
               </Link>
               <Link href="/login" className="flex items-center justify-center hover:opacity-70 transition-opacity"
                 style={{ height: "44px", ...mono("9px","rgba(255,255,255,0.45)") }}>
-                já tenho uma conta
+                Já tenho uma conta
               </Link>
             </div>
 
@@ -199,7 +198,7 @@ export default function Home() {
       {/* ══════════════════════════════════════════ QUICK STATS */}
       <div style={{ borderBottom: "1px solid rgba(255,255,255,0.07)", padding: "32px 24px" }}>
         <div className="max-w-4xl mx-auto grid grid-cols-3 gap-4 text-center">
-          {[{ v:"2.4k+", l:"pessoas em SP" }, { v:"18", l:"parceiros ativos" }, { v:"100%", l:"grátis para começar" }].map((s) => (
+          {[{ v:"2.4k+", l:"pessoas em SP" }, { v:"18", l:"parceiros ativos" }, { v:"Free", l:"para começar" }].map((s) => (
             <div key={s.l} className="flex flex-col gap-1.5">
               <span style={{ ...serif("clamp(26px,6vw,44px)") }}>{s.v}</span>
               <span style={mono("8px","rgba(255,255,255,0.38)")}>{s.l}</span>
@@ -213,7 +212,7 @@ export default function Home() {
         <div className="max-w-4xl mx-auto">
           <div className="flex flex-col gap-3 mb-14">
             <span style={mono("9px","rgba(255,255,255,0.38)")}>O SOLO na vida real</span>
-            <h2 style={{ ...serif("clamp(38px,8vw,58px)"), display: "block" }}>Três ambientes.<br />Uma noite que fica.</h2>
+            <h2 style={{ ...serif("clamp(38px,8vw,58px)"), display: "block" }}>Três jeitos de sair.<br />Um grupo para chegar junto.</h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -251,7 +250,7 @@ export default function Home() {
         <div className="max-w-4xl mx-auto">
           <div className="flex flex-col gap-3 mb-14">
             <span style={mono("9px","rgba(255,255,255,0.38)")}>Como funciona</span>
-            <h2 style={{ ...serif("clamp(38px,8vw,54px)"), display: "block" }}>Menos planejamento,<br />mais vida.</h2>
+            <h2 style={{ ...serif("clamp(38px,8vw,54px)"), display: "block" }}>Você escolhe o rolê.<br />A SOLO monta o grupo.</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3"
             style={{ border: "1px solid rgba(255,255,255,0.08)", borderRadius: "20px", overflow: "hidden" }}>
@@ -273,11 +272,11 @@ export default function Home() {
       <section style={{ padding: "0 24px 96px" }}>
         <div className="max-w-4xl mx-auto">
           <div className="flex flex-col gap-2 mb-4 text-center">
-            <span style={mono("9px","rgba(255,255,255,0.38)")}>Acesso</span>
-            <h2 style={{ ...serif("clamp(36px,8vw,56px)"), display: "block" }}>Comece grátis.<br />Viva mais com SOLO.</h2>
+            <span style={mono("9px","rgba(255,255,255,0.38)")}>Planos</span>
+            <h2 style={{ ...serif("clamp(36px,8vw,56px)"), display: "block" }}>Comece grátis.<br />Saia mais quando quiser.</h2>
           </div>
           <p style={{ fontWeight: 300, fontSize: "15px", color: "rgba(255,255,255,0.48)", lineHeight: 1.65, textAlign: "center", maxWidth: "440px", margin: "0 auto 52px" }}>
-            Free para experimentar. Plus para sair mais. Black para quem quer o melhor.
+            Use o Free para experimentar. Escolha Plus ou Black quando quiser mais convites, prioridade e experiências mais exclusivas.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-start">
@@ -287,13 +286,13 @@ export default function Home() {
               <span style={mono("8px","rgba(255,255,255,0.38)")}>SOLO Free</span>
               <div style={{ marginTop: "14px", marginBottom: "10px" }}>
                 <span style={{ ...serif("44px") }}>R$ 0</span>
-                <span style={{ fontWeight: 300, fontSize: "14px", color: "rgba(255,255,255,0.35)", marginLeft: "8px" }}>/ sempre</span>
+                <span style={{ fontWeight: 300, fontSize: "14px", color: "rgba(255,255,255,0.35)", marginLeft: "8px" }}>para começar</span>
               </div>
               <p style={{ fontWeight: 300, fontSize: "13px", color: "rgba(255,255,255,0.48)", lineHeight: 1.65, marginBottom: "20px" }}>
-                Comece grátis e descubra como a SOLO funciona na prática.
+                Para criar seu perfil, descobrir a SOLO e participar da primeira experiência.
               </p>
               <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)", paddingTop: "18px", marginBottom: "22px", display: "flex", flexDirection: "column", gap: "9px" }}>
-                {["Criar conta e montar perfil","Ver todos os eventos","1 convite / rolê por semana","Chat, confirmação e check-in","Feedback após o rolê"].map((f) => (
+                {["Criar conta e montar sua vibe","Explorar rolês da semana","1 convite gratuito por semana","Entrar em grupo quando formado","Chat e confirmação do rolê"].map((f) => (
                   <div key={f} style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
                     <span style={{ color: "rgba(255,255,255,0.28)", flexShrink: 0, fontSize: "12px", lineHeight: "1.6" }}>○</span>
                     <span style={{ fontWeight: 300, fontSize: "13px", color: "rgba(255,255,255,0.52)", lineHeight: 1.5 }}>{f}</span>
@@ -318,10 +317,10 @@ export default function Home() {
                 <span style={{ fontWeight: 300, fontSize: "14px", color: "rgba(255,255,255,0.35)", marginLeft: "8px" }}>/ mês</span>
               </div>
               <p style={{ fontWeight: 300, fontSize: "13px", color: "rgba(255,255,255,0.55)", lineHeight: 1.65, marginBottom: "20px" }}>
-                Mais convites, mais prioridade e mais chances de estar nos grupos certos.
+                Para quem quer sair mais vezes e ter mais chances de entrar nos grupos certos.
               </p>
               <div style={{ borderTop: "1px solid rgba(139,92,246,0.14)", paddingTop: "18px", marginBottom: "22px", display: "flex", flexDirection: "column", gap: "9px" }}>
-                {["Tudo do Free","Convites ilimitados por semana","Prioridade em grupos compatíveis","Acesso antecipado a eventos","Vantagens em parceiros SOLO","Mais detalhes da experiência"].map((f, i) => (
+                {["Tudo do Free","Até 3 convites por semana","Prioridade em grupos compatíveis","Acesso antecipado a alguns rolês","Benefícios básicos em parceiros","Mais contexto antes de confirmar"].map((f, i) => (
                   <div key={f} style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
                     <span style={{ color: i === 0 ? "rgba(139,92,246,0.55)" : "#8B5CF6", flexShrink: 0, fontSize: "12px", lineHeight: "1.6" }}>✦</span>
                     <span style={{ fontWeight: i === 0 ? 400 : 300, fontSize: "13px", color: i === 0 ? "rgba(255,255,255,0.80)" : "rgba(255,255,255,0.65)", lineHeight: 1.5 }}>{f}</span>
@@ -343,10 +342,10 @@ export default function Home() {
                 <span style={{ fontWeight: 300, fontSize: "14px", color: "rgba(255,255,255,0.35)", marginLeft: "8px" }}>/ mês</span>
               </div>
               <p style={{ fontWeight: 300, fontSize: "13px", color: "rgba(255,255,255,0.48)", lineHeight: 1.65, marginBottom: "20px" }}>
-                Acesso aos rolês mais disputados, grupos mais curados e experiências especiais.
+                Para quem quer prioridade máxima, experiências especiais e grupos mais curados.
               </p>
               <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)", paddingTop: "18px", marginBottom: "22px", display: "flex", flexDirection: "column", gap: "9px" }}>
-                {["Tudo do Plus","Prioridade máxima em grupos","Acesso primeiro aos melhores eventos","Experiências exclusivas SOLO","Mesas menores e mais curadas","Badge discreto opcional"].map((f, i) => (
+                {["Tudo do Plus","Prioridade máxima nos grupos","Acesso primeiro aos rolês mais disputados","Experiências exclusivas SOLO","Mesas menores e mais selecionadas","Benefícios premium em parceiros"].map((f, i) => (
                   <div key={f} style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
                     <span style={{ color: i === 0 ? "rgba(255,255,255,0.30)" : "rgba(255,255,255,0.55)", flexShrink: 0, fontSize: "12px", lineHeight: "1.6" }}>◆</span>
                     <span style={{ fontWeight: 300, fontSize: "13px", color: i === 0 ? "rgba(255,255,255,0.70)" : "rgba(255,255,255,0.55)", lineHeight: 1.5 }}>{f}</span>
@@ -362,7 +361,7 @@ export default function Home() {
           </div>
 
           <p style={{ fontWeight: 300, fontSize: "13px", color: "rgba(255,255,255,0.28)", textAlign: "center", marginTop: "28px", lineHeight: 1.6 }}>
-            Comece grátis. Faça upgrade quando quiser viver mais experiências.
+            Comece grátis. Faça upgrade quando quiser sair mais, entrar antes e viver experiências mais selecionadas.
           </p>
         </div>
       </section>
@@ -372,7 +371,7 @@ export default function Home() {
         <div className="max-w-4xl mx-auto">
           <div className="flex flex-col gap-3 mb-14">
             <span style={mono("9px","rgba(255,255,255,0.38)")}>Quem já foi</span>
-            <h2 style={{ ...serif("clamp(38px,8vw,58px)"), display: "block" }}>2.4k pessoas.<br />Milhares de noites.</h2>
+            <h2 style={{ ...serif("clamp(38px,8vw,58px)"), display: "block" }}>Gente que chegou sozinha.<br />E voltou com história.</h2>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -407,9 +406,9 @@ export default function Home() {
 
             <div className="flex flex-col gap-3 md:w-72 flex-shrink-0">
               <span style={mono("9px","rgba(255,255,255,0.38)")}>Perguntas frequentes</span>
-              <h2 style={{ ...serif("clamp(38px,8vw,54px)"), display: "block" }}>Tudo que você<br />quer saber.</h2>
+              <h2 style={{ ...serif("clamp(38px,8vw,54px)"), display: "block" }}>Antes de aparecer,<br />entenda como funciona.</h2>
               <p style={{ fontWeight: 300, fontSize: "14px", color: "rgba(255,255,255,0.50)", lineHeight: 1.7, marginTop: "8px" }}>
-                Ainda tem dúvida? O SOLO é simples. Aqui vai o essencial.
+                O essencial sobre grupos, planos e experiências SOLO.
               </p>
             </div>
 
@@ -428,9 +427,9 @@ export default function Home() {
 
         <div className="relative z-10 max-w-xl mx-auto flex flex-col items-center text-center gap-8">
           <span style={mono("9px","rgba(255,255,255,0.40)")}>Comece hoje</span>
-          <h2 style={{ ...serif("clamp(46px,11vw,76px)"), display: "block" }}>A próxima história<br />é a sua.</h2>
+          <h2 style={{ ...serif("clamp(46px,11vw,76px)"), display: "block" }}>Toda noite que você adia<br />é uma conexão que não acontece.</h2>
           <p style={{ fontWeight: 300, fontSize: "15px", color: "rgba(255,255,255,0.62)", lineHeight: 1.7, maxWidth: "300px" }}>
-            30 segundos para criar sua conta. O próximo grupo te espera.
+            Crie sua conta, escolha um rolê e descubra quem também está pronto para fazer novas conexões.
           </p>
           <Link href="/cadastro" className="flex items-center justify-between rounded-full w-full max-w-xs"
             style={{ height: "56px", paddingLeft: "24px", paddingRight: "8px", background: "linear-gradient(135deg,#F8FAFC 0%,#94A3B8 100%)", color: "#080808", boxShadow: "0 0 52px rgba(255,255,255,.15)", ...mono("11px","#080808") }}>
