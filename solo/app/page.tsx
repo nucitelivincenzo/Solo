@@ -2,6 +2,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { FaqAccordion } from "@/components/FaqAccordion";
 
+// ── Image sources — single source of truth for all landing photos ─────────────
+const landingImages = {
+  hero:      "/images/hero-main.jpg",
+  jantar:    "/images/scene-jantar.jpg",
+  rooftop:   "/images/scene-rooftop.jpg",
+  barSocial: "/images/scene-bar-social.jpg",
+} as const;
+
 // ── Noise texture ─────────────────────────────────────────────────────────────
 const NOISE = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")`;
 
@@ -30,7 +38,7 @@ const AVS = [
 // Moments: photo ↔ copy ↔ atmosphere — each image matched to correct environment
 const MOMENTS = [
   {
-    src: "/images/jantar.jpg",
+    src: landingImages.jantar,
     pos: "center 40%",
     overlay: "radial-gradient(90% 65% at 20% 0%,rgba(197,60,90,.30),transparent 65%),linear-gradient(180deg,transparent 28%,rgba(0,0,0,.68) 100%)",
     when: "Qui · 21:30", tag: "Jantar íntimo",
@@ -38,7 +46,7 @@ const MOMENTS = [
     local: "Jantar · Pinheiros",
   },
   {
-    src: "/images/scene-rooftop.jpg",
+    src: landingImages.rooftop,
     pos: "center 50%",
     overlay: "radial-gradient(80% 55% at 55% 5%,rgba(122,91,255,.24),transparent 65%),linear-gradient(180deg,transparent 28%,rgba(0,0,0,.68) 100%)",
     when: "Sáb · 18:00", tag: "Rooftop",
@@ -46,7 +54,7 @@ const MOMENTS = [
     local: "Rooftop · Itaim",
   },
   {
-    src: "/images/scene-bar-social.jpg",
+    src: landingImages.barSocial,
     pos: "center 40%",
     overlay: "radial-gradient(80% 55% at 70% 5%,rgba(255,165,60,.20),transparent 65%),linear-gradient(180deg,transparent 28%,rgba(0,0,0,.68) 100%)",
     when: "Sex · 22:00", tag: "Bar social",
@@ -114,9 +122,8 @@ export default function Home() {
       {/* ══════════════════════════════════════════ HERO */}
       <section className="relative overflow-hidden" style={{ minHeight: "100svh" }}>
 
-        {/* hero-main.jpg — chosen manually for diverse group / social energy */}
         <Image
-          src="/images/hero-main.jpg"
+          src={landingImages.hero}
           fill
           sizes="100vw"
           className="object-cover"
