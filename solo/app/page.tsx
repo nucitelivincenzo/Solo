@@ -1,9 +1,23 @@
 import Link from "next/link";
 import Image from "next/image";
 
-// ── Design tokens ──────────────────────────────────────────────────────────────
-
+// ── Noise texture (SVG grain, same as approved mockups) ───────────────────────
 const NOISE = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")`;
+
+// ── Style helpers ──────────────────────────────────────────────────────────────
+const mono = (sz = "9px", cl = "rgba(255,255,255,0.50)"): React.CSSProperties => ({
+  fontFamily: "var(--font-geist-mono,'Courier New',monospace)",
+  fontSize: sz, letterSpacing: "0.40em",
+  textTransform: "uppercase" as const,
+  color: cl, lineHeight: 1.4,
+});
+const serif = (sz: string, cl = "#fff"): React.CSSProperties => ({
+  fontFamily: "var(--font-dm-serif,Georgia,serif)",
+  fontStyle: "italic", fontSize: sz,
+  letterSpacing: "-0.030em", color: cl, lineHeight: "0.92",
+});
+
+// ── Data ───────────────────────────────────────────────────────────────────────
 
 const AVS = [
   "linear-gradient(135deg,#3a2b22,#9a5a3a 65%,#FFB37A)",
@@ -12,136 +26,166 @@ const AVS = [
   "linear-gradient(135deg,#3a0a18,#8a1c34 60%,#ff7090)",
 ];
 
-// ── Style helpers ──────────────────────────────────────────────────────────────
-
-const mono = (sz = "9px", cl = "rgba(255,255,255,0.50)"): React.CSSProperties => ({
-  fontFamily: "var(--font-geist-mono,'Courier New',monospace)",
-  fontSize: sz,
-  letterSpacing: "0.40em",
-  textTransform: "uppercase" as const,
-  color: cl,
-  lineHeight: 1.4,
-});
-
-const serif = (sz: string, cl = "#fff"): React.CSSProperties => ({
-  fontFamily: "var(--font-dm-serif,Georgia,serif)",
-  fontStyle: "italic",
-  fontSize: sz,
-  letterSpacing: "-0.030em",
-  color: cl,
-  lineHeight: "0.92",
-});
-
-// ── Section data ───────────────────────────────────────────────────────────────
-
-// Warm cinematic tint per photo — layered on top of the real image
-const MOMENT_OVERLAYS = [
-  // Card 1: lifestyle-3 — intimate candlelit bar → wine tint
-  "radial-gradient(80% 60% at 30% 0%,rgba(197,60,90,.50),transparent 70%),linear-gradient(180deg,transparent 20%,rgba(0,0,0,.88) 100%)",
-  // Card 2: lifestyle-2 — women outdoor bar, blue skyline → amber tint
-  "radial-gradient(80% 60% at 70% 0%,rgba(255,160,60,.35),transparent 70%),linear-gradient(180deg,transparent 20%,rgba(0,0,0,.85) 100%)",
-  // Card 3: lifestyle-1 — men rooftop, warm city → ember tint
-  "radial-gradient(70% 50% at 50% 30%,rgba(255,100,20,.38),transparent 65%),linear-gradient(180deg,transparent 20%,rgba(0,0,0,.85) 100%)",
+// Moments: photo ↔ copy ↔ atmosphere aligned
+const MOMENTS = [
+  {
+    src: "/images/lifestyle-3.jpg",      // intimate candlelit bar → wine overlay
+    overlay: "radial-gradient(90% 65% at 20% 0%,rgba(197,60,90,.52),transparent 65%),linear-gradient(180deg,transparent 18%,rgba(0,0,0,.90) 100%)",
+    when: "Qui · 21:30", tag: "Jantar íntimo",
+    title: "Mesa pequena,\nvinho longo.",
+    local: "Jantar · Pinheiros",
+  },
+  {
+    src: "/images/lifestyle-1.jpg",      // men rooftop, warm city at night → ember overlay
+    overlay: "radial-gradient(80% 55% at 55% 5%,rgba(255,122,53,.42),transparent 65%),linear-gradient(180deg,transparent 18%,rgba(0,0,0,.88) 100%)",
+    when: "Sáb · 18:00", tag: "Rooftop",
+    title: "Vista do alto,\ngente do bem.",
+    local: "Rooftop · Itaim",
+  },
+  {
+    src: "/images/lifestyle-2.jpg",      // women outdoor bar, blue skyline → amber overlay
+    overlay: "radial-gradient(80% 55% at 70% 5%,rgba(255,165,60,.38),transparent 65%),linear-gradient(180deg,transparent 18%,rgba(0,0,0,.88) 100%)",
+    when: "Sex · 22:00", tag: "Bar social",
+    title: "Bar certo,\nbate-papo longo.",
+    local: "Bar · Vila Madalena",
+  },
 ];
 
-const MOMENTS = [
-  { src: "/images/lifestyle-3.jpg", when: "Qui · 21:30", title: "Mesa pequena,\nvinho longo.",   local: "Jantar · Pinheiros",      tag: "Íntimo"  },
-  { src: "/images/lifestyle-2.jpg", when: "Sáb · 18:00", title: "Vista do alto,\ngente do bem.", local: "Rooftop · Itaim",         tag: "Rooftop" },
-  { src: "/images/lifestyle-1.jpg", when: "Sex · 22:00", title: "Bar sem filtro,\nnoite sem pressa.", local: "Ao vivo · Vila Madalena", tag: "Show" },
+const TESTIMONIALS = [
+  {
+    quote: "Cheguei sozinha achando que ia ser estranho. Em 15 minutos já estava rindo com todo mundo. Voltei na semana seguinte.",
+    name: "Larissa", age: 27, event: "Jantar · Pinheiros",
+    av: "linear-gradient(135deg,#3a0a18,#8a1c34 60%,#ff7090)",
+  },
+  {
+    quote: "A curadoria é real. Todo mundo ali tinha algo em comum. Não pareceu um app — pareceu uma descoberta.",
+    name: "Pedro", age: 31, event: "Rooftop · Itaim",
+    av: "linear-gradient(135deg,#0e1a24,#2e4a66 60%,#7a90a8)",
+  },
+  {
+    quote: "Já fui em 4 rolês. Virei amiga de duas pessoas que conheci lá. Não foi forçado — foi totalmente orgânico.",
+    name: "Ana Clara", age: 29, event: "Bar · Vila Madalena",
+    av: "linear-gradient(135deg,#1a1620,#4d3a52 50%,#a07a8e)",
+  },
+  {
+    quote: "Minha semana não faz sentido sem pelo menos um SOLO. Virou rotina boa.",
+    name: "Thiago", age: 33, event: "Jantar · Moema",
+    av: "linear-gradient(135deg,#2a1a14,#6e2c1c 60%,#FF7A35)",
+  },
 ];
 
 const STEPS = [
-  { num: "01", title: "Monte seu perfil de noite",   desc: "Duas perguntas. Você conta quem é e qual tipo de noite te move. Sem questionários infinitos." },
-  { num: "02", title: "Escolha onde aparecer",        desc: "Bares novos, rooftops com vista, jantares com menos de 8 pessoas. Você escolhe o rolê." },
-  { num: "03", title: "Apareça sabendo quem vai",     desc: "Antes de sair você já viu quem mais estará lá. Chega com intenção, sem awkwardness." },
+  { num: "01", title: "Monte seu perfil de noite",  desc: "Duas perguntas. Você conta quem é e qual tipo de noite te move. Sem questionários infinitos." },
+  { num: "02", title: "Escolha onde aparecer",       desc: "Bares novos, rooftops com vista, jantares com menos de 8 pessoas. Você escolhe o rolê." },
+  { num: "03", title: "Apareça sabendo quem vai",    desc: "Antes de sair você já viu quem mais estará lá. Chega com intenção, sem awkwardness." },
 ];
 
 const EVENTS = [
-  { bg: "radial-gradient(80% 70% at 50% 30%,rgba(255,122,53,.90),transparent 65%),radial-gradient(60% 70% at 50% 100%,rgba(162,49,11,.72),transparent 80%),linear-gradient(180deg,#1a0a06,#0a0608)", live: true,  when: "Hoje · 22:00", title: "A noite está\naberta.", local: "Vila Madalena", match: "98%" },
-  { bg: "radial-gradient(80% 70% at 30% 0%,rgba(197,60,90,.80),rgba(92,26,44,.55) 60%,transparent 80%),linear-gradient(180deg,#180812,#0a0608)",                                                     live: false, when: "Sex · 21:30",  title: "Mesa pequena.",     local: "Pinheiros",      match: "94%" },
-  { bg: "radial-gradient(80% 70% at 70% 0%,rgba(255,178,89,.72),transparent 65%),radial-gradient(60% 60% at 30% 100%,rgba(162,90,30,.55),transparent 70%),linear-gradient(180deg,#1a1208,#0a0608)",  live: false, when: "Sáb · 18:00",  title: "Vista aberta.",     local: "Itaim Bibi",     match: "91%" },
+  { bg: "radial-gradient(80% 70% at 50% 30%,rgba(255,122,53,.90),transparent 65%),radial-gradient(60% 70% at 50% 100%,rgba(162,49,11,.72),transparent 80%),linear-gradient(180deg,#1a0a06,#0a0608)", live: true,  when: "Hoje · 22:00", title: "A noite está\naberta.",  local: "Vila Madalena", match: "98%" },
+  { bg: "radial-gradient(80% 70% at 30% 0%,rgba(197,60,90,.80),rgba(92,26,44,.55) 60%,transparent 80%),linear-gradient(180deg,#180812,#0a0608)",                                                     live: false, when: "Sex · 21:30",  title: "Mesa pequena.", local: "Pinheiros",     match: "94%" },
+  { bg: "radial-gradient(80% 70% at 70% 0%,rgba(255,178,89,.72),transparent 65%),radial-gradient(60% 60% at 30% 100%,rgba(162,90,30,.55),transparent 70%),linear-gradient(180deg,#1a1208,#0a0608)",  live: false, when: "Sáb · 18:00",  title: "Vista aberta.",  local: "Itaim Bibi",    match: "91%" },
 ];
 
-// ── Component ──────────────────────────────────────────────────────────────────
+const FAQS = [
+  { q: "O SOLO é um dating app?",      a: "Não. O SOLO é sobre experiências sociais em grupo. Você vai conhecer pessoas novas em bares e jantares incríveis — o que acontecer depois é por conta própria." },
+  { q: "Preciso ir sozinho?",           a: "Esse é o ponto. Você vai sozinho, mas chega sabendo quem mais estará lá. Grupos de 4 a 8 pessoas curados por compatibilidade de vibe." },
+  { q: "Como o SOLO monta os grupos?",  a: "Com base no seu perfil de noite — vibe, interesses, ritmo social. O algoritmo monta o grupo. Você só aparece." },
+  { q: "É realmente gratuito?",         a: "Sim. 100% gratuito durante o lançamento em São Paulo. Sem cartão, sem surpresa, sem freemium enganoso." },
+];
+
+// ── Page ───────────────────────────────────────────────────────────────────────
 
 export default function Home() {
   return (
     <div style={{ background: "#050506", color: "#fff", overflowX: "hidden" }}>
 
-      {/* ══ NAVBAR ══════════════════════════════════════════════════════════════ */}
+      {/* ══════════════════════════════════════════ NAVBAR */}
       <header
         className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4"
-        style={{ background: "rgba(5,5,6,0.82)", borderBottom: "1px solid rgba(255,255,255,0.07)", backdropFilter: "blur(28px)", WebkitBackdropFilter: "blur(28px)" }}
+        style={{ background: "rgba(5,5,6,0.78)", borderBottom: "1px solid rgba(255,255,255,0.07)", backdropFilter: "blur(28px)", WebkitBackdropFilter: "blur(28px)" }}
       >
         <Link href="/" className="flex items-center gap-2.5">
-          <div
-            className="relative w-5 h-5 rounded-full flex-shrink-0"
-            style={{ background: "linear-gradient(135deg,#F8FAFC 0%,#94A3B8 100%)", boxShadow: "0 0 18px rgba(226,232,240,.28),inset 0 0 0 1px rgba(255,255,255,.45)" }}
-          >
+          <div className="relative w-5 h-5 rounded-full flex-shrink-0"
+            style={{ background: "linear-gradient(135deg,#F8FAFC 0%,#94A3B8 100%)", boxShadow: "0 0 18px rgba(226,232,240,.28),inset 0 0 0 1px rgba(255,255,255,.45)" }}>
             <div className="absolute inset-[5px] rounded-full" style={{ background: "#050506" }} />
           </div>
           <span style={{ ...serif("20px"), lineHeight: 1 }}>SOLO</span>
         </Link>
         <div className="flex items-center gap-4">
           <Link href="/login" className="hover:opacity-70 transition-opacity" style={mono("10px","rgba(255,255,255,0.48)")}>Entrar</Link>
-          <Link href="/cadastro" className="flex items-center rounded-full hover:opacity-90 transition-opacity"
+          <Link href="/cadastro" className="rounded-full hover:opacity-90 transition-opacity"
             style={{ padding: "10px 20px", background: "linear-gradient(135deg,#F8FAFC 0%,#94A3B8 100%)", color: "#080808", boxShadow: "0 0 22px rgba(255,255,255,.14)", ...mono("10px","#080808") }}>
             Criar conta
           </Link>
         </div>
       </header>
 
-      {/* ══ HERO ════════════════════════════════════════════════════════════════ */}
-      <section className="relative overflow-hidden" style={{ minHeight: "100svh", paddingTop: "72px" }}>
-        {/* Ember atmosphere */}
-        <div className="absolute inset-0 pointer-events-none" style={{ background:
-          "radial-gradient(65% 45% at 12% 0%,rgba(255,178,89,.20),transparent 70%)," +
-          "radial-gradient(55% 45% at 88% 28%,rgba(197,60,90,.20),transparent 70%)," +
-          "radial-gradient(75% 55% at 50% 110%,rgba(255,122,53,.24),transparent 70%)," +
-          "radial-gradient(45% 40% at 92% 98%,rgba(122,91,255,.18),transparent 70%)" }} />
-        <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: NOISE, opacity: 0.06, mixBlendMode: "overlay" }} />
-        <div className="absolute inset-x-0 bottom-0 h-40 pointer-events-none" style={{ background: "linear-gradient(to bottom,transparent,#050506)" }} />
+      {/* ══════════════════════════════════════════ HERO — full-bleed photo */}
+      <section className="relative overflow-hidden" style={{ minHeight: "100svh" }}>
 
-        <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between min-h-[calc(100svh-72px)] px-6 md:px-12 pb-16 max-w-6xl mx-auto gap-12">
+        {/* Real photo — lifestyle-5: warm mixed dinner group, most alive/human image */}
+        <Image
+          src="/images/lifestyle-5.jpg"
+          fill
+          sizes="100vw"
+          className="object-cover"
+          style={{ objectPosition: "center 35%" }}
+          alt=""
+          priority
+        />
 
-          {/* LEFT — copy */}
-          <div className="flex flex-col gap-7 max-w-lg pt-16 md:pt-24 flex-shrink-0">
-            <div className="flex items-center gap-2.5">
+        {/* Cinematic overlay stack */}
+        {/* 1. Top dark — navbar readability */}
+        <div className="absolute inset-0 pointer-events-none"
+          style={{ background: "linear-gradient(to bottom,rgba(5,5,6,.72) 0%,rgba(5,5,6,.10) 28%,rgba(5,5,6,.05) 48%,rgba(5,5,6,.55) 68%,rgba(5,5,6,.97) 88%,#050506 100%)" }} />
+        {/* 2. Warm atmospheric tint — ember glow from bottom-left */}
+        <div className="absolute inset-0 pointer-events-none"
+          style={{ background: "radial-gradient(70% 50% at 20% 90%,rgba(255,100,30,.18),transparent 70%),radial-gradient(60% 40% at 80% 0%,rgba(197,60,90,.14),transparent 65%)" }} />
+        {/* 3. Noise grain */}
+        <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: NOISE, opacity: 0.07, mixBlendMode: "overlay" }} />
+
+        {/* Content — pinned to bottom */}
+        <div className="absolute inset-0 flex flex-col justify-end pb-14 pt-20 px-6 md:px-12">
+          <div className="max-w-xl">
+
+            <div className="flex items-center gap-2.5 mb-7">
               <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: "#FF7A35", boxShadow: "0 0 10px rgba(255,122,53,.88)" }} />
-              <span style={mono("9px","rgba(255,255,255,0.62)")}>São Paulo · esta semana</span>
+              <span style={mono("9px","rgba(255,255,255,0.65)")}>São Paulo · 2.4k pessoas</span>
             </div>
 
-            <div>
-              <h1 style={{ ...serif("clamp(52px,13vw,88px)"), display: "block" }}>A melhor parte</h1>
-              <h1 style={{ ...serif("clamp(52px,13vw,88px)"), display: "block", background: "linear-gradient(180deg,#FFE3CC 0%,#FF9659 100%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
-                da cidade
-              </h1>
-              <h1 style={{ ...serif("clamp(52px,13vw,88px)"), display: "block", color: "rgba(255,255,255,0.52)" }}>
-                ainda não é sua.
-              </h1>
+            {/* Headline — punchy, human, relatable */}
+            <div className="mb-6">
+              <h1 style={{ ...serif("clamp(52px,13vw,90px)"), display: "block" }}>Não é sobre sair.</h1>
+              <h1 style={{
+                ...serif("clamp(52px,13vw,90px)"), display: "block",
+                background: "linear-gradient(180deg,#FFE3CC 0%,#FF9040 100%)",
+                WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent",
+              }}>É sobre com quem.</h1>
             </div>
 
-            <p style={{ fontWeight: 300, fontSize: "15px", color: "rgba(255,255,255,0.68)", lineHeight: 1.65, maxWidth: "310px" }}>
-              Grupos de até 8 pessoas, lugares que você ainda não conhece, conexões de verdade — toda semana, em SP.
+            <p style={{ fontWeight: 300, fontSize: "15px", color: "rgba(255,255,255,0.72)", lineHeight: 1.65, maxWidth: "340px", marginBottom: "28px" }}>
+              O SOLO reúne grupos de até 8 pessoas em bares, rooftops e jantares em SP — toda semana, lugares novos, pessoas novas.
             </p>
 
-            <div className="flex items-center gap-3 w-fit rounded-full"
-              style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", padding: "10px 16px 10px 10px" }}>
+            {/* Social proof */}
+            <div className="flex items-center gap-3 w-fit rounded-full mb-7"
+              style={{ background: "rgba(0,0,0,0.35)", border: "1px solid rgba(255,255,255,0.14)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", padding: "10px 16px 10px 10px" }}>
               <div className="flex">
                 {AVS.map((bg, i) => (
                   <div key={i} className="w-8 h-8 rounded-full flex-shrink-0"
-                    style={{ background: bg, border: "1.5px solid rgba(0,0,0,.65)", marginLeft: i > 0 ? "-10px" : undefined }} />
+                    style={{ background: bg, border: "1.5px solid rgba(0,0,0,.70)", marginLeft: i > 0 ? "-10px" : undefined }} />
                 ))}
               </div>
               <div className="flex flex-col">
-                <span style={{ fontSize: "12px", fontWeight: 500, color: "#fff", lineHeight: 1.3 }}>+ 2.4k pessoas já estão dentro</span>
-                <span style={mono("8px","rgba(255,255,255,0.42)")}>lista aberta</span>
+                <span style={{ fontSize: "12px", fontWeight: 500, color: "#fff", lineHeight: 1.3 }}>+ 2.4k já estão dentro</span>
+                <span style={mono("8px","rgba(255,255,255,0.45)")}>lista aberta · SP</span>
               </div>
             </div>
 
-            <div className="flex flex-col gap-3">
+            {/* CTAs */}
+            <div className="flex flex-col gap-3 max-w-xs">
               <Link href="/cadastro" className="flex items-center justify-between rounded-full"
-                style={{ height: "56px", paddingLeft: "24px", paddingRight: "8px", background: "linear-gradient(135deg,#F8FAFC 0%,#94A3B8 100%)", color: "#080808", boxShadow: "0 0 40px rgba(255,255,255,.16)", ...mono("11px","#080808") }}>
+                style={{ height: "56px", paddingLeft: "24px", paddingRight: "8px", background: "linear-gradient(135deg,#F8FAFC 0%,#94A3B8 100%)", color: "#080808", boxShadow: "0 0 40px rgba(255,255,255,.18)", ...mono("11px","#080808") }}>
                 <span>Pedir convite</span>
                 <span className="flex items-center justify-center w-9 h-9 rounded-full" style={{ background: "#080808", color: "#fff", fontSize: "16px" }}>→</span>
               </Link>
@@ -151,61 +195,24 @@ export default function Home() {
               </Link>
             </div>
 
-            <div className="flex items-center gap-3">
-              <div style={{ flex: 1, height: "1px", background: "rgba(255,255,255,0.07)" }} />
-              <span style={mono("8px","rgba(255,255,255,0.28)")}>Por convite · SP</span>
-              <div style={{ flex: 1, height: "1px", background: "rgba(255,255,255,0.07)" }} />
-            </div>
-          </div>
-
-          {/* RIGHT — floating photo cards, desktop only */}
-          <div className="hidden md:block flex-shrink-0" style={{ width: "260px", position: "relative", height: "420px", alignSelf: "flex-end", marginBottom: "16px" }}>
-
-            {/* Card back — lifestyle-5 (night dinner, intimate) */}
-            <div className="absolute overflow-hidden rounded-2xl"
-              style={{ width: "200px", height: "270px", bottom: 0, right: "24px", transform: "rotate(-3.5deg)", border: "1px solid rgba(255,255,255,0.12)", boxShadow: "0 32px 64px rgba(0,0,0,.80)" }}>
-              <Image src="/images/lifestyle-5.jpg" fill sizes="220px" className="object-cover object-center" alt="" priority />
-              <div className="absolute inset-0" style={{ background: "radial-gradient(80% 60% at 30% 0%,rgba(197,60,90,.42),transparent 70%),linear-gradient(180deg,transparent 35%,rgba(0,0,0,.82) 100%)" }} />
-              <div className="absolute inset-0" style={{ backgroundImage: NOISE, opacity: 0.07, mixBlendMode: "overlay" }} />
-              <div className="absolute bottom-3 left-3 right-3 z-10">
-                <span style={mono("7.5px","rgba(255,255,255,0.62)")}>Sáb · Pinheiros</span>
-                <p style={{ ...serif("17px"), marginTop: "4px" }}>Jantar com<br />gente nova.</p>
-              </div>
-            </div>
-
-            {/* Card front — lifestyle-4 (group dinner, energy) */}
-            <div className="absolute overflow-hidden rounded-2xl"
-              style={{ width: "210px", height: "290px", bottom: "20px", right: 0, transform: "rotate(2deg)", border: "1px solid rgba(255,255,255,0.14)", boxShadow: "0 40px 80px rgba(0,0,0,.90),0 0 0 1px rgba(255,255,255,0.05)" }}>
-              <Image src="/images/lifestyle-4.jpg" fill sizes="220px" className="object-cover object-center" alt="" priority />
-              <div className="absolute inset-0" style={{ background: "radial-gradient(70% 50% at 50% 30%,rgba(255,100,20,.32),transparent 65%),linear-gradient(180deg,transparent 25%,rgba(0,0,0,.85) 100%)" }} />
-              <div className="absolute inset-0" style={{ backgroundImage: NOISE, opacity: 0.07, mixBlendMode: "overlay" }} />
-              <div className="absolute top-3 left-3 flex items-center gap-1.5 z-10 rounded-full"
-                style={{ padding: "5px 10px", background: "rgba(0,0,0,.50)", border: "1px solid rgba(255,255,255,.22)", backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)", ...mono("7.5px","#fff") }}>
-                <span className="w-1.5 h-1.5 rounded-full" style={{ background: "#FF7A35", boxShadow: "0 0 8px rgba(255,122,53,.9)" }} />
-                acontece hoje
-              </div>
-              <div className="absolute bottom-3 left-3 right-3 z-10">
-                <span style={mono("7.5px","rgba(255,255,255,0.62)")}>Qui · Vila Madalena</span>
-                <p style={{ ...serif("19px"), marginTop: "4px" }}>Noite<br />aberta.</p>
-                <div className="flex items-center gap-2 mt-2">
-                  {AVS.slice(0,3).map((bg,i) => (
-                    <div key={i} className="w-5 h-5 rounded-full" style={{ background: bg, border: "1px solid rgba(0,0,0,.7)", marginLeft: i > 0 ? "-7px" : undefined }} />
-                  ))}
-                  <span style={mono("7px","rgba(255,255,255,0.55)")}>6 pessoas</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Match badge */}
-            <div className="absolute z-20 rounded-full"
-              style={{ top: "80px", left: "10px", padding: "8px 14px", background: "rgba(5,5,6,0.88)", border: "1px solid rgba(255,255,255,0.18)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", boxShadow: "0 8px 24px rgba(0,0,0,.6)", ...mono("8px","#fff") }}>
-              98% match
-            </div>
           </div>
         </div>
       </section>
 
-      {/* ══ LIFESTYLE MOMENTS ═══════════════════════════════════════════════════ */}
+      {/* ══════════════════════════════════════════ QUICK STATS */}
+      <div style={{ borderBottom: "1px solid rgba(255,255,255,0.07)", padding: "32px 24px" }}>
+        <div className="max-w-4xl mx-auto grid grid-cols-3 gap-4 text-center">
+          {[{ v:"2.4k+", l:"pessoas em SP" }, { v:"18", l:"parceiros ativos" }, { v:"100%", l:"gratuito" }].map((s) => (
+            <div key={s.l} className="flex flex-col gap-1.5">
+              <span style={{ ...serif("clamp(26px,6vw,44px)") }}>{s.v}</span>
+              <span style={mono("8px","rgba(255,255,255,0.38)")}>{s.l}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ══════════════════════════════════════════ LIFESTYLE MOMENTS */}
+      {/* Photo ↔ copy ↔ atmosphere fully aligned */}
       <section style={{ padding: "96px 24px" }}>
         <div className="max-w-4xl mx-auto">
           <div className="flex flex-col gap-3 mb-14">
@@ -214,23 +221,19 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {MOMENTS.map((m, i) => (
+            {MOMENTS.map((m) => (
               <div key={m.src} className="relative overflow-hidden rounded-2xl flex flex-col justify-end"
                 style={{ aspectRatio: "3 / 4", border: "1px solid rgba(255,255,255,0.08)", padding: "20px" }}>
-                {/* Real photo */}
                 <Image src={m.src} fill sizes="(max-width:768px) 100vw, 33vw" className="object-cover object-center" alt="" />
-                {/* Cinematic warm overlay */}
-                <div className="absolute inset-0" style={{ background: MOMENT_OVERLAYS[i] }} />
-                {/* Noise grain */}
+                <div className="absolute inset-0" style={{ background: m.overlay }} />
                 <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: NOISE, opacity: 0.09, mixBlendMode: "overlay" }} />
 
-                {/* Tag badge */}
+                {/* Environment tag */}
                 <div className="absolute top-4 left-4 z-10 rounded-full"
                   style={{ padding: "5px 11px", ...mono("7.5px","#fff"), background: "rgba(0,0,0,.45)", border: "1px solid rgba(255,255,255,.22)", backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)" }}>
                   {m.tag}
                 </div>
 
-                {/* Content */}
                 <div className="relative z-10">
                   <span style={mono("8px","rgba(255,255,255,0.68)")}>{m.when}</span>
                   <h3 style={{ ...serif("27px"), display: "block", marginTop: "8px", whiteSpace: "pre-line" }}>{m.title}</h3>
@@ -248,14 +251,50 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ══ PHOTO COLLAGE ═══════════════════════════════════════════════════════ */}
+      {/* ══════════════════════════════════════════ TESTIMONIALS */}
+      <section style={{ padding: "0 24px 96px" }}>
+        <div className="max-w-4xl mx-auto">
+          <div className="flex flex-col gap-3 mb-14">
+            <span style={mono("9px","rgba(255,255,255,0.38)")}>Quem já foi</span>
+            <h2 style={{ ...serif("clamp(38px,8vw,58px)"), display: "block" }}>2.4k pessoas.<br />Milhares de noites.</h2>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {TESTIMONIALS.map((t, i) => (
+              <div key={i} className="flex flex-col gap-5 rounded-2xl p-6"
+                style={{ background: "rgba(255,255,255,0.034)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                {/* Stars */}
+                <div className="flex gap-1">
+                  {[...Array(5)].map((_, si) => (
+                    <span key={si} style={{ color: "#FFB259", fontSize: "12px" }}>★</span>
+                  ))}
+                </div>
+                {/* Quote */}
+                <p style={{ fontWeight: 300, fontSize: "14px", color: "rgba(255,255,255,0.80)", lineHeight: 1.7, flex: 1 }}>
+                  &ldquo;{t.quote}&rdquo;
+                </p>
+                {/* Reviewer */}
+                <div className="flex items-center gap-3 pt-2" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+                  <div className="w-8 h-8 rounded-full flex-shrink-0" style={{ background: t.av, border: "1px solid rgba(255,255,255,0.12)" }} />
+                  <div className="flex flex-col">
+                    <span style={{ fontSize: "13px", fontWeight: 500, color: "#fff" }}>{t.name}, {t.age}</span>
+                    <span style={mono("7.5px","rgba(255,255,255,0.40)")}>{t.event}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════ PHOTO COLLAGE */}
       <section style={{ padding: "0 24px 96px" }}>
         <div className="max-w-4xl mx-auto grid grid-cols-2 gap-4">
 
           {/* Left tall — lifestyle-4 (diverse dinner group) */}
           <div className="relative overflow-hidden rounded-2xl" style={{ aspectRatio: "3 / 4", border: "1px solid rgba(255,255,255,0.08)" }}>
             <Image src="/images/lifestyle-4.jpg" fill sizes="(max-width:768px) 50vw, 50vw" className="object-cover object-center" alt="" />
-            <div className="absolute inset-0" style={{ background: "radial-gradient(70% 50% at 50% 30%,rgba(255,80,0,.28),transparent 65%),linear-gradient(180deg,transparent 30%,rgba(0,0,0,.78) 100%)" }} />
+            <div className="absolute inset-0" style={{ background: "radial-gradient(70% 50% at 50% 30%,rgba(255,80,0,.22),transparent 60%),linear-gradient(180deg,transparent 30%,rgba(0,0,0,.80) 100%)" }} />
             <div className="absolute inset-0" style={{ backgroundImage: NOISE, opacity: 0.08, mixBlendMode: "overlay" }} />
             <div className="absolute bottom-5 left-5 right-5 z-10">
               <p style={{ ...serif("22px"), marginBottom: "6px" }}>Conexões que<br />ficam depois.</p>
@@ -263,20 +302,16 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Right — two stacked */}
+          {/* Right — stacked */}
           <div className="flex flex-col gap-4">
-
-            {/* Top — lifestyle-5 (intimate night dinner) */}
             <div className="relative overflow-hidden rounded-2xl flex-1" style={{ minHeight: "160px", border: "1px solid rgba(255,255,255,0.08)" }}>
-              <Image src="/images/lifestyle-5.jpg" fill sizes="(max-width:768px) 50vw, 25vw" className="object-cover object-center" alt="" />
-              <div className="absolute inset-0" style={{ background: "radial-gradient(80% 60% at 30% 0%,rgba(197,60,90,.42),transparent 70%),linear-gradient(180deg,transparent 35%,rgba(0,0,0,.82) 100%)" }} />
+              <Image src="/images/lifestyle-5.jpg" fill sizes="(max-width:768px) 50vw, 25vw" className="object-cover" style={{ objectPosition: "center 20%" }} alt="" />
+              <div className="absolute inset-0" style={{ background: "radial-gradient(80% 60% at 30% 0%,rgba(197,60,90,.40),transparent 70%),linear-gradient(180deg,transparent 35%,rgba(0,0,0,.84) 100%)" }} />
               <div className="absolute inset-0" style={{ backgroundImage: NOISE, opacity: 0.08, mixBlendMode: "overlay" }} />
               <div className="absolute bottom-4 left-4 right-4 z-10">
                 <p style={{ ...serif("18px") }}>Noites que<br />você conta.</p>
               </div>
             </div>
-
-            {/* Bottom — live stat card */}
             <div className="relative overflow-hidden rounded-2xl flex items-end p-5"
               style={{ minHeight: "160px", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
               <div className="flex flex-col gap-3 w-full">
@@ -285,30 +320,16 @@ export default function Home() {
                   <span style={mono("8px","rgba(255,255,255,0.55)")}>ao vivo · SP</span>
                 </div>
                 <p style={{ ...serif("22px") }}>27 rolês<br />esta semana.</p>
-                <Link href="/cadastro" className="hover:opacity-70 transition-opacity" style={mono("8px","rgba(255,255,255,0.45)")}>
-                  Ver eventos →
-                </Link>
+                <Link href="/cadastro" className="hover:opacity-70 transition-opacity" style={mono("8px","rgba(255,255,255,0.45)")}>Ver eventos →</Link>
               </div>
             </div>
-
           </div>
+
         </div>
       </section>
 
-      {/* ══ STATS ═══════════════════════════════════════════════════════════════ */}
-      <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)", borderBottom: "1px solid rgba(255,255,255,0.07)", padding: "40px 24px" }}>
-        <div className="max-w-4xl mx-auto grid grid-cols-3 gap-6 text-center">
-          {[{ v:"2.4k+", l:"em São Paulo" }, { v:"18", l:"parceiros ativos" }, { v:"100%", l:"gratuito" }].map((s) => (
-            <div key={s.l} className="flex flex-col gap-2">
-              <span style={{ ...serif("clamp(30px,7vw,52px)") }}>{s.v}</span>
-              <span style={mono("8px","rgba(255,255,255,0.38)")}>{s.l}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* ══ HOW IT WORKS ════════════════════════════════════════════════════════ */}
-      <section style={{ padding: "96px 24px" }}>
+      {/* ══════════════════════════════════════════ HOW IT WORKS */}
+      <section style={{ padding: "0 24px 96px" }}>
         <div className="max-w-4xl mx-auto">
           <div className="flex flex-col gap-3 mb-14">
             <span style={mono("9px","rgba(255,255,255,0.38)")}>Como funciona</span>
@@ -330,7 +351,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ══ EVENTS PREVIEW ══════════════════════════════════════════════════════ */}
+      {/* ══════════════════════════════════════════ EVENTS PREVIEW */}
       <section style={{ padding: "0 0 96px" }}>
         <div className="max-w-4xl mx-auto">
           <div className="flex items-end justify-between mb-8 px-6">
@@ -374,11 +395,47 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ══ FINAL CTA ═══════════════════════════════════════════════════════════ */}
+      {/* ══════════════════════════════════════════ FAQ */}
+      <section style={{ padding: "0 24px 96px" }}>
+        <div className="max-w-4xl mx-auto">
+          <div className="flex flex-col md:flex-row md:items-start md:gap-24 gap-14">
+
+            {/* Left — header */}
+            <div className="flex flex-col gap-3 md:w-72 flex-shrink-0">
+              <span style={mono("9px","rgba(255,255,255,0.38)")}>Perguntas frequentes</span>
+              <h2 style={{ ...serif("clamp(38px,8vw,54px)"), display: "block" }}>Tudo que você<br />quer saber.</h2>
+              <p style={{ fontWeight: 300, fontSize: "14px", color: "rgba(255,255,255,0.50)", lineHeight: 1.7, marginTop: "8px" }}>
+                Ainda tem dúvida? O SOLO é simples. Aqui vai o essencial.
+              </p>
+            </div>
+
+            {/* Right — Q&A list */}
+            <div className="flex-1 flex flex-col">
+              {FAQS.map((faq, i) => (
+                <div key={i} style={{ padding: "24px 0", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+                  <p style={{ fontWeight: 500, fontSize: "15px", color: "#fff", marginBottom: "10px" }}>{faq.q}</p>
+                  <p style={{ fontWeight: 300, fontSize: "14px", color: "rgba(255,255,255,0.55)", lineHeight: 1.75 }}>{faq.a}</p>
+                </div>
+              ))}
+              <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: "24px" }}>
+                <p style={{ fontWeight: 300, fontSize: "14px", color: "rgba(255,255,255,0.40)", lineHeight: 1.7 }}>
+                  Outra pergunta?{" "}
+                  <Link href="/cadastro" className="hover:opacity-80 transition-opacity" style={{ color: "rgba(255,255,255,0.75)", textDecoration: "underline", textDecorationColor: "rgba(255,255,255,0.25)" }}>
+                    Entre e descubra.
+                  </Link>
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════ FINAL CTA */}
       <section className="relative overflow-hidden" style={{ padding: "112px 24px" }}>
         <div className="absolute inset-0 pointer-events-none" style={{ background:
           "radial-gradient(80% 55% at 50% 110%,rgba(122,91,255,.34),transparent 70%)," +
-          "radial-gradient(70% 50% at 22% 0%,rgba(197,60,90,.22),transparent 70%)" }} />
+          "radial-gradient(70% 50% at 22% 0%,rgba(197,60,90,.20),transparent 70%)" }} />
         <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: NOISE, opacity: 0.06, mixBlendMode: "overlay" }} />
 
         <div className="relative z-10 max-w-xl mx-auto flex flex-col items-center text-center gap-8">
@@ -396,7 +453,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ══ FOOTER ══════════════════════════════════════════════════════════════ */}
+      {/* ══════════════════════════════════════════ FOOTER */}
       <footer style={{ borderTop: "1px solid rgba(255,255,255,0.07)", padding: "28px 24px" }}>
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-5">
           <Link href="/" className="flex items-center gap-2">
