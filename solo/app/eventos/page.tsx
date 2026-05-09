@@ -201,6 +201,74 @@ function EmptyMatchState() {
   );
 }
 
+// ─── Free plan limit helpers ──────────────────────────────────────────────────
+
+const FREE_INVITE_LIMIT = 1;
+
+function currentWeekKey() {
+  const d = new Date();
+  const jan1 = new Date(d.getFullYear(), 0, 1);
+  const wk = Math.ceil(((d.getTime() - jan1.getTime()) / 86400000 + jan1.getDay() + 1) / 7);
+  return `${d.getFullYear()}-W${wk}`;
+}
+
+function getFreeUsed(): number {
+  try {
+    const raw = localStorage.getItem("solo_free_invites");
+    if (!raw) return 0;
+    const { count, week } = JSON.parse(raw) as { count: number; week: string };
+    return week === currentWeekKey() ? count : 0;
+  } catch { return 0; }
+}
+
+function addFreeUse() {
+  localStorage.setItem(
+    "solo_free_invites",
+    JSON.stringify({ count: getFreeUsed() + 1, week: currentWeekKey() }),
+  );
+}
+
+// ─── FreeLimitModal ───────────────────────────────────────────────────────────
+
+function FreeLimitModal({ onClose }: { onClose: () => void }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center px-4 pb-6 sm:pb-0" onClick={onClose}>
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+      <div
+        className="relative z-10 w-full max-w-sm bg-[#18181B] border border-white/10 rounded-2xl p-6 shadow-2xl shadow-black/60"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="w-10 h-10 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-4">
+          <svg className="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+          </svg>
+        </div>
+        <h3 className="text-base font-bold text-[#FAFAFA] mb-1.5">
+          Você usou seu convite gratuito da semana.
+        </h3>
+        <p className="text-sm text-zinc-400 leading-relaxed mb-5">
+          Com SOLO Plus, você tem até 3 convites por semana e prioridade nos grupos compatíveis.
+        </p>
+        <div className="flex flex-col gap-2.5">
+          <Link
+            href="/planos"
+            className="w-full flex items-center justify-center py-3 rounded-xl bg-violet-500 hover:bg-violet-400 active:bg-violet-600 transition-colors text-white text-sm font-semibold"
+            style={{ boxShadow: "0 0 20px rgba(139,92,246,0.25)" }}
+          >
+            Conhecer Plus →
+          </Link>
+          <button
+            onClick={onClose}
+            className="w-full flex items-center justify-center py-3 rounded-xl border border-white/10 hover:border-white/20 transition-colors text-zinc-400 hover:text-zinc-300 text-sm font-medium"
+          >
+            Continuar no Free
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── EventoCard ────────────────────────────────────────────────────────────────
 
 function EventoCard({ evento, inscrito, saving, onQueroIr, interesseGrupo, savingGrupo, onQueroGrupo }: {
@@ -305,7 +373,9 @@ function EventoCard({ evento, inscrito, saving, onQueroIr, interesseGrupo, savin
         )}
         <p className="text-center text-[11px] text-zinc-600 leading-relaxed">
           Free inclui 1 convite/semana.{" "}
-          <span className="text-violet-500/70">Plus aumenta sua prioridade.</span>
+          <Link href="/planos" className="text-violet-500/70 hover:text-violet-400 transition-colors">
+            Conhecer Plus →
+          </Link>
         </p>
       </div>
     </div>
@@ -344,6 +414,7 @@ export default function EventosPage() {
   const [savingGrupoId, setSavingGrupoId] = useState<string | null>(null);
   const [grupoFormadoToast, setGrupoFormadoToast] = useState(false);
   const [actionError, setActionError] = useState("");
+  const [showFreeLimit, setShowFreeLimit] = useState(false);
 
   useEffect(() => {
     async function init() {
@@ -459,12 +530,17 @@ export default function EventosPage() {
 
   async function handleQueroGrupo(id: string) {
     if (!userId) return;
+    if (getFreeUsed() >= FREE_INVITE_LIMIT) {
+      setShowFreeLimit(true);
+      return;
+    }
     setSavingGrupoId(id);
     try {
       const { error } = await supabase
         .from("event_group_interest")
         .insert({ user_id: userId, event_id: id });
       if (error) throw error;
+      addFreeUse();
       setGrupoInteresses((prev) => new Set([...prev, id]));
       const formed = await tentarFormarGrupo(id);
       if (formed) {
@@ -507,6 +583,19 @@ export default function EventosPage() {
               {inscritos.size} inscri{inscritos.size > 1 ? "ções" : "ção"} confirmada{inscritos.size > 1 ? "s" : ""}
             </span>
           )}
+        </div>
+
+        {/* Plan indicator */}
+        <div className="flex items-center justify-between px-4 py-3 mb-6 bg-[#18181B] border border-white/10 rounded-xl">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Plano atual</span>
+            <span className="text-xs font-semibold text-[#FAFAFA]">SOLO Free</span>
+            <span className="text-zinc-700">·</span>
+            <span className="text-xs text-zinc-500">1 convite/semana</span>
+          </div>
+          <Link href="/planos" className="text-xs text-violet-400 hover:text-violet-300 transition-colors font-medium flex-shrink-0">
+            Conhecer Plus →
+          </Link>
         </div>
 
         {loadingPage ? (
@@ -577,6 +666,8 @@ export default function EventosPage() {
           </button>
         </div>
       )}
+
+      {showFreeLimit && <FreeLimitModal onClose={() => setShowFreeLimit(false)} />}
 
       {grupoFormadoToast && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-4 bg-[#18181B] border border-violet-500/20 rounded-2xl shadow-xl shadow-violet-500/20 animate-in fade-in slide-in-from-bottom-2 duration-300">

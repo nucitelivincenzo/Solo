@@ -150,10 +150,34 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* CTA */}
-        <div className="w-full bg-violet-500/10 border border-violet-500/20 rounded-2xl p-6 text-center">
-          <p className="text-violet-400 font-semibold text-sm mb-1">Em breve</p>
-          <p className="text-[#A1A1AA] text-sm">Explore perfis, envie mensagens e encontre sua conexão.</p>
+        {/* Plan card */}
+        <div className="w-full bg-[#18181B] border border-white/10 rounded-2xl overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.08]">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Seu plano</p>
+              <p className="text-base font-black text-[#FAFAFA] mt-0.5">SOLO Free</p>
+            </div>
+            <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-green-500/10 border border-green-500/20 text-green-400">
+              Ativo
+            </span>
+          </div>
+          <div className="px-5 py-4 flex flex-col gap-3">
+            <div className="flex items-center gap-3 text-sm">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0" />
+              <span className="text-zinc-400">1 convite gratuito por semana</span>
+            </div>
+            <div className="flex items-center gap-3 text-sm">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0" />
+              <span className="text-zinc-400">Acesso básico aos rolês</span>
+            </div>
+            <p className="text-xs text-zinc-500 leading-relaxed pt-1">
+              Com Plus, você sai mais vezes e entra com prioridade nos grupos compatíveis.
+            </p>
+            <Link href="/planos"
+              className="mt-1 flex items-center justify-center py-2.5 rounded-xl bg-violet-500 hover:bg-violet-400 transition-colors text-white text-xs font-semibold">
+              Conhecer Plus →
+            </Link>
+          </div>
         </div>
       </main>
     </div>
