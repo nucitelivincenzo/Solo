@@ -365,13 +365,13 @@ export default function PerfilPage() {
               Quer sair mais vezes? O Plus aumenta seus convites e sua prioridade nos grupos compatíveis.
             </p>
             <div className="flex items-center gap-3 pt-1">
-              <Link href="/cadastro"
+              <Link href="/planos"
                 className="flex-1 flex items-center justify-center py-2.5 rounded-xl bg-violet-500 hover:bg-violet-400 transition-colors text-white text-xs font-semibold">
                 Conhecer Plus →
               </Link>
-              <Link href="/cadastro"
+              <Link href="/planos"
                 className="flex-1 flex items-center justify-center py-2.5 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 transition-colors text-zinc-400 hover:text-zinc-300 text-xs font-medium">
-                Ver Black
+                Ver todos os planos
               </Link>
             </div>
           </div>
