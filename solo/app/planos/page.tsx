@@ -1,23 +1,83 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
 
+// ── Data ──────────────────────────────────────────────────────────────────────
+
+const PLUS_DETAILS = [
+  {
+    title: "Até 3 convites por semana",
+    desc: "Você pode demonstrar interesse em mais rolês durante a semana.",
+  },
+  {
+    title: "Prioridade em grupos compatíveis",
+    desc: "Quando houver disputa por vagas, o Plus aparece antes na formação dos grupos.",
+  },
+  {
+    title: "Acesso antecipado a alguns rolês",
+    desc: "Você vê determinadas experiências antes da lista geral.",
+  },
+  {
+    title: "Mais contexto antes de confirmar",
+    desc: "Você recebe mais informações sobre a experiência antes de decidir.",
+  },
+  {
+    title: "Benefícios básicos em parceiros",
+    desc: "Alguns bares e experiências podem oferecer condições especiais para usuários Plus.",
+  },
+];
+
+const BLACK_DETAILS = [
+  {
+    title: "Tudo do Plus",
+    desc: "Inclui os benefícios de frequência e prioridade do Plus.",
+  },
+  {
+    title: "Prioridade máxima nos grupos",
+    desc: "Você tem a maior prioridade na formação de grupos para experiências disputadas.",
+  },
+  {
+    title: "Acesso primeiro aos rolês mais disputados",
+    desc: "Experiências de maior demanda aparecem primeiro para usuários Black.",
+  },
+  {
+    title: "Experiências exclusivas SOLO",
+    desc: "Acesso a noites especiais, mesas selecionadas e experiências mais curadas.",
+  },
+  {
+    title: "Mesas menores e mais selecionadas",
+    desc: "Grupos mais reduzidos, com curadoria mais forte de perfil e intenção social.",
+  },
+  {
+    title: "Benefícios premium em parceiros",
+    desc: "Vantagens especiais em experiências e estabelecimentos parceiros.",
+  },
+];
+
+const FREE_DETAILS = [
+  "Criar conta e montar sua vibe",
+  "Explorar rolês da semana",
+  "1 convite gratuito por semana",
+  "Entrar em grupo quando formado",
+  "Chat e confirmação do rolê",
+];
+
 // ── Toast ─────────────────────────────────────────────────────────────────────
 
-function Toast({ onClose }: { onClose: () => void }) {
+function Toast({ plan, onClose }: { plan: "plus" | "black"; onClose: () => void }) {
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-4 bg-[#18181B] border border-violet-500/25 rounded-2xl shadow-2xl shadow-black/60 max-w-[90vw]">
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] flex items-center gap-3 px-5 py-4 bg-[#18181B] border border-violet-500/25 rounded-2xl shadow-2xl shadow-black/60 max-w-[90vw]">
       <div className="w-8 h-8 rounded-full bg-violet-500/10 border border-violet-500/20 flex items-center justify-center flex-shrink-0">
         <svg className="w-4 h-4 text-violet-400" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
         </svg>
       </div>
       <p className="text-sm text-zinc-200 leading-snug">
-        Interesse registrado para demonstração do MVP.
+        Interesse no {plan === "plus" ? "Plus" : "Black"} registrado para demonstração do MVP.
         <br />
-        <span className="text-zinc-500 text-xs">Pagamento real ainda não está ativo.</span>
+        <span className="text-zinc-500 text-xs">Pagamento real ainda não está ativo nesta versão.</span>
       </p>
       <button onClick={onClose} className="flex-shrink-0 text-zinc-600 hover:text-zinc-300 transition-colors ml-1">
         <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -28,7 +88,202 @@ function Toast({ onClose }: { onClose: () => void }) {
   );
 }
 
-// ── Check icon ────────────────────────────────────────────────────────────────
+// ── Detail row inside modal ────────────────────────────────────────────────────
+
+function DetailRow({ title, desc, accent }: { title: string; desc: string; accent: "violet" | "zinc" }) {
+  return (
+    <div className="flex flex-col gap-1 py-3.5 border-b border-white/[0.06] last:border-0">
+      <span className={`text-sm font-semibold ${accent === "violet" ? "text-violet-300" : "text-zinc-200"}`}>
+        {title}
+      </span>
+      <span className="text-xs text-zinc-500 leading-relaxed">{desc}</span>
+    </div>
+  );
+}
+
+// ── Plan modals ────────────────────────────────────────────────────────────────
+
+function PlusModal({ onClose, onInterest }: { onClose: () => void; onInterest: () => void }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center px-4 pb-0 sm:pb-0" onClick={onClose}>
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+      <div
+        className="relative z-10 w-full max-w-md bg-[#18181B] border border-violet-500/25 rounded-t-2xl sm:rounded-2xl shadow-2xl shadow-black/60 max-h-[92svh] flex flex-col"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Handle bar mobile */}
+        <div className="sm:hidden flex justify-center pt-3 pb-1">
+          <div className="w-10 h-1 rounded-full bg-white/10" />
+        </div>
+
+        {/* Header */}
+        <div className="flex items-start justify-between px-6 pt-4 pb-4 border-b border-violet-500/[0.12]">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-violet-400/90">SOLO Plus</span>
+              <span className="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest bg-violet-500 text-white">
+                Mais escolhido
+              </span>
+            </div>
+            <p className="text-xl font-black text-[#FAFAFA]" style={{ letterSpacing: "-0.02em" }}>
+              R$19,90<span className="text-sm font-light text-zinc-500">/mês</span>
+            </p>
+            <p className="text-[13px] text-zinc-400 mt-1 leading-snug max-w-xs">
+              Para quem quer sair mais vezes e ter mais chances de entrar nos grupos certos.
+            </p>
+          </div>
+          <button onClick={onClose} className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg text-zinc-500 hover:text-zinc-300 hover:bg-white/5 transition-colors mt-0.5">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Body */}
+        <div className="flex-1 overflow-y-auto px-6 py-4 flex flex-col gap-4">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">O que muda na prática</p>
+          <div className="flex flex-col">
+            {PLUS_DETAILS.map((d) => (
+              <DetailRow key={d.title} title={d.title} desc={d.desc} accent="violet" />
+            ))}
+          </div>
+
+          {/* Practical example */}
+          <div className="bg-violet-500/[0.08] border border-violet-500/20 rounded-xl px-4 py-3.5">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-violet-500/70 mb-1.5">Exemplo prático</p>
+            <p className="text-[13px] text-zinc-300 leading-relaxed">
+              No Free você tem 1 convite por semana. No Plus, pode entrar em até 3 rolês e ter prioridade para formar grupo.
+            </p>
+          </div>
+        </div>
+
+        {/* Footer CTAs */}
+        <div className="px-6 pb-6 pt-4 border-t border-white/[0.06] flex flex-col gap-2.5">
+          <button
+            onClick={onInterest}
+            className="w-full py-3.5 rounded-xl bg-violet-500 hover:bg-violet-400 active:bg-violet-600 transition-colors text-white text-sm font-semibold"
+            style={{ boxShadow: "0 0 24px rgba(139,92,246,0.30)" }}
+          >
+            Registrar interesse no Plus
+          </button>
+          <button
+            onClick={onClose}
+            className="w-full py-3 rounded-xl border border-white/10 hover:border-white/20 transition-colors text-zinc-400 hover:text-zinc-300 text-sm font-medium"
+          >
+            Voltar aos planos
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function BlackModal({ onClose, onInterest }: { onClose: () => void; onInterest: () => void }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center px-4 pb-0 sm:pb-0" onClick={onClose}>
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+      <div
+        className="relative z-10 w-full max-w-md bg-[#18181B] border border-white/[0.14] rounded-t-2xl sm:rounded-2xl shadow-2xl shadow-black/60 max-h-[92svh] flex flex-col"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="sm:hidden flex justify-center pt-3 pb-1">
+          <div className="w-10 h-1 rounded-full bg-white/10" />
+        </div>
+
+        {/* Header */}
+        <div className="flex items-start justify-between px-6 pt-4 pb-4 border-b border-white/[0.07]">
+          <div>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 block mb-1">SOLO Black</span>
+            <p className="text-xl font-black text-[#FAFAFA]" style={{ letterSpacing: "-0.02em" }}>
+              R$49,90<span className="text-sm font-light text-zinc-500">/mês</span>
+            </p>
+            <p className="text-[13px] text-zinc-400 mt-1 leading-snug max-w-xs">
+              Para quem quer prioridade máxima, experiências especiais e grupos mais curados.
+            </p>
+          </div>
+          <button onClick={onClose} className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg text-zinc-500 hover:text-zinc-300 hover:bg-white/5 transition-colors mt-0.5">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Body */}
+        <div className="flex-1 overflow-y-auto px-6 py-4 flex flex-col gap-4">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">O que muda na prática</p>
+          <div className="flex flex-col">
+            {BLACK_DETAILS.map((d) => (
+              <DetailRow key={d.title} title={d.title} desc={d.desc} accent="zinc" />
+            ))}
+          </div>
+
+          <div className="bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3.5">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-1.5">Exemplo prático</p>
+            <p className="text-[13px] text-zinc-300 leading-relaxed">
+              Em uma experiência como um rooftop disputado, o Black representa a camada de maior prioridade e acesso da SOLO.
+            </p>
+          </div>
+        </div>
+
+        {/* Footer CTAs */}
+        <div className="px-6 pb-6 pt-4 border-t border-white/[0.06] flex flex-col gap-2.5">
+          <button
+            onClick={onInterest}
+            className="w-full py-3.5 rounded-xl bg-gradient-to-r from-zinc-100 to-zinc-300 hover:from-white hover:to-zinc-200 active:from-zinc-200 active:to-zinc-400 transition-all text-zinc-900 text-sm font-semibold"
+          >
+            Registrar interesse no Black
+          </button>
+          <button
+            onClick={onClose}
+            className="w-full py-3 rounded-xl border border-white/10 hover:border-white/20 transition-colors text-zinc-400 hover:text-zinc-300 text-sm font-medium"
+          >
+            Voltar aos planos
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function FreeModal({ onClose }: { onClose: () => void }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center px-4 pb-0 sm:pb-0" onClick={onClose}>
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+      <div
+        className="relative z-10 w-full max-w-sm bg-[#18181B] border border-white/10 rounded-t-2xl sm:rounded-2xl shadow-2xl shadow-black/60"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="sm:hidden flex justify-center pt-3 pb-1">
+          <div className="w-10 h-1 rounded-full bg-white/10" />
+        </div>
+        <div className="px-6 pt-5 pb-6 flex flex-col gap-4">
+          <div>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 block mb-1">SOLO Free</span>
+            <p className="text-[13px] text-zinc-400 leading-relaxed">
+              O Free permite testar a SOLO: criar perfil, explorar rolês e usar 1 convite gratuito por semana.
+            </p>
+          </div>
+          <div className="flex flex-col gap-2 border-t border-white/[0.07] pt-3">
+            {FREE_DETAILS.map((f) => (
+              <div key={f} className="flex items-center gap-2.5 text-[13px] text-zinc-400">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0" />
+                {f}
+              </div>
+            ))}
+          </div>
+          <button
+            onClick={onClose}
+            className="mt-1 w-full py-3 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 transition-colors text-zinc-300 text-sm font-medium"
+          >
+            Entendi
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Simple benefit row (cards) ────────────────────────────────────────────────
 
 function BenefitRow({ text, icon, highlight }: { text: string; icon: string; highlight?: boolean }) {
   return (
@@ -41,14 +296,25 @@ function BenefitRow({ text, icon, highlight }: { text: string; icon: string; hig
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 
+type OpenModal = "free" | "plus" | "black" | null;
+type ToastPlan = "plus" | "black" | null;
+
 export default function PlanosPage() {
-  const [showToast, setShowToast] = useState(false);
+  const [openModal, setOpenModal] = useState<OpenModal>(null);
+  const [toastPlan, setToastPlan] = useState<ToastPlan>(null);
+
+  const closeModal = useCallback(() => setOpenModal(null), []);
+
+  function handleInterest(plan: "plus" | "black") {
+    setOpenModal(null);
+    setToastPlan(plan);
+  }
 
   useEffect(() => {
-    if (!showToast) return;
-    const t = setTimeout(() => setShowToast(false), 3500);
+    if (!toastPlan) return;
+    const t = setTimeout(() => setToastPlan(null), 4000);
     return () => clearTimeout(t);
-  }, [showToast]);
+  }, [toastPlan]);
 
   return (
     <div className="min-h-screen bg-[#0F0F11] text-[#FAFAFA]">
@@ -65,7 +331,6 @@ export default function PlanosPage() {
             </svg>
             Voltar ao perfil
           </Link>
-
           <div>
             <h1 className="text-3xl font-black text-[#FAFAFA]" style={{ letterSpacing: "-0.02em" }}>Planos SOLO</h1>
             <p className="text-[#A1A1AA] text-sm mt-2 leading-relaxed max-w-md">
@@ -77,7 +342,7 @@ export default function PlanosPage() {
         {/* ── Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-start">
 
-          {/* ── FREE */}
+          {/* FREE */}
           <div className="rounded-2xl border border-white/10 bg-white/[0.025] p-6 flex flex-col gap-5">
             <div className="flex items-start justify-between gap-3">
               <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">SOLO Free</span>
@@ -87,54 +352,46 @@ export default function PlanosPage() {
             </div>
 
             <div>
-              <div className="flex items-baseline gap-1">
-                <span className="text-4xl font-black text-[#FAFAFA]" style={{ letterSpacing: "-0.03em" }}>R$0</span>
-                <span className="text-sm text-zinc-500 ml-1">para começar</span>
-              </div>
+              <p className="text-4xl font-black text-[#FAFAFA]" style={{ letterSpacing: "-0.03em" }}>
+                R$0 <span className="text-sm font-light text-zinc-500">para começar</span>
+              </p>
               <p className="text-[13px] text-zinc-400 leading-relaxed mt-2">
                 Para começar, explorar a SOLO e viver a primeira experiência.
               </p>
             </div>
 
             <div className="flex flex-col gap-2.5 border-t border-white/[0.07] pt-4">
-              {[
-                "Criar conta e montar sua vibe",
-                "Explorar rolês da semana",
-                "1 convite gratuito por semana",
-                "Entrar em grupo quando formado",
-                "Chat e confirmação do rolê",
-              ].map((f) => <BenefitRow key={f} text={f} icon="○" />)}
+              {FREE_DETAILS.map((f) => <BenefitRow key={f} text={f} icon="○" />)}
             </div>
 
-            <button
-              disabled
-              className="mt-auto w-full py-3 rounded-xl border border-white/10 text-zinc-500 text-xs font-semibold cursor-default bg-white/[0.025] flex items-center justify-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-green-500 flex-shrink-0" />
-              Plano atual
-            </button>
-
-            <p className="text-[11px] text-zinc-600 leading-relaxed -mt-1">
-              Com o Free, você testa a proposta da SOLO sem pagar.
-            </p>
+            <div className="flex flex-col gap-2 mt-auto">
+              <button
+                disabled
+                className="w-full py-3 rounded-xl border border-white/10 text-zinc-500 text-xs font-semibold cursor-default bg-white/[0.025] flex items-center justify-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-green-500 flex-shrink-0" />
+                Plano atual
+              </button>
+              <button
+                onClick={() => setOpenModal("free")}
+                className="w-full py-2.5 rounded-xl text-zinc-600 hover:text-zinc-400 text-xs font-medium transition-colors">
+                Ver limites do Free
+              </button>
+            </div>
           </div>
 
-          {/* ── PLUS */}
+          {/* PLUS */}
           <div className="relative rounded-2xl border border-violet-500/40 bg-violet-500/[0.06] p-6 flex flex-col gap-5"
             style={{ boxShadow: "0 0 48px rgba(139,92,246,0.08)" }}>
             <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-violet-500 rounded-full px-3.5 py-1 text-[9px] font-bold uppercase tracking-widest text-white whitespace-nowrap">
               Mais escolhido
             </div>
 
-            <div className="flex items-start justify-between gap-3 pt-1">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-violet-400/90">SOLO Plus</span>
-            </div>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-violet-400/90 pt-1">SOLO Plus</span>
 
             <div>
-              <div className="flex items-baseline gap-1">
-                <span className="text-4xl font-black text-[#FAFAFA]" style={{ letterSpacing: "-0.03em" }}>R$19</span>
-                <span className="text-xl font-light text-white/65">,90</span>
-                <span className="text-sm text-zinc-500 ml-1">/ mês</span>
-              </div>
+              <p className="text-4xl font-black text-[#FAFAFA]" style={{ letterSpacing: "-0.03em" }}>
+                R$19,90 <span className="text-sm font-light text-zinc-500">/mês</span>
+              </p>
               <p className="text-[13px] text-zinc-300 leading-relaxed mt-2">
                 Para quem quer sair mais vezes e ter mais chances de entrar nos grupos certos.
               </p>
@@ -154,29 +411,21 @@ export default function PlanosPage() {
             </div>
 
             <button
-              onClick={() => setShowToast(true)}
+              onClick={() => setOpenModal("plus")}
               className="mt-auto w-full py-3 rounded-xl bg-violet-500 hover:bg-violet-400 active:bg-violet-600 transition-colors text-white text-xs font-semibold"
               style={{ boxShadow: "0 0 24px rgba(139,92,246,0.30)" }}>
-              Tenho interesse no Plus
+              Ver detalhes do Plus →
             </button>
-
-            <p className="text-[11px] text-zinc-500 leading-relaxed -mt-1">
-              Com o Plus, você aumenta frequência, prioridade e acesso a oportunidades sociais.
-            </p>
           </div>
 
-          {/* ── BLACK */}
+          {/* BLACK */}
           <div className="rounded-2xl border border-white/[0.11] bg-white/[0.018] p-6 flex flex-col gap-5">
-            <div className="flex items-start justify-between gap-3">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">SOLO Black</span>
-            </div>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">SOLO Black</span>
 
             <div>
-              <div className="flex items-baseline gap-1">
-                <span className="text-4xl font-black text-[#FAFAFA]" style={{ letterSpacing: "-0.03em" }}>R$49</span>
-                <span className="text-xl font-light text-white/65">,90</span>
-                <span className="text-sm text-zinc-500 ml-1">/ mês</span>
-              </div>
+              <p className="text-4xl font-black text-[#FAFAFA]" style={{ letterSpacing: "-0.03em" }}>
+                R$49,90 <span className="text-sm font-light text-zinc-500">/mês</span>
+              </p>
               <p className="text-[13px] text-zinc-400 leading-relaxed mt-2">
                 Para quem quer prioridade máxima, experiências especiais e grupos mais curados.
               </p>
@@ -191,22 +440,15 @@ export default function PlanosPage() {
                 { text: "Mesas menores e mais selecionadas", first: false },
                 { text: "Benefícios premium em parceiros", first: false },
               ].map(({ text, first }) => (
-                <BenefitRow key={text} text={text} icon="◆"
-                  highlight={undefined}
-                  {...(!first ? {} : { highlight: false })}
-                />
+                <BenefitRow key={text} text={text} icon="◆" highlight={first ? false : undefined} />
               ))}
             </div>
 
             <button
-              onClick={() => setShowToast(true)}
+              onClick={() => setOpenModal("black")}
               className="mt-auto w-full py-3 rounded-xl bg-gradient-to-r from-zinc-100 to-zinc-300 hover:from-white hover:to-zinc-200 active:from-zinc-200 active:to-zinc-400 transition-all text-zinc-900 text-xs font-semibold">
-              Tenho interesse no Black
+              Ver detalhes do Black →
             </button>
-
-            <p className="text-[11px] text-zinc-600 leading-relaxed -mt-1">
-              Com o Black, você acessa a camada mais exclusiva da SOLO.
-            </p>
           </div>
 
         </div>
@@ -219,8 +461,6 @@ export default function PlanosPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-
-            {/* Free */}
             <div className="rounded-2xl border border-white/10 bg-white/[0.025] p-5 flex flex-col gap-4">
               <div className="flex items-center gap-3">
                 <span className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-[10px] font-bold text-zinc-400 flex-shrink-0">F</span>
@@ -236,7 +476,6 @@ export default function PlanosPage() {
               </div>
             </div>
 
-            {/* Plus */}
             <div className="rounded-2xl border border-violet-500/30 bg-violet-500/[0.05] p-5 flex flex-col gap-4">
               <div className="flex items-center gap-3">
                 <span className="w-8 h-8 rounded-full bg-violet-500/15 border border-violet-500/25 flex items-center justify-center text-[10px] font-bold text-violet-400 flex-shrink-0">P</span>
@@ -252,7 +491,6 @@ export default function PlanosPage() {
               </div>
             </div>
 
-            {/* Black */}
             <div className="rounded-2xl border border-white/[0.11] bg-white/[0.018] p-5 flex flex-col gap-4">
               <div className="flex items-center gap-3">
                 <span className="w-8 h-8 rounded-full bg-white/5 border border-white/15 flex items-center justify-center text-[10px] font-bold text-zinc-300 flex-shrink-0">B</span>
@@ -267,11 +505,9 @@ export default function PlanosPage() {
                 <p className="flex items-start gap-2"><span className="text-zinc-400 flex-shrink-0">◆</span>Experiências especiais e grupos mais curados</p>
               </div>
             </div>
-
           </div>
 
-          {/* Progressão visual */}
-          <div className="flex items-center gap-2 text-[11px] text-zinc-600 font-medium">
+          <div className="flex items-center gap-2 text-[11px] text-zinc-600 font-medium flex-wrap">
             <span className="px-2.5 py-1 rounded-full border border-white/10 bg-white/5 text-zinc-500">Free</span>
             <span>→</span>
             <span className="px-2.5 py-1 rounded-full border border-violet-500/30 bg-violet-500/10 text-violet-400">Plus</span>
@@ -290,7 +526,13 @@ export default function PlanosPage() {
 
       </main>
 
-      {showToast && <Toast onClose={() => setShowToast(false)} />}
+      {/* Modals */}
+      {openModal === "plus"  && <PlusModal  onClose={closeModal} onInterest={() => handleInterest("plus")}  />}
+      {openModal === "black" && <BlackModal onClose={closeModal} onInterest={() => handleInterest("black")} />}
+      {openModal === "free"  && <FreeModal  onClose={closeModal} />}
+
+      {/* Toast */}
+      {toastPlan && <Toast plan={toastPlan} onClose={() => setToastPlan(null)} />}
     </div>
   );
 }
