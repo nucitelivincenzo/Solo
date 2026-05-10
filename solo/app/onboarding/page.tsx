@@ -5,12 +5,12 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
 const STEP1_OPTIONS = [
-  { id: "balada",         label: "Balada",        emoji: "🎉" },
-  { id: "bar_descolado",  label: "Bar descolado",  emoji: "🍹" },
-  { id: "show_ao_vivo",   label: "Show ao vivo",   emoji: "🎸" },
-  { id: "rooftop",        label: "Rooftop",        emoji: "🌆" },
-  { id: "bar_de_bairro",  label: "Bar de bairro",  emoji: "🍺" },
-  { id: "festa_tematica", label: "Festa temática", emoji: "🎭" },
+  { id: "happy_hour",     label: "Happy hour",      emoji: "🍸" },
+  { id: "bar_casual",     label: "Bar casual",       emoji: "🍻" },
+  { id: "jantar_grupo",   label: "Jantar em grupo",  emoji: "🍽️" },
+  { id: "rooftop",        label: "Rooftop",          emoji: "🏙️" },
+  { id: "balada_premium", label: "Balada premium",   emoji: "🪩" },
+  { id: "noite_drinks",   label: "Noite com drinks", emoji: "🍹" },
 ];
 
 const STEP2_OPTIONS = [
