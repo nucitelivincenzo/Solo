@@ -164,7 +164,6 @@ function gerarExplicacao(user: MatchedUser): string {
   if (user.sameAmbiente && user.sameIntencao && user.ambiente && user.intencao) {
     return `Curtem ${AMBIENTE_LABELS[user.ambiente].toLowerCase()} e buscam ${INTENCAO_TEXT[user.intencao]} — uma combinação forte.`;
   }
-
   const partes: string[] = [];
   if (user.sameIntencao && user.intencao) partes.push(`buscam ${INTENCAO_TEXT[user.intencao]}`);
   if (user.sameAmbiente && user.ambiente)  partes.push(`curtem ${AMBIENTE_LABELS[user.ambiente].toLowerCase()}`);
@@ -172,7 +171,6 @@ function gerarExplicacao(user: MatchedUser): string {
   else if (user.vibeClose)                 partes.push("têm uma vibe social bem parecida");
   else if (user.energiaClose)              partes.push("combinam no ritmo da noite");
   if (user.sbClose && partes.length < 2)   partes.push("se comportam de forma parecida em grupos");
-
   if (partes.length === 0) return "Têm alguns pontos em comum no estilo de noite.";
   if (partes.length === 1) return `Vocês ${partes[0]}.`;
   return `Vocês ${partes[0]} e ${partes[1]}.`;
@@ -182,7 +180,6 @@ function MatchCard({ user }: { user: MatchedUser }) {
   const pct = user.percentage;
   const isHigh = pct >= 80;
   const isMid  = pct >= 60;
-
   const pctColor   = isHigh ? "text-violet-400"  : isMid ? "text-emerald-400" : "text-amber-400";
   const cardBorder = isHigh ? "border-violet-500/20 hover:border-violet-500/40" : "border-white/10 hover:border-white/20";
   const badgeCls   = isHigh
@@ -191,17 +188,15 @@ function MatchCard({ user }: { user: MatchedUser }) {
     ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
     : "bg-amber-500/10 border-amber-500/20 text-amber-400";
   const levelLabel = isHigh ? "Alta compatibilidade" : isMid ? "Boa conexão" : "Compatibilidade moderada";
-
   const badges: string[] = [];
-  if (user.sameAmbiente && user.ambiente)       badges.push(AMBIENTE_LABELS[user.ambiente]);
-  if (user.sameIntencao && user.intencao)       badges.push(INTENCAO_BADGE[user.intencao]);
-  if (user.vibeClose)                           badges.push("Vibe parecida");
-  if (user.energiaClose)                        badges.push("Mesma energia");
-  if (user.sbClose && badges.length < 3)        badges.push("Estilo social próximo");
+  if (user.sameAmbiente && user.ambiente)  badges.push(AMBIENTE_LABELS[user.ambiente]);
+  if (user.sameIntencao && user.intencao)  badges.push(INTENCAO_BADGE[user.intencao]);
+  if (user.vibeClose)                      badges.push("Vibe parecida");
+  if (user.energiaClose)                   badges.push("Mesma energia");
+  if (user.sbClose && badges.length < 3)   badges.push("Estilo social próximo");
 
   return (
     <div className={`bg-[#18181B] border rounded-2xl p-5 flex flex-col gap-4 transition-all duration-200 hover:shadow-lg hover:shadow-black/20 hover:-translate-y-0.5 ${cardBorder}`}>
-      {/* Header */}
       <div className="flex items-center gap-4">
         <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${matchGradient(user.id)} flex items-center justify-center text-white text-sm font-bold flex-shrink-0 shadow-md`}>
           {matchInitials(user.name)}
@@ -215,8 +210,6 @@ function MatchCard({ user }: { user: MatchedUser }) {
           <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${badgeCls}`}>{levelLabel}</span>
         </div>
       </div>
-
-      {/* Shared dimensions */}
       {badges.length > 0 && (
         <div className="flex flex-wrap gap-1.5">
           {badges.map((b) => (
@@ -227,8 +220,6 @@ function MatchCard({ user }: { user: MatchedUser }) {
           ))}
         </div>
       )}
-
-      {/* Human explanation */}
       <p className="text-[#A1A1AA] text-xs leading-relaxed bg-white/5 border border-white/5 rounded-xl px-3 py-2.5">
         {gerarExplicacao(user)}
       </p>
@@ -258,31 +249,24 @@ function EmptyMatchState() {
   );
 }
 
-// ─── Free plan limit helpers ──────────────────────────────────────────────────
+// ─── Free plan helpers ────────────────────────────────────────────────────────
+// Tracks 1 active group inscription at a time. Cancelling liberates it.
 
-const FREE_INVITE_LIMIT = 1;
+interface FreeActiveGroup { eventId: string; eventNome: string; }
 
-function currentWeekKey() {
-  const d = new Date();
-  const jan1 = new Date(d.getFullYear(), 0, 1);
-  const wk = Math.ceil(((d.getTime() - jan1.getTime()) / 86400000 + jan1.getDay() + 1) / 7);
-  return `${d.getFullYear()}-W${wk}`;
-}
-
-function getFreeUsed(): number {
+function getFreeActiveGroup(): FreeActiveGroup | null {
   try {
-    const raw = localStorage.getItem("solo_free_invites");
-    if (!raw) return 0;
-    const { count, week } = JSON.parse(raw) as { count: number; week: string };
-    return week === currentWeekKey() ? count : 0;
-  } catch { return 0; }
+    const raw = localStorage.getItem("solo_free_active_group");
+    return raw ? (JSON.parse(raw) as FreeActiveGroup) : null;
+  } catch { return null; }
 }
 
-function addFreeUse() {
-  localStorage.setItem(
-    "solo_free_invites",
-    JSON.stringify({ count: getFreeUsed() + 1, week: currentWeekKey() }),
-  );
+function setFreeActiveGroupLS(eventId: string, eventNome: string): void {
+  localStorage.setItem("solo_free_active_group", JSON.stringify({ eventId, eventNome }));
+}
+
+function clearFreeActiveGroupLS(): void {
+  localStorage.removeItem("solo_free_active_group");
 }
 
 // ─── FreeLimitModal ───────────────────────────────────────────────────────────
@@ -301,10 +285,10 @@ function FreeLimitModal({ onClose }: { onClose: () => void }) {
           </svg>
         </div>
         <h3 className="text-base font-bold text-[#FAFAFA] mb-1.5">
-          Você usou seu convite gratuito da semana.
+          Você já tem uma inscrição de grupo ativa.
         </h3>
         <p className="text-sm text-zinc-400 leading-relaxed mb-5">
-          Com SOLO Plus, você tem até 3 convites por semana e prioridade nos grupos compatíveis.
+          Cancele sua inscrição atual para escolher outro rolê, ou conheça o Plus para entrar em até 3 grupos por semana.
         </p>
         <div className="flex flex-col gap-2.5">
           <Link
@@ -326,11 +310,62 @@ function FreeLimitModal({ onClose }: { onClose: () => void }) {
   );
 }
 
+// ─── VillaJkModal ─────────────────────────────────────────────────────────────
+
+function VillaJkModal({ onContinue, onClose }: { onContinue: () => void; onClose: () => void }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center px-4 pb-6 sm:pb-0" onClick={onClose}>
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+      <div
+        className="relative z-10 w-full max-w-sm bg-[#18181B] border border-white/10 rounded-2xl p-6 shadow-2xl shadow-black/60"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="w-10 h-10 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center mb-4">
+          <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
+          </svg>
+        </div>
+        <h3 className="text-base font-bold text-[#FAFAFA] mb-1.5">
+          Villa JK é uma experiência mais disputada.
+        </h3>
+        <p className="text-sm text-zinc-400 leading-relaxed mb-5">
+          Usuários Plus e Black têm prioridade neste rolê. No plano Free, sua posição na fila pode ser mais baixa.
+        </p>
+        <div className="flex flex-col gap-2.5">
+          <Link
+            href="/planos"
+            className="w-full flex items-center justify-center py-3 rounded-xl bg-violet-500 hover:bg-violet-400 active:bg-violet-600 transition-colors text-white text-sm font-semibold"
+            style={{ boxShadow: "0 0 20px rgba(139,92,246,0.25)" }}
+          >
+            Conhecer Plus →
+          </Link>
+          <button
+            onClick={onContinue}
+            className="w-full flex items-center justify-center py-3 rounded-xl border border-white/10 hover:border-white/20 transition-colors text-zinc-400 hover:text-zinc-300 text-sm font-medium"
+          >
+            Continuar no Free mesmo assim
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── EventoCard ────────────────────────────────────────────────────────────────
 
-function EventoCard({ evento, inscrito, saving, onQueroIr, interesseGrupo, savingGrupo, onQueroGrupo }: {
-  evento: Evento; inscrito: boolean; saving: boolean; onQueroIr: (id: string) => void;
-  interesseGrupo: boolean; savingGrupo: boolean; onQueroGrupo: (id: string) => void;
+function EventoCard({
+  evento, interesseSimples, savingSimples, onQueroIr,
+  interesseGrupo, savingGrupo, onQueroGrupo, onCancelarGrupo, cancelingGrupo,
+}: {
+  evento: Evento;
+  interesseSimples: boolean;
+  savingSimples: boolean;
+  onQueroIr: (id: string) => void;
+  interesseGrupo: boolean;
+  savingGrupo: boolean;
+  onQueroGrupo: (id: string) => void;
+  onCancelarGrupo: (id: string) => void;
+  cancelingGrupo: boolean;
 }) {
   const tipo    = TIPO_CONFIG[evento.tipo];
   const tkt     = TICKET_CONFIG[evento.ticket];
@@ -338,11 +373,11 @@ function EventoCard({ evento, inscrito, saving, onQueroIr, interesseGrupo, savin
 
   return (
     <div className={`bg-[#18181B] border rounded-2xl overflow-hidden flex flex-col transition-all duration-200 group hover:-translate-y-0.5 hover:shadow-md hover:shadow-black/20
-      ${inscrito ? "border-violet-500/40" : "border-white/10 hover:border-white/20"}`}>
+      ${interesseGrupo ? "border-violet-500/40" : "border-white/10 hover:border-white/20"}`}>
       <div className={`h-1 w-full ${tipo.bar}`} />
       <div className="p-6 flex flex-col gap-5 flex-1">
 
-        {/* Badges row */}
+        {/* Badges */}
         <div className="flex items-center gap-2 flex-wrap">
           <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${tipo.bg} ${tipo.color}`}>
             {tipo.emoji} {evento.tag}
@@ -360,7 +395,7 @@ function EventoCard({ evento, inscrito, saving, onQueroIr, interesseGrupo, savin
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-white/5 border border-white/10 text-zinc-500">
             Vibe: {evento.vibe}
           </span>
-          {inscrito && (
+          {interesseGrupo && (
             <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-violet-500/10 border border-violet-500/20 text-violet-400">
               <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
               Você vai!
@@ -399,33 +434,50 @@ function EventoCard({ evento, inscrito, saving, onQueroIr, interesseGrupo, savin
 
         <div className="h-px bg-white/10" />
 
+        {/* Vagas + "Quero ir" (simple interest — no invite consumed) */}
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <span className={`w-2 h-2 rounded-full flex-shrink-0 ${urgente ? "bg-amber-500 animate-pulse" : "bg-green-500"}`} />
             <span className="text-sm font-semibold text-[#FAFAFA]">{evento.vagas} vagas <span className="text-zinc-500 font-normal">SOLO</span></span>
           </div>
-          {inscrito ? (
-            <div className="flex-shrink-0 flex items-center gap-1.5 px-4 py-2.5 bg-white/10 border border-white/10 text-zinc-400 text-sm font-semibold rounded-xl cursor-default select-none">
-              <svg className="w-3.5 h-3.5 text-violet-400" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
-              Inscrito
+          {interesseSimples ? (
+            <div className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 bg-white/5 border border-white/10 text-zinc-400 text-xs font-medium rounded-xl select-none">
+              <svg className="w-3 h-3 text-violet-400" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+              Demonstrei interesse
             </div>
           ) : (
-            <button onClick={() => onQueroIr(evento.id)} disabled={saving}
-              className="flex-shrink-0 flex items-center gap-1.5 px-4 py-2.5 bg-violet-500 hover:bg-violet-400 disabled:bg-violet-500/40 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-xl transition-all duration-200 shadow-md shadow-violet-500/20 hover:-translate-y-0.5 active:translate-y-0">
-              {saving
-                ? <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                : <>Quero ir <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg></>
-              }
+            <button
+              onClick={() => onQueroIr(evento.id)}
+              disabled={savingSimples}
+              className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 bg-white/5 border border-white/10 hover:border-violet-500/30 hover:text-violet-400 text-zinc-300 text-xs font-medium rounded-xl transition-all duration-200"
+            >
+              {savingSimples ? (
+                <span className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <>Quero ir <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg></>
+              )}
             </button>
           )}
         </div>
 
+        {/* "Quero ir em grupo" — uses 1 invite / grupo status + cancel */}
         {interesseGrupo ? (
-          <div className="flex items-center justify-center gap-2 px-4 py-2.5 bg-violet-500/10 border border-violet-500/20 rounded-xl text-violet-400 text-sm font-semibold select-none">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
-            Na fila para grupo!
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center justify-center gap-2 px-4 py-2.5 bg-violet-500/10 border border-violet-500/20 rounded-xl text-violet-400 text-sm font-semibold select-none">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              Na fila do grupo!
+            </div>
+            <button
+              onClick={() => onCancelarGrupo(evento.id)}
+              disabled={cancelingGrupo}
+              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-white/5 border border-red-500/20 hover:border-red-500/40 text-red-400 hover:text-red-300 disabled:opacity-50 text-xs font-medium rounded-xl transition-all duration-200"
+            >
+              {cancelingGrupo ? (
+                <span className="w-3.5 h-3.5 border-2 border-red-400 border-t-transparent rounded-full animate-spin" />
+              ) : "Sair deste rolê"}
+            </button>
           </div>
         ) : (
           <button
@@ -445,6 +497,7 @@ function EventoCard({ evento, inscrito, saving, onQueroIr, interesseGrupo, savin
             )}
           </button>
         )}
+
         <p className="text-center text-[11px] text-zinc-600 leading-relaxed">
           Plus e Black aumentam sua prioridade em experiências mais disputadas.{" "}
           <Link href="/planos" className="text-violet-500/70 hover:text-violet-400 transition-colors">
@@ -473,6 +526,23 @@ function Toast({ nome, onClose }: { nome: string; onClose: () => void }) {
   );
 }
 
+function CancelToast({ onClose }: { onClose: () => void }) {
+  return (
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-4 bg-[#18181B] border border-white/10 rounded-2xl shadow-xl shadow-black/40">
+      <div className="w-8 h-8 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center flex-shrink-0">
+        <svg className="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+      </div>
+      <div>
+        <p className="text-[#FAFAFA] text-sm font-semibold">Inscrição cancelada.</p>
+        <p className="text-[#A1A1AA] text-xs mt-0.5">Seu convite gratuito foi liberado para outro rolê.</p>
+      </div>
+      <button onClick={onClose} className="ml-2 text-zinc-600 hover:text-zinc-400 transition-colors">
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+      </button>
+    </div>
+  );
+}
+
 // ─── Page ──────────────────────────────────────────────────────────────────────
 
 export default function EventosPage() {
@@ -481,14 +551,19 @@ export default function EventosPage() {
   const [inscritos, setInscritos] = useState<Set<string>>(new Set());
   const [savingId, setSavingId] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+  const [cancelToast, setCancelToast] = useState(false);
   const [loadingPage, setLoadingPage] = useState(true);
   const [matchedUsers, setMatchedUsers] = useState<MatchedUser[]>([]);
   const [matchAttempted, setMatchAttempted] = useState(false);
   const [grupoInteresses, setGrupoInteresses] = useState<Set<string>>(new Set());
   const [savingGrupoId, setSavingGrupoId] = useState<string | null>(null);
+  const [cancelingGrupoId, setCancelingGrupoId] = useState<string | null>(null);
   const [grupoFormadoToast, setGrupoFormadoToast] = useState(false);
   const [actionError, setActionError] = useState("");
   const [showFreeLimit, setShowFreeLimit] = useState(false);
+  const [freeActiveGroup, setFreeActiveGroupState] = useState<FreeActiveGroup | null>(null);
+  const [showVillaJkWarning, setShowVillaJkWarning] = useState(false);
+  const [pendingGrupoId, setPendingGrupoId] = useState<string | null>(null);
 
   useEffect(() => {
     async function init() {
@@ -507,6 +582,10 @@ export default function EventosPage() {
       }
 
       setUserId(user.id);
+
+      // Load free active group from localStorage
+      const activeGroup = getFreeActiveGroup();
+      setFreeActiveGroupState(activeGroup);
 
       const { data: inscricoes } = await supabase
         .from("inscricoes")
@@ -595,26 +674,24 @@ export default function EventosPage() {
       setToast(evento.nome);
       setTimeout(() => setToast(null), 4000);
     } catch {
-      setActionError("Erro ao confirmar inscrição. Tente novamente.");
+      setActionError("Erro ao confirmar interesse. Tente novamente.");
       setTimeout(() => setActionError(""), 4000);
     } finally {
       setSavingId(null);
     }
   }
 
-  async function handleQueroGrupo(id: string) {
+  async function doQueroGrupo(id: string) {
     if (!userId) return;
-    if (getFreeUsed() >= FREE_INVITE_LIMIT) {
-      setShowFreeLimit(true);
-      return;
-    }
     setSavingGrupoId(id);
     try {
       const { error } = await supabase
         .from("event_group_interest")
         .insert({ user_id: userId, event_id: id });
       if (error) throw error;
-      addFreeUse();
+      const evento = EVENTOS.find((e) => e.id === id)!;
+      setFreeActiveGroupLS(id, evento.nome);
+      setFreeActiveGroupState({ eventId: id, eventNome: evento.nome });
       setGrupoInteresses((prev) => new Set([...prev, id]));
       const formed = await tentarFormarGrupo(id);
       if (formed) {
@@ -626,6 +703,44 @@ export default function EventosPage() {
       setTimeout(() => setActionError(""), 4000);
     } finally {
       setSavingGrupoId(null);
+    }
+  }
+
+  async function handleQueroGrupo(id: string) {
+    if (!userId) return;
+    // Free limit: only 1 active group at a time
+    if (getFreeActiveGroup()) {
+      setShowFreeLimit(true);
+      return;
+    }
+    // Villa JK priority warning for Free users
+    if (id === "villa-jk") {
+      setPendingGrupoId(id);
+      setShowVillaJkWarning(true);
+      return;
+    }
+    await doQueroGrupo(id);
+  }
+
+  async function handleCancelarGrupo(id: string) {
+    if (!userId) return;
+    setCancelingGrupoId(id);
+    try {
+      await supabase
+        .from("event_group_interest")
+        .delete()
+        .eq("user_id", userId)
+        .eq("event_id", id);
+      clearFreeActiveGroupLS();
+      setFreeActiveGroupState(null);
+      setGrupoInteresses((prev) => { const s = new Set(prev); s.delete(id); return s; });
+      setCancelToast(true);
+      setTimeout(() => setCancelToast(false), 4000);
+    } catch {
+      setActionError("Erro ao cancelar inscrição. Tente novamente.");
+      setTimeout(() => setActionError(""), 4000);
+    } finally {
+      setCancelingGrupoId(null);
     }
   }
 
@@ -660,16 +775,44 @@ export default function EventosPage() {
         </div>
 
         {/* Plan indicator */}
-        <div className="flex items-center justify-between px-4 py-3 mb-6 bg-[#18181B] border border-white/10 rounded-xl">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Plano atual</span>
-            <span className="text-xs font-semibold text-[#FAFAFA]">SOLO Free</span>
-            <span className="text-zinc-700">·</span>
-            <span className="text-xs text-zinc-500">1 convite/semana</span>
+        <div className="mb-4 bg-[#18181B] border border-white/10 rounded-xl overflow-hidden">
+          <div className="flex items-center justify-between px-4 py-3">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Plano atual</span>
+              <span className="text-xs font-semibold text-[#FAFAFA]">SOLO Free</span>
+              <span className="text-zinc-700">·</span>
+              <span className="text-xs text-zinc-500">1 grupo/semana</span>
+            </div>
+            <Link href="/planos" className="text-xs text-violet-400 hover:text-violet-300 transition-colors font-medium flex-shrink-0">
+              Conhecer Plus →
+            </Link>
           </div>
-          <Link href="/planos" className="text-xs text-violet-400 hover:text-violet-300 transition-colors font-medium flex-shrink-0">
-            Conhecer Plus →
-          </Link>
+          <div className="px-4 pb-3">
+            {freeActiveGroup ? (
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-amber-500 flex-shrink-0" />
+                <span className="text-xs text-amber-400 font-medium">
+                  Convite usado · Inscrito em: {freeActiveGroup.eventNome}
+                </span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-green-500 flex-shrink-0" />
+                <span className="text-xs text-green-400 font-medium">Convite disponível</span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* How invites work */}
+        <div className="mb-8 flex items-start gap-2.5 px-4 py-3 bg-white/[0.03] border border-white/[0.07] rounded-xl">
+          <svg className="w-4 h-4 text-zinc-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+          </svg>
+          <p className="text-xs text-zinc-500 leading-relaxed">
+            <span className="text-zinc-400 font-medium">Quero ir</span> = demonstra interesse no rolê sem usar convite.{" "}
+            <span className="text-zinc-400 font-medium">Quero ir em grupo</span> = usa 1 convite para entrar na fila do grupo organizado pela SOLO.
+          </p>
         </div>
 
         {loadingPage ? (
@@ -682,12 +825,14 @@ export default function EventosPage() {
               <EventoCard
                 key={evento.id}
                 evento={evento}
-                inscrito={inscritos.has(evento.id)}
-                saving={savingId === evento.id}
+                interesseSimples={inscritos.has(evento.id)}
+                savingSimples={savingId === evento.id}
                 onQueroIr={handleQueroIr}
                 interesseGrupo={grupoInteresses.has(evento.id)}
                 savingGrupo={savingGrupoId === evento.id}
                 onQueroGrupo={handleQueroGrupo}
+                onCancelarGrupo={handleCancelarGrupo}
+                cancelingGrupo={cancelingGrupoId === evento.id}
               />
             ))}
           </div>
@@ -725,7 +870,9 @@ export default function EventosPage() {
           <span className="text-violet-400 hover:text-violet-300 transition-colors">Cadastre seu estabelecimento →</span>
         </p>
       </main>
+
       {toast && <Toast nome={toast} onClose={() => setToast(null)} />}
+      {cancelToast && <CancelToast onClose={() => setCancelToast(false)} />}
 
       {actionError && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-4 bg-[#18181B] border border-red-500/20 rounded-2xl shadow-xl shadow-black/40">
@@ -743,8 +890,23 @@ export default function EventosPage() {
 
       {showFreeLimit && <FreeLimitModal onClose={() => setShowFreeLimit(false)} />}
 
+      {showVillaJkWarning && (
+        <VillaJkModal
+          onContinue={() => {
+            setShowVillaJkWarning(false);
+            const id = pendingGrupoId;
+            setPendingGrupoId(null);
+            if (id) doQueroGrupo(id);
+          }}
+          onClose={() => {
+            setShowVillaJkWarning(false);
+            setPendingGrupoId(null);
+          }}
+        />
+      )}
+
       {grupoFormadoToast && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-4 bg-[#18181B] border border-violet-500/20 rounded-2xl shadow-xl shadow-violet-500/20 animate-in fade-in slide-in-from-bottom-2 duration-300">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-4 bg-[#18181B] border border-violet-500/20 rounded-2xl shadow-xl shadow-violet-500/20">
           <div className="w-8 h-8 rounded-full bg-violet-500/10 border border-violet-500/20 flex items-center justify-center flex-shrink-0">
             <svg className="w-4 h-4 text-violet-400" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
