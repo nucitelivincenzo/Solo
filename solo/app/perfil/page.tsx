@@ -298,7 +298,7 @@ export default function PerfilPage() {
               ))}
             </div>
             <Link
-              href="/onboarding-compat"
+              href="/onboarding-compat?edit=true"
               className="mt-1 text-xs text-violet-400 hover:text-violet-300 transition-colors font-medium"
             >
               Atualizar respostas →
@@ -311,7 +311,7 @@ export default function PerfilPage() {
                 Atualize seu perfil para melhorar a compatibilidade dos grupos.
               </p>
               <Link
-                href="/onboarding-compat"
+                href="/onboarding-compat?edit=true"
                 className="self-start flex items-center gap-1.5 px-4 py-2.5 bg-violet-500 hover:bg-violet-400 transition-colors text-white text-xs font-semibold rounded-xl"
               >
                 Atualizar respostas →

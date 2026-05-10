@@ -231,10 +231,14 @@ export default function OnboardingCompatPage() {
   const [answers, setAnswers] = useState<CompatAnswers>(INITIAL_ANSWERS);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [editMode, setEditMode] = useState(false);
 
   useEffect(() => {
     async function init() {
       try {
+        const isEdit = new URLSearchParams(window.location.search).get("edit") === "true";
+        setEditMode(isEdit);
+
         const { data: { user }, error: authError } = await supabase.auth.getUser();
         if (authError) throw authError;
         if (!user) { router.replace("/login"); return; }
@@ -248,7 +252,7 @@ export default function OnboardingCompatPage() {
         if (profileError) throw profileError;
 
         if (!profile?.onboarding_completed) { router.replace("/onboarding"); return; }
-        if (isCompatComplete(profile)) { router.replace("/dashboard"); return; }
+        if (!isEdit && isCompatComplete(profile)) { router.replace("/dashboard"); return; }
 
         if (profile) {
           setAnswers({
@@ -307,7 +311,7 @@ export default function OnboardingCompatPage() {
         .update(answers)
         .eq("user_id", user.id);
       if (sbError) throw sbError;
-      router.push("/dashboard");
+      router.push(editMode ? "/perfil" : "/dashboard");
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Erro ao salvar. Tente novamente.");
       setSaving(false);
@@ -355,13 +359,24 @@ export default function OnboardingCompatPage() {
         >
           SOLO
         </span>
-        <Link
-          href="/dashboard"
-          className="text-xs text-zinc-500 hover:text-zinc-400 transition-colors"
-        >
-          Pular por agora
-        </Link>
+        {editMode ? (
+          <Link href="/perfil" className="text-xs text-zinc-500 hover:text-zinc-400 transition-colors">
+            Cancelar
+          </Link>
+        ) : (
+          <Link href="/dashboard" className="text-xs text-zinc-500 hover:text-zinc-400 transition-colors">
+            Pular por agora
+          </Link>
+        )}
       </div>
+
+      {/* Edit-mode title */}
+      {editMode && (
+        <div className="px-6 pb-4">
+          <p className="text-[11px] font-bold uppercase tracking-widest text-violet-400 mb-1">Editar perfil</p>
+          <p className="text-[#A1A1AA] text-xs">Essas respostas ajudam a SOLO a montar grupos melhores para você.</p>
+        </div>
+      )}
 
       {/* Progress */}
       <div className="px-6 pb-2">
@@ -403,7 +418,7 @@ export default function OnboardingCompatPage() {
           {saving && (
             <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
           )}
-          {isLast ? "Concluir" : "Próximo"}
+          {isLast ? (editMode ? "Salvar alterações" : "Concluir") : "Próximo"}
         </button>
       </div>
 
