@@ -9,23 +9,23 @@ import Link from "next/link";
 import { isCompatComplete } from "@/lib/types";
 import type { Ambiente, Intencao } from "@/lib/types";
 
-const VIBE_LABELS   = ["", "Observador — prefiro ver antes de agir", "Converso quando puxam assunto", "Consigo me soltar facilmente", "Já chego puxando conversa com todos"];
-const ENERGIA_LABELS = ["", "Tranquilo, drinks e conversa", "Moderado, animo conforme a noite", "Animado, danço e interajo bastante", "Alta energia — a noite não pode acabar"];
-const GRUPO_LABELS  = ["", "2–3 pessoas (bem íntimo)", "4–6 pessoas (pequeno com energia)", "7–10 pessoas (grupo maior)", "Quanto mais, melhor"];
-const SB_LABELS     = ["", "Fico perto de quem já conheço", "Perto de quem conheço, mas interajo com novos", "Me misturo com todos na mesma medida", "Foco em conhecer os novos"];
+const VIBE_LABELS   = ["", "Observo primeiro e me solto aos poucos", "Sou mais tranquilo, mas entro bem no clima", "Trago leveza, humor e conversa fácil", "Puxo assunto e ajudo todo mundo a se soltar"];
+const ENERGIA_LABELS = ["", "Prefiro conversa, mesa e clima mais leve", "Depende do lugar e das pessoas", "Começo tranquilo e vou animando", "Gosto de energia alta desde o início"];
+const GRUPO_LABELS  = ["", "Pessoas leves para conversar e dar risada", "Gente interessante, sem pressão ou expectativa", "Companhia para viver experiências novas", "Novas amizades para sair mais vezes"];
+const SB_LABELS     = ["", "Observo primeiro e depois participo", "Entro quando alguém abre espaço", "Me solto rápido se o grupo for receptivo", "Já chego puxando assunto"];
 
 const AMBIENTE_LABELS: Record<Ambiente, string> = {
-  bar:    "Bar tranquilo — dá pra ouvir a pessoa falar",
-  happy:  "Happy hour animado, sem ser barulhento demais",
-  balada: "Balada ou festa — o caos controlado",
-  evento: "Evento diferente: show, rooftop, experiência",
+  bar:    "Ambiente caótico onde ninguém consegue conversar",
+  happy:  "Grupo fechado que não integra ninguém",
+  balada: "Rolê parado, sem energia",
+  evento: "Gente que transforma tudo em networking",
 };
 
 const INTENCAO_LABELS: Record<Intencao, string> = {
-  amizade:     "Fazer amizades de verdade",
-  social:      "Ampliar meu círculo social sem pressão",
-  romantico:   "Aberto(a) para algo mais romântico também",
-  experiencia: "Curtir experiências e sair da rotina",
+  amizade:     "Conhecer pessoas que eu veria de novo",
+  social:      "Conversa boa com gente interessante",
+  romantico:   "Rir, relaxar e sair da rotina",
+  experiencia: "Ir para um lugar novo e viver algo diferente",
 };
 
 const NIGHT_STYLES = [
@@ -278,34 +278,46 @@ export default function PerfilPage() {
         </Section>
 
         {/* Compatibilidade */}
-        {isCompatComplete({ vibe, energia, grupo, ambiente, intencao, social_behavior: socialBehavior }) && (
-          <>
-            <div className="h-px bg-white/10" />
+        <div className="h-px bg-white/10" />
 
-            <Section title="Seu perfil de compatibilidade" hint="Como o SOLO te conecta com outras pessoas">
-              <div className="flex flex-col gap-2.5">
-                {[
-                  { label: "Vibe social",          value: vibe            != null ? VIBE_LABELS[vibe]            : null },
-                  { label: "Energia na noite",      value: energia         != null ? ENERGIA_LABELS[energia]      : null },
-                  { label: "Tamanho de grupo",      value: grupo           != null ? GRUPO_LABELS[grupo]          : null },
-                  { label: "Ambiente preferido",    value: ambiente        != null ? AMBIENTE_LABELS[ambiente]    : null },
-                  { label: "Intenção no app",       value: intencao        != null ? INTENCAO_LABELS[intencao]    : null },
-                  { label: "Comportamento social",  value: socialBehavior  != null ? SB_LABELS[socialBehavior]   : null },
-                ].map(({ label, value }) => value && (
-                  <div key={label} className="flex flex-col gap-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">{label}</span>
-                    <span className="text-sm font-medium text-[#FAFAFA]">{value}</span>
-                  </div>
-                ))}
-              </div>
+        {isCompatComplete({ vibe, energia, grupo, ambiente, intencao, social_behavior: socialBehavior }) ? (
+          <Section title="Seu perfil de compatibilidade" hint="Como a SOLO entende sua vibe para montar grupos melhores.">
+            <div className="flex flex-col gap-2.5">
+              {[
+                { label: "Energia que traz",  value: vibe           != null ? VIBE_LABELS[vibe]          : null },
+                { label: "Ritmo social",      value: energia        != null ? ENERGIA_LABELS[energia]    : null },
+                { label: "Busca social",      value: grupo          != null ? GRUPO_LABELS[grupo]        : null },
+                { label: "Evita na noite",    value: ambiente       != null ? AMBIENTE_LABELS[ambiente]  : null },
+                { label: "Noite boa é",       value: intencao       != null ? INTENCAO_LABELS[intencao]  : null },
+                { label: "Entrada no grupo",  value: socialBehavior != null ? SB_LABELS[socialBehavior] : null },
+              ].map(({ label, value }) => value && (
+                <div key={label} className="flex flex-col gap-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl">
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">{label}</span>
+                  <span className="text-sm font-medium text-[#FAFAFA]">{value}</span>
+                </div>
+              ))}
+            </div>
+            <Link
+              href="/onboarding-compat"
+              className="mt-1 text-xs text-violet-400 hover:text-violet-300 transition-colors font-medium"
+            >
+              Atualizar respostas →
+            </Link>
+          </Section>
+        ) : (
+          <Section title="Seu perfil de compatibilidade" hint="Como a SOLO entende sua vibe para montar grupos melhores.">
+            <div className="flex flex-col gap-4 px-4 py-4 bg-violet-500/5 border border-violet-500/15 rounded-xl">
+              <p className="text-sm text-zinc-400 leading-relaxed">
+                Atualize seu perfil para melhorar a compatibilidade dos grupos.
+              </p>
               <Link
                 href="/onboarding-compat"
-                className="mt-1 text-xs text-violet-400 hover:text-violet-300 transition-colors font-medium"
+                className="self-start flex items-center gap-1.5 px-4 py-2.5 bg-violet-500 hover:bg-violet-400 transition-colors text-white text-xs font-semibold rounded-xl"
               >
                 Atualizar respostas →
               </Link>
-            </Section>
-          </>
+            </div>
+          </Section>
         )}
 
         {/* Reputação */}

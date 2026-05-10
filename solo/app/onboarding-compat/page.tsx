@@ -125,13 +125,13 @@ function StepContent({
     case "vibe":
       return (
         <QuestionLayout
-          step="Vibe social"
-          question="Como você costuma se comportar num rolê com pessoas novas?"
+          step="Energia que traz"
+          question="Que tipo de energia você costuma trazer para um grupo?"
           options={[
-            { label: "Fico mais na minha, prefiro observar antes",         value: 1 },
-            { label: "Converso quando puxam assunto, mas não tomo a frente", value: 2 },
-            { label: "Consigo me soltar, gosto de conversar",              value: 3 },
-            { label: "Já chego puxando conversa com todo mundo",           value: 4 },
+            { label: "Observo primeiro e me solto aos poucos",      value: 1 },
+            { label: "Sou mais tranquilo, mas entro bem no clima",  value: 2 },
+            { label: "Trago leveza, humor e conversa fácil",        value: 3 },
+            { label: "Puxo assunto e ajudo todo mundo a se soltar", value: 4 },
           ]}
           selected={answers.vibe}
           onSelect={(v) => setAnswer("vibe", v)}
@@ -141,13 +141,13 @@ function StepContent({
     case "ambiente":
       return (
         <QuestionLayout<Ambiente>
-          step="Tipo de ambiente"
-          question="Qual tipo de ambiente combina mais com você?"
+          step="Evita na noite"
+          question="O que costuma quebrar o clima para você em uma noite?"
           options={[
-            { label: "Bar tranquilo, dá pra ouvir a pessoa falar",  value: "bar"    },
-            { label: "Happy hour animado, sem ser barulhento demais", value: "happy"  },
-            { label: "Balada ou festa, prefiro o caos controlado",   value: "balada" },
-            { label: "Evento diferente: show, rooftop, experiência", value: "evento" },
+            { label: "Ambiente caótico onde ninguém consegue conversar", value: "bar"    },
+            { label: "Grupo fechado que não integra ninguém",            value: "happy"  },
+            { label: "Rolê parado, sem energia",                         value: "balada" },
+            { label: "Gente que transforma tudo em networking",          value: "evento" },
           ]}
           selected={answers.ambiente}
           onSelect={(v) => setAnswer("ambiente", v)}
@@ -157,13 +157,13 @@ function StepContent({
     case "energia":
       return (
         <QuestionLayout
-          step="Nível de energia"
-          question="Qual é o seu ritmo numa noite fora?"
+          step="Ritmo social"
+          question="Qual ritmo de noite combina mais com você?"
           options={[
-            { label: "Tranquilo, prefiro conversa e drinks",      value: 1 },
-            { label: "Moderado, me animo conforme a noite avança", value: 2 },
-            { label: "Animado, gosto de dançar e interagir bastante", value: 3 },
-            { label: "Alta energia, quero que a noite não acabe",  value: 4 },
+            { label: "Prefiro conversa, mesa e clima mais leve",    value: 1 },
+            { label: "Depende do lugar e das pessoas",              value: 2 },
+            { label: "Começo tranquilo e vou animando",             value: 3 },
+            { label: "Gosto de energia alta desde o início",        value: 4 },
           ]}
           selected={answers.energia}
           onSelect={(v) => setAnswer("energia", v)}
@@ -173,13 +173,13 @@ function StepContent({
     case "grupo":
       return (
         <QuestionLayout
-          step="Tamanho de grupo ideal"
-          question="Com quantas pessoas você curte mais sair?"
+          step="Busca social"
+          question="Que tipo de conexão você gostaria de encontrar?"
           options={[
-            { label: "2–3 pessoas, prefiro algo mais íntimo",         value: 1 },
-            { label: "4–6, um grupo pequeno mas com energia",         value: 2 },
-            { label: "7–10, gosto de um grupo maior",                 value: 3 },
-            { label: "Quanto mais gente, melhor",                     value: 4 },
+            { label: "Pessoas leves para conversar e dar risada",        value: 1 },
+            { label: "Gente interessante, sem pressão ou expectativa",   value: 2 },
+            { label: "Companhia para viver experiências novas",          value: 3 },
+            { label: "Novas amizades para sair mais vezes",              value: 4 },
           ]}
           selected={answers.grupo}
           onSelect={(v) => setAnswer("grupo", v)}
@@ -189,13 +189,13 @@ function StepContent({
     case "social_behavior":
       return (
         <QuestionLayout
-          step="Comportamento social"
-          question="Quando está num grupo misturado (pessoas que conhece + pessoas novas), você tende a:"
+          step="Entrada no grupo"
+          question="Quando você chega em um grupo novo, como costuma agir?"
           options={[
-            { label: "Ficar perto de quem já conheço",                              value: 1 },
-            { label: "Ficar perto de quem conheço, mas interagir com os novos",     value: 2 },
-            { label: "Me misturar com todos na mesma medida",                        value: 3 },
-            { label: "Focar em conhecer os novos — já sei tudo sobre os outros",     value: 4 },
+            { label: "Observo primeiro e depois participo",             value: 1 },
+            { label: "Entro quando alguém abre espaço",                 value: 2 },
+            { label: "Me solto rápido se o grupo for receptivo",        value: 3 },
+            { label: "Já chego puxando assunto",                        value: 4 },
           ]}
           selected={answers.social_behavior}
           onSelect={(v) => setAnswer("social_behavior", v)}
@@ -205,13 +205,13 @@ function StepContent({
     case "intencao":
       return (
         <QuestionLayout<Intencao>
-          step="Intenção no app"
-          question="O que você está buscando principalmente aqui?"
+          step="Noite boa é"
+          question="Para você, o que faz uma noite valer a pena?"
           options={[
-            { label: "Fazer amizades de verdade",                    value: "amizade"    },
-            { label: "Ampliar meu círculo social sem pressão",       value: "social"     },
-            { label: "Aberto(a) para algo mais romântico também",    value: "romantico"  },
-            { label: "Curtir experiências e sair da rotina",         value: "experiencia"},
+            { label: "Conversa boa com gente interessante",            value: "social"     },
+            { label: "Rir, relaxar e sair da rotina",                  value: "romantico"  },
+            { label: "Conhecer pessoas que eu veria de novo",          value: "amizade"    },
+            { label: "Ir para um lugar novo e viver algo diferente",   value: "experiencia"},
           ]}
           selected={answers.intencao}
           onSelect={(v) => setAnswer("intencao", v)}
