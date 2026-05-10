@@ -10,25 +10,82 @@ import { calcularMatch } from "@/lib/match";
 import { tentarFormarGrupo } from "@/lib/groups";
 import { Navbar } from "@/components/Navbar";
 
-type EventType = "balada" | "bar" | "rooftop" | "show";
+type EventType = "balada" | "bar";
+type Ticket = "baixo" | "médio" | "alto";
 
 interface Evento {
-  id: string; nome: string; bairro: string; tipo: EventType;
-  descricao: string; dia: string; horario: string; vagas: number;
+  id: string;
+  nome: string;
+  estabelecimento: string;
+  bairro: string;
+  tipo: EventType;
+  tag: string;
+  descricao: string;
+  dia: string;
+  horario: string;
+  vagas: number;
+  vibe: string;
+  ticket: Ticket;
+  beneficio: string;
 }
 
 const EVENTOS: Evento[] = [
-  { id: "club-noir",   nome: "Club Noir",   bairro: "Pinheiros",     tipo: "balada",  descricao: "A noite underground mais autêntica de SP. Música eletrônica de verdade, ambiente intimista e pista que não para.", dia: "Sexta-feira", horario: "23h00", vagas: 12 },
-  { id: "bar-caju",    nome: "Bar Caju",    bairro: "Vila Madalena", tipo: "bar",     descricao: "O boteco mais descolado da Vila. Drinks autorais, petiscos incríveis e aquela vibe de quem quer conversa boa.", dia: "Sábado",      horario: "20h00", vagas: 8  },
-  { id: "terraco-360", nome: "Terraço 360", bairro: "Itaim Bibi",    tipo: "rooftop", descricao: "Vista panorâmica de São Paulo com cocktails premiados. O lugar perfeito para quebrar o gelo com a cidade ao redor.", dia: "Sábado",      horario: "21h00", vagas: 6  },
-  { id: "audio-club",  nome: "Audio Club",  bairro: "Barra Funda",   tipo: "show",    descricao: "Uma das maiores casas de shows de SP. Artistas nacionais e internacionais em experiência ao vivo inesquecível.", dia: "Sábado",      horario: "22h00", vagas: 10 },
+  {
+    id: "giro-bar",
+    nome: "Happy hour no Giro",
+    estabelecimento: "Giro Bar",
+    bairro: "Pinheiros",
+    tipo: "bar",
+    tag: "Happy hour",
+    descricao: "Bar em Pinheiros com drinks, aperitivos e clima descontraído para conhecer gente nova.",
+    dia: "Quinta-feira",
+    horario: "20h00",
+    vagas: 10,
+    vibe: "descontraído",
+    ticket: "médio",
+    beneficio: "Lista SOLO com entrada facilitada e grupo organizado por compatibilidade.",
+  },
+  {
+    id: "piraja",
+    nome: "Mesa SOLO no Pirajá",
+    estabelecimento: "Pirajá",
+    bairro: "Jardins",
+    tipo: "bar",
+    tag: "Bar casual",
+    descricao: "Bar casual com comida, drinks e mesas perfeitas para socializar em grupo.",
+    dia: "Sexta-feira",
+    horario: "20h30",
+    vagas: 8,
+    vibe: "conversa",
+    ticket: "médio",
+    beneficio: "Reserva de mesa para grupo SOLO e curadoria de pessoas com interesses parecidos.",
+  },
+  {
+    id: "villa-jk",
+    nome: "Noite SOLO na Villa JK",
+    estabelecimento: "Villa JK",
+    bairro: "Itaim Bibi",
+    tipo: "balada",
+    tag: "Balada premium",
+    descricao: "Balada premium no Itaim para quem busca uma noite mais intensa e exclusiva.",
+    dia: "Sábado",
+    horario: "23h00",
+    vagas: 6,
+    vibe: "alta energia",
+    ticket: "alto",
+    beneficio: "Lista SOLO, benefícios de entrada e organização de grupo antes da chegada.",
+  },
 ];
 
-const TIPO_CONFIG: Record<EventType, { label: string; emoji: string; color: string; bg: string; bar: string }> = {
-  balada:  { label: "Balada",        emoji: "🎉", color: "text-purple-400",  bg: "bg-purple-500/10 border-purple-500/20",  bar: "bg-purple-500"  },
-  bar:     { label: "Bar descolado", emoji: "🍹", color: "text-amber-400",   bg: "bg-amber-500/10 border-amber-500/20",    bar: "bg-amber-500"   },
-  rooftop: { label: "Rooftop",       emoji: "🌆", color: "text-sky-400",     bg: "bg-sky-500/10 border-sky-500/20",        bar: "bg-sky-500"     },
-  show:    { label: "Show ao vivo",  emoji: "🎸", color: "text-emerald-400", bg: "bg-emerald-500/10 border-emerald-500/20", bar: "bg-emerald-500" },
+const TIPO_CONFIG: Record<EventType, { emoji: string; color: string; bg: string; bar: string }> = {
+  balada: { emoji: "🎉", color: "text-purple-400", bg: "bg-purple-500/10 border-purple-500/20", bar: "bg-purple-500" },
+  bar:    { emoji: "🍹", color: "text-amber-400",  bg: "bg-amber-500/10 border-amber-500/20",   bar: "bg-amber-500"  },
+};
+
+const TICKET_CONFIG: Record<Ticket, { label: string; color: string; bg: string }> = {
+  baixo: { label: "Ticket baixo", color: "text-emerald-400", bg: "bg-emerald-500/10 border-emerald-500/20" },
+  médio: { label: "Ticket médio", color: "text-amber-400",   bg: "bg-amber-500/10 border-amber-500/20"     },
+  alto:  { label: "Ticket alto",  color: "text-red-400",     bg: "bg-red-500/10 border-red-500/20"         },
 };
 
 // ─── Match ─────────────────────────────────────────────────────────────────────
@@ -275,7 +332,8 @@ function EventoCard({ evento, inscrito, saving, onQueroIr, interesseGrupo, savin
   evento: Evento; inscrito: boolean; saving: boolean; onQueroIr: (id: string) => void;
   interesseGrupo: boolean; savingGrupo: boolean; onQueroGrupo: (id: string) => void;
 }) {
-  const tipo   = TIPO_CONFIG[evento.tipo];
+  const tipo    = TIPO_CONFIG[evento.tipo];
+  const tkt     = TICKET_CONFIG[evento.ticket];
   const urgente = evento.vagas <= 6;
 
   return (
@@ -283,16 +341,24 @@ function EventoCard({ evento, inscrito, saving, onQueroIr, interesseGrupo, savin
       ${inscrito ? "border-violet-500/40" : "border-white/10 hover:border-white/20"}`}>
       <div className={`h-1 w-full ${tipo.bar}`} />
       <div className="p-6 flex flex-col gap-5 flex-1">
+
+        {/* Badges row */}
         <div className="flex items-center gap-2 flex-wrap">
           <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${tipo.bg} ${tipo.color}`}>
-            {tipo.emoji} {tipo.label}
+            {tipo.emoji} {evento.tag}
           </span>
           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-white/5 border border-white/10 text-zinc-500">
             <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
-            {evento.bairro}
+            {evento.estabelecimento} · {evento.bairro}
+          </span>
+          <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium border ${tkt.bg} ${tkt.color}`}>
+            {tkt.label}
+          </span>
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-white/5 border border-white/10 text-zinc-500">
+            Vibe: {evento.vibe}
           </span>
           {inscrito && (
             <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-violet-500/10 border border-violet-500/20 text-violet-400">
@@ -302,11 +368,19 @@ function EventoCard({ evento, inscrito, saving, onQueroIr, interesseGrupo, savin
           )}
         </div>
 
+        {/* Title + description */}
         <div className="flex flex-col gap-1.5">
           <h2 className="text-lg font-black text-[#FAFAFA] group-hover:text-violet-400 transition-colors">{evento.nome}</h2>
           <p className="text-sm text-[#A1A1AA] leading-relaxed">{evento.descricao}</p>
         </div>
 
+        {/* Benefício SOLO */}
+        <div className="flex items-start gap-2.5 px-3 py-2.5 bg-violet-500/5 border border-violet-500/15 rounded-xl">
+          <span className="w-1.5 h-1.5 rounded-full bg-violet-500 flex-shrink-0 mt-1.5" />
+          <p className="text-xs text-violet-300/80 leading-relaxed">{evento.beneficio}</p>
+        </div>
+
+        {/* Day + time */}
         <div className="flex items-center gap-4">
           {[
             { icon: "M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z", text: evento.dia },
@@ -372,9 +446,9 @@ function EventoCard({ evento, inscrito, saving, onQueroIr, interesseGrupo, savin
           </button>
         )}
         <p className="text-center text-[11px] text-zinc-600 leading-relaxed">
-          Free inclui 1 convite/semana.{" "}
+          Plus e Black aumentam sua prioridade em experiências mais disputadas.{" "}
           <Link href="/planos" className="text-violet-500/70 hover:text-violet-400 transition-colors">
-            Conhecer Plus →
+            Ver planos →
           </Link>
         </p>
       </div>
@@ -570,7 +644,7 @@ export default function EventosPage() {
             Eventos <span className="text-violet-500">SOLO</span>
           </h1>
           <p className="text-[#A1A1AA] text-base sm:text-lg max-w-xl">
-            Estabelecimentos parceiros com vagas reservadas para curtir com pessoas novas.
+            Experiências parceiras com grupos organizados pela SOLO por compatibilidade.
           </p>
         </div>
 
