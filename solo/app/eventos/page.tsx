@@ -88,6 +88,13 @@ const TICKET_CONFIG: Record<Ticket, { label: string; color: string; bg: string }
   alto:  { label: "Ticket alto",  color: "text-red-400",     bg: "bg-red-500/10 border-red-500/20"         },
 };
 
+// Mock queue progress for MVP demo — replace with real counts when available
+const FILA_MOCK: Record<string, { atual: number; total: number }> = {
+  "giro-bar": { atual: 4, total: 6 },
+  "piraja":   { atual: 5, total: 6 },
+  "villa-jk": { atual: 3, total: 8 },
+};
+
 // ─── Match ─────────────────────────────────────────────────────────────────────
 
 interface MatchedUser {
@@ -370,6 +377,8 @@ function EventoCard({
   const tipo    = TIPO_CONFIG[evento.tipo];
   const tkt     = TICKET_CONFIG[evento.ticket];
   const urgente = evento.vagas <= 6;
+  const fila    = FILA_MOCK[evento.id] ?? { atual: 1, total: 6 };
+  const faltam  = fila.total - fila.atual;
 
   return (
     <div className={`bg-[#18181B] border rounded-2xl overflow-hidden flex flex-col transition-all duration-200 group hover:-translate-y-0.5 hover:shadow-md hover:shadow-black/20
@@ -396,9 +405,8 @@ function EventoCard({
             Vibe: {evento.vibe}
           </span>
           {interesseGrupo && (
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-violet-500/10 border border-violet-500/20 text-violet-400">
-              <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
-              Você vai!
+            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-violet-500/10 border border-violet-500/20 text-violet-400">
+              Na fila
             </span>
           )}
         </div>
@@ -460,15 +468,33 @@ function EventoCard({
           )}
         </div>
 
-        {/* "Quero ir em grupo" — uses 1 invite / grupo status + cancel */}
+        {/* "Quero ir em grupo" — uses 1 invite / group queue status + cancel */}
         {interesseGrupo ? (
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center justify-center gap-2 px-4 py-2.5 bg-violet-500/10 border border-violet-500/20 rounded-xl text-violet-400 text-sm font-semibold select-none">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-              </svg>
-              Na fila do grupo!
+          <div className="flex flex-col gap-3 bg-violet-500/5 border border-violet-500/20 rounded-2xl p-4">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-violet-500/20 border border-violet-500/30 text-violet-400">
+                Na fila
+              </span>
             </div>
+            <div>
+              <p className="text-sm font-semibold text-[#FAFAFA]">Aguardando formação do grupo</p>
+              <p className="text-xs text-zinc-400 mt-1 leading-relaxed">A SOLO está buscando pessoas compatíveis para este rolê.</p>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <span className="text-xs text-zinc-500">{fila.atual} de {fila.total} pessoas interessadas</span>
+              <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-violet-500 rounded-full"
+                  style={{ width: `${(fila.atual / fila.total) * 100}%` }}
+                />
+              </div>
+              <p className="text-xs text-violet-400">
+                {faltam === 1 ? "Falta 1 pessoa" : `Faltam ${faltam} pessoas`} para confirmar o grupo.
+              </p>
+            </div>
+            <p className="text-[11px] text-zinc-600 leading-relaxed">
+              Seu grupo será confirmado quando houver pessoas suficientes e compatíveis interessadas no mesmo rolê.
+            </p>
             <button
               onClick={() => onCancelarGrupo(evento.id)}
               disabled={cancelingGrupo}
@@ -476,7 +502,7 @@ function EventoCard({
             >
               {cancelingGrupo ? (
                 <span className="w-3.5 h-3.5 border-2 border-red-400 border-t-transparent rounded-full animate-spin" />
-              ) : "Sair deste rolê"}
+              ) : "Sair da fila"}
             </button>
           </div>
         ) : (
@@ -533,10 +559,30 @@ function CancelToast({ onClose }: { onClose: () => void }) {
         <svg className="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
       </div>
       <div>
-        <p className="text-[#FAFAFA] text-sm font-semibold">Inscrição cancelada.</p>
+        <p className="text-[#FAFAFA] text-sm font-semibold">Você saiu da fila.</p>
         <p className="text-[#A1A1AA] text-xs mt-0.5">Seu convite gratuito foi liberado para outro rolê.</p>
       </div>
       <button onClick={onClose} className="ml-2 text-zinc-600 hover:text-zinc-400 transition-colors">
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+      </button>
+    </div>
+  );
+}
+
+function QueueToast({ nome, onClose }: { nome: string; onClose: () => void }) {
+  return (
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-4 bg-[#18181B] border border-violet-500/20 rounded-2xl shadow-xl shadow-black/40 max-w-sm">
+      <div className="w-8 h-8 rounded-full bg-violet-500/10 border border-violet-500/20 flex items-center justify-center flex-shrink-0">
+        <svg className="w-4 h-4 text-violet-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+        </svg>
+      </div>
+      <div className="min-w-0">
+        <p className="text-[#FAFAFA] text-sm font-semibold">Você entrou na fila deste rolê.</p>
+        <p className="text-[#A1A1AA] text-xs mt-0.5">A SOLO está buscando pessoas compatíveis para <span className="text-violet-400 font-medium">{nome}</span>.</p>
+        <p className="text-zinc-600 text-xs mt-0.5">Seu convite gratuito da semana foi usado.</p>
+      </div>
+      <button onClick={onClose} className="ml-1 text-zinc-600 hover:text-zinc-400 transition-colors flex-shrink-0">
         <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
       </button>
     </div>
@@ -564,6 +610,7 @@ export default function EventosPage() {
   const [freeActiveGroup, setFreeActiveGroupState] = useState<FreeActiveGroup | null>(null);
   const [showVillaJkWarning, setShowVillaJkWarning] = useState(false);
   const [pendingGrupoId, setPendingGrupoId] = useState<string | null>(null);
+  const [queueToast, setQueueToast] = useState<string | null>(null);
 
   useEffect(() => {
     async function init() {
@@ -697,6 +744,9 @@ export default function EventosPage() {
       if (formed) {
         setGrupoFormadoToast(true);
         setTimeout(() => setGrupoFormadoToast(false), 5000);
+      } else {
+        setQueueToast(evento.nome);
+        setTimeout(() => setQueueToast(null), 5000);
       }
     } catch {
       setActionError("Erro ao entrar na fila de grupo. Tente novamente.");
@@ -792,7 +842,7 @@ export default function EventosPage() {
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-amber-500 flex-shrink-0" />
                 <span className="text-xs text-amber-400 font-medium">
-                  Convite usado · Inscrito em: {freeActiveGroup.eventNome}
+                  Convite usado · Na fila em: {freeActiveGroup.eventNome}
                 </span>
               </div>
             ) : (
@@ -804,15 +854,40 @@ export default function EventosPage() {
           </div>
         </div>
 
-        {/* How invites work */}
-        <div className="mb-8 flex items-start gap-2.5 px-4 py-3 bg-white/[0.03] border border-white/[0.07] rounded-xl">
-          <svg className="w-4 h-4 text-zinc-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
-          </svg>
-          <p className="text-xs text-zinc-500 leading-relaxed">
-            <span className="text-zinc-400 font-medium">Quero ir</span> = demonstra interesse no rolê sem usar convite.{" "}
-            <span className="text-zinc-400 font-medium">Quero ir em grupo</span> = usa 1 convite para entrar na fila do grupo organizado pela SOLO.
-          </p>
+        {/* How invites work + journey */}
+        <div className="mb-8 flex flex-col gap-3 px-4 py-3.5 bg-white/[0.03] border border-white/[0.07] rounded-xl">
+          <div className="flex items-start gap-2.5">
+            <svg className="w-4 h-4 text-zinc-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+            </svg>
+            <p className="text-xs text-zinc-500 leading-relaxed">
+              <span className="text-zinc-400 font-medium">Quero ir</span> = demonstra interesse sem usar convite.{" "}
+              <span className="text-zinc-400 font-medium">Quero ir em grupo</span> = usa 1 convite para entrar na fila. Entrar na fila não confirma automaticamente a vaga.
+            </p>
+          </div>
+          <div className="flex items-center gap-2 flex-wrap">
+            {(
+              [
+                { n: "1", t: "Você entra na fila" },
+                { n: "2", t: "A SOLO forma o grupo" },
+                { n: "3", t: "Você confirma presença" },
+              ] as const
+            ).map((step, i, arr) => (
+              <div key={step.n} className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-5 h-5 rounded-full bg-violet-500/20 border border-violet-500/30 text-violet-400 text-[10px] font-bold flex items-center justify-center flex-shrink-0">
+                    {step.n}
+                  </span>
+                  <span className="text-[11px] text-zinc-500">{step.t}</span>
+                </div>
+                {i < arr.length - 1 && (
+                  <svg className="w-3 h-3 text-zinc-700 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                  </svg>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
 
         {loadingPage ? (
@@ -873,6 +948,7 @@ export default function EventosPage() {
 
       {toast && <Toast nome={toast} onClose={() => setToast(null)} />}
       {cancelToast && <CancelToast onClose={() => setCancelToast(false)} />}
+      {queueToast && <QueueToast nome={queueToast} onClose={() => setQueueToast(null)} />}
 
       {actionError && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-4 bg-[#18181B] border border-red-500/20 rounded-2xl shadow-xl shadow-black/40">
