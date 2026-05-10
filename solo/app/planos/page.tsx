@@ -68,7 +68,7 @@ const FREE_DETAILS = [
 
 function Toast({ plan, onClose }: { plan: "plus" | "black"; onClose: () => void }) {
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] flex items-center gap-3 px-5 py-4 bg-[#18181B] border border-violet-500/25 rounded-2xl shadow-2xl shadow-black/60 max-w-[90vw]">
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] flex items-center gap-3 px-5 py-4 border border-violet-500/20 rounded-2xl shadow-2xl shadow-black/60 max-w-[90vw]" style={{ background: "#0D0D0F" }}>
       <div className="w-8 h-8 rounded-full bg-violet-500/10 border border-violet-500/20 flex items-center justify-center flex-shrink-0">
         <svg className="w-4 h-4 text-violet-400" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
@@ -93,7 +93,7 @@ function Toast({ plan, onClose }: { plan: "plus" | "black"; onClose: () => void 
 function DetailRow({ title, desc, accent }: { title: string; desc: string; accent: "violet" | "zinc" }) {
   return (
     <div className="flex flex-col gap-1 py-3.5 border-b border-white/[0.06] last:border-0">
-      <span className={`text-sm font-semibold ${accent === "violet" ? "text-violet-300" : "text-zinc-200"}`}>
+      <span className="text-sm font-semibold text-zinc-200">
         {title}
       </span>
       <span className="text-xs text-zinc-500 leading-relaxed">{desc}</span>
@@ -108,7 +108,8 @@ function PlusModal({ onClose, onInterest }: { onClose: () => void; onInterest: (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center px-4 pb-0 sm:pb-0" onClick={onClose}>
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
       <div
-        className="relative z-10 w-full max-w-md bg-[#18181B] border border-violet-500/25 rounded-t-2xl sm:rounded-2xl shadow-2xl shadow-black/60 max-h-[92svh] flex flex-col"
+        className="relative z-10 w-full max-w-md border border-violet-500/20 rounded-t-2xl sm:rounded-2xl shadow-2xl shadow-black/60 max-h-[92svh] flex flex-col"
+        style={{ background: "#0D0D0F" }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Handle bar mobile */}
@@ -120,7 +121,7 @@ function PlusModal({ onClose, onInterest }: { onClose: () => void; onInterest: (
         <div className="flex items-start justify-between px-6 pt-4 pb-4 border-b border-violet-500/[0.12]">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-violet-400/90">SOLO Plus</span>
+              <span className="text-violet-400/90 uppercase" style={{ fontFamily: "var(--font-geist-mono), monospace", fontSize: "10px", letterSpacing: "0.18em" }}>SOLO Plus</span>
               <span className="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest bg-violet-500 text-white">
                 Mais escolhido
               </span>
@@ -141,7 +142,7 @@ function PlusModal({ onClose, onInterest }: { onClose: () => void; onInterest: (
 
         {/* Body */}
         <div className="flex-1 overflow-y-auto px-6 py-4 flex flex-col gap-4">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">O que muda na prática</p>
+          <p className="text-zinc-500 uppercase" style={{ fontFamily: "var(--font-geist-mono), monospace", fontSize: "10px", letterSpacing: "0.18em" }}>O que muda na prática</p>
           <div className="flex flex-col">
             {PLUS_DETAILS.map((d) => (
               <DetailRow key={d.title} title={d.title} desc={d.desc} accent="violet" />
@@ -149,8 +150,8 @@ function PlusModal({ onClose, onInterest }: { onClose: () => void; onInterest: (
           </div>
 
           {/* Practical example */}
-          <div className="bg-violet-500/[0.08] border border-violet-500/20 rounded-xl px-4 py-3.5">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-violet-500/70 mb-1.5">Exemplo prático</p>
+          <div className="bg-amber-500/[0.06] border border-amber-500/15 rounded-xl px-4 py-3.5">
+            <p className="text-amber-400/70 uppercase mb-1.5" style={{ fontFamily: "var(--font-geist-mono), monospace", fontSize: "10px", letterSpacing: "0.18em" }}>Exemplo prático</p>
             <p className="text-[13px] text-zinc-300 leading-relaxed">
               No Free você tem 1 convite por semana. No Plus, pode entrar em até 3 rolês e ter prioridade para formar grupo.
             </p>
@@ -183,7 +184,8 @@ function BlackModal({ onClose, onInterest }: { onClose: () => void; onInterest: 
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center px-4 pb-0 sm:pb-0" onClick={onClose}>
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
       <div
-        className="relative z-10 w-full max-w-md bg-[#18181B] border border-white/[0.14] rounded-t-2xl sm:rounded-2xl shadow-2xl shadow-black/60 max-h-[92svh] flex flex-col"
+        className="relative z-10 w-full max-w-md border border-white/[0.14] rounded-t-2xl sm:rounded-2xl shadow-2xl shadow-black/60 max-h-[92svh] flex flex-col"
+        style={{ background: "#0D0D0F" }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="sm:hidden flex justify-center pt-3 pb-1">
@@ -193,7 +195,7 @@ function BlackModal({ onClose, onInterest }: { onClose: () => void; onInterest: 
         {/* Header */}
         <div className="flex items-start justify-between px-6 pt-4 pb-4 border-b border-white/[0.07]">
           <div>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 block mb-1">SOLO Black</span>
+            <span className="text-zinc-400 uppercase block mb-1" style={{ fontFamily: "var(--font-geist-mono), monospace", fontSize: "10px", letterSpacing: "0.18em" }}>SOLO Black</span>
             <p className="text-xl font-black text-[#FAFAFA]" style={{ letterSpacing: "-0.02em" }}>
               R$49,90<span className="text-sm font-light text-zinc-500">/mês</span>
             </p>
@@ -210,7 +212,7 @@ function BlackModal({ onClose, onInterest }: { onClose: () => void; onInterest: 
 
         {/* Body */}
         <div className="flex-1 overflow-y-auto px-6 py-4 flex flex-col gap-4">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">O que muda na prática</p>
+          <p className="text-zinc-500 uppercase" style={{ fontFamily: "var(--font-geist-mono), monospace", fontSize: "10px", letterSpacing: "0.18em" }}>O que muda na prática</p>
           <div className="flex flex-col">
             {BLACK_DETAILS.map((d) => (
               <DetailRow key={d.title} title={d.title} desc={d.desc} accent="zinc" />
@@ -250,7 +252,8 @@ function FreeModal({ onClose }: { onClose: () => void }) {
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center px-4 pb-0 sm:pb-0" onClick={onClose}>
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
       <div
-        className="relative z-10 w-full max-w-sm bg-[#18181B] border border-white/10 rounded-t-2xl sm:rounded-2xl shadow-2xl shadow-black/60"
+        className="relative z-10 w-full max-w-sm border border-white/[0.08] rounded-t-2xl sm:rounded-2xl shadow-2xl shadow-black/60"
+        style={{ background: "#0D0D0F" }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="sm:hidden flex justify-center pt-3 pb-1">
@@ -258,7 +261,7 @@ function FreeModal({ onClose }: { onClose: () => void }) {
         </div>
         <div className="px-6 pt-5 pb-6 flex flex-col gap-4">
           <div>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 block mb-1">SOLO Free</span>
+            <span className="text-zinc-500 uppercase block mb-1" style={{ fontFamily: "var(--font-geist-mono), monospace", fontSize: "10px", letterSpacing: "0.18em" }}>SOLO Free</span>
             <p className="text-[13px] text-zinc-400 leading-relaxed">
               O Free permite testar a SOLO: criar perfil, explorar rolês e usar 1 convite gratuito por semana.
             </p>
@@ -288,7 +291,7 @@ function FreeModal({ onClose }: { onClose: () => void }) {
 function BenefitRow({ text, icon, highlight }: { text: string; icon: string; highlight?: boolean }) {
   return (
     <div className="flex items-start gap-3">
-      <span className="flex-shrink-0 text-[12px] leading-[1.6]" style={{ color: highlight ? "rgba(139,92,246,0.55)" : undefined }}>{icon}</span>
+      <span className="flex-shrink-0 text-[12px] leading-[1.6]" style={{ color: highlight ? "rgba(255,179,122,0.65)" : undefined }}>{icon}</span>
       <span className={`text-[13px] leading-[1.5] ${highlight ? "font-medium text-white/80" : "font-light text-white/55"}`}>{text}</span>
     </div>
   );
@@ -317,7 +320,7 @@ export default function PlanosPage() {
   }, [toastPlan]);
 
   return (
-    <div className="min-h-screen bg-[#0F0F11] text-[#FAFAFA]">
+    <div className="min-h-screen bg-[#050506] text-[#FAFAFA]">
       <Navbar />
 
       <main className="max-w-4xl mx-auto px-6 py-12 flex flex-col gap-14">
@@ -332,7 +335,10 @@ export default function PlanosPage() {
             Voltar ao perfil
           </Link>
           <div>
-            <h1 className="text-3xl font-black text-[#FAFAFA]" style={{ letterSpacing: "-0.02em" }}>Planos SOLO</h1>
+            <h1 className="text-3xl font-black text-[#FAFAFA]" style={{ letterSpacing: "-0.02em" }}>
+            Planos{" "}
+            <span className="text-[#F8FAFC]" style={{ fontFamily: "var(--font-dm-serif), serif", fontStyle: "italic" }}>SOLO</span>
+          </h1>
             <p className="text-[#A1A1AA] text-sm mt-2 leading-relaxed max-w-md">
               Comece grátis. Escolha Plus ou Black quando quiser sair mais, ter prioridade e acessar experiências mais exclusivas.
             </p>
@@ -345,7 +351,7 @@ export default function PlanosPage() {
           {/* FREE */}
           <div className="rounded-2xl border border-white/10 bg-white/[0.025] p-6 flex flex-col gap-5">
             <div className="flex items-start justify-between gap-3">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">SOLO Free</span>
+              <span className="text-zinc-500 uppercase" style={{ fontFamily: "var(--font-geist-mono), monospace", fontSize: "10px", letterSpacing: "0.18em" }}>SOLO Free</span>
               <span className="px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest bg-green-500/10 border border-green-500/20 text-green-400 flex-shrink-0">
                 Plano atual
               </span>
@@ -381,12 +387,12 @@ export default function PlanosPage() {
 
           {/* PLUS */}
           <div className="relative rounded-2xl border border-violet-500/40 bg-violet-500/[0.06] p-6 flex flex-col gap-5"
-            style={{ boxShadow: "0 0 48px rgba(139,92,246,0.08)" }}>
+            style={{ boxShadow: "0 0 48px rgba(139,92,246,0.05)" }}>
             <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-violet-500 rounded-full px-3.5 py-1 text-[9px] font-bold uppercase tracking-widest text-white whitespace-nowrap">
               Mais escolhido
             </div>
 
-            <span className="text-[10px] font-bold uppercase tracking-widest text-violet-400/90 pt-1">SOLO Plus</span>
+            <span className="text-violet-400/90 uppercase pt-1" style={{ fontFamily: "var(--font-geist-mono), monospace", fontSize: "10px", letterSpacing: "0.18em" }}>SOLO Plus</span>
 
             <div>
               <p className="text-4xl font-black text-[#FAFAFA]" style={{ letterSpacing: "-0.03em" }}>
@@ -420,7 +426,7 @@ export default function PlanosPage() {
 
           {/* BLACK */}
           <div className="rounded-2xl border border-white/[0.11] bg-white/[0.018] p-6 flex flex-col gap-5">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">SOLO Black</span>
+            <span className="text-zinc-400 uppercase" style={{ fontFamily: "var(--font-geist-mono), monospace", fontSize: "10px", letterSpacing: "0.18em" }}>SOLO Black</span>
 
             <div>
               <p className="text-4xl font-black text-[#FAFAFA]" style={{ letterSpacing: "-0.03em" }}>
@@ -456,7 +462,7 @@ export default function PlanosPage() {
         {/* ── Comparativo */}
         <div className="flex flex-col gap-8">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-2">Comparativo</p>
+            <p className="text-zinc-500 uppercase mb-2" style={{ fontFamily: "var(--font-geist-mono), monospace", fontSize: "10px", letterSpacing: "0.18em" }}>Comparativo</p>
             <h2 className="text-2xl font-black text-[#FAFAFA]" style={{ letterSpacing: "-0.02em" }}>Na prática, o que muda?</h2>
           </div>
 
@@ -466,7 +472,7 @@ export default function PlanosPage() {
                 <span className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-[10px] font-bold text-zinc-400 flex-shrink-0">F</span>
                 <div>
                   <p className="text-sm font-bold text-[#FAFAFA]">SOLO Free</p>
-                  <p className="text-[11px] text-zinc-500">Para experimentar.</p>
+                  <p className="text-zinc-500" style={{ fontFamily: "var(--font-geist-mono), monospace", fontSize: "10px", letterSpacing: "0.12em" }}>Para experimentar.</p>
                 </div>
               </div>
               <div className="flex flex-col gap-2 text-[13px] text-zinc-400 font-light leading-snug">
@@ -481,7 +487,7 @@ export default function PlanosPage() {
                 <span className="w-8 h-8 rounded-full bg-violet-500/15 border border-violet-500/25 flex items-center justify-center text-[10px] font-bold text-violet-400 flex-shrink-0">P</span>
                 <div>
                   <p className="text-sm font-bold text-[#FAFAFA]">SOLO Plus</p>
-                  <p className="text-[11px] text-violet-400/70">Para sair mais vezes.</p>
+                  <p className="text-violet-400/70" style={{ fontFamily: "var(--font-geist-mono), monospace", fontSize: "10px", letterSpacing: "0.12em" }}>Para sair mais vezes.</p>
                 </div>
               </div>
               <div className="flex flex-col gap-2 text-[13px] text-zinc-300 font-light leading-snug">
@@ -496,7 +502,7 @@ export default function PlanosPage() {
                 <span className="w-8 h-8 rounded-full bg-white/5 border border-white/15 flex items-center justify-center text-[10px] font-bold text-zinc-300 flex-shrink-0">B</span>
                 <div>
                   <p className="text-sm font-bold text-[#FAFAFA]">SOLO Black</p>
-                  <p className="text-[11px] text-zinc-400">Para experiências mais exclusivas.</p>
+                  <p className="text-zinc-400" style={{ fontFamily: "var(--font-geist-mono), monospace", fontSize: "10px", letterSpacing: "0.12em" }}>Para experiências mais exclusivas.</p>
                 </div>
               </div>
               <div className="flex flex-col gap-2 text-[13px] text-zinc-300 font-light leading-snug">

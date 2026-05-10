@@ -48,9 +48,9 @@ const INTENCAO_TEXT: Record<Intencao, string> = {
 };
 
 const AVATAR_GRADIENTS = [
-  "from-violet-500 to-violet-600", "from-purple-500 to-purple-600",
+  "from-amber-600 to-amber-700",   "from-orange-600 to-orange-700",
   "from-sky-500 to-sky-600",       "from-emerald-500 to-emerald-600",
-  "from-rose-500 to-rose-600",     "from-amber-500 to-amber-600",
+  "from-rose-500 to-rose-600",     "from-zinc-500 to-zinc-600",
   "from-pink-500 to-pink-600",     "from-teal-500 to-teal-600",
 ];
 
@@ -151,7 +151,7 @@ const LIVE_STATUS_CONFIG: Record<LiveStatus, { label: string; dot: string; badge
   almost:    { label: "Quase completo",         dot: "bg-orange-500",  badge: "bg-orange-500/10 border-orange-500/20 text-orange-400", cardRing: "" },
   waiting:   { label: "Aguardando confirmação", dot: "bg-blue-400",    badge: "bg-blue-500/10 border-blue-500/20 text-blue-400",       cardRing: "" },
   confirmed: { label: "Confirmado",             dot: "bg-green-500",   badge: "bg-green-500/10 border-green-500/20 text-green-400",    cardRing: "" },
-  live:      { label: "Em andamento",           dot: "bg-violet-500",  badge: "bg-violet-500/10 border-violet-500/30 text-violet-400", cardRing: "ring-2 ring-violet-500/30 shadow-lg shadow-violet-500/20" },
+  live:      { label: "Em andamento",           dot: "bg-amber-400",   badge: "bg-amber-500/10 border-amber-500/30 text-amber-400",    cardRing: "ring-2 ring-amber-500/20 shadow-lg shadow-amber-500/10" },
   ended:     { label: "Finalizado",             dot: "bg-zinc-500",    badge: "bg-white/5 border-white/10 text-zinc-500",              cardRing: "" },
 };
 
@@ -203,23 +203,23 @@ function fmtTime(iso: string) {
 function MemberAvatar({ member, confirmed, checkedIn }: { member: MemberData; confirmed: boolean; checkedIn: boolean }) {
   return (
     <div className="flex flex-col items-center gap-1.5 w-14">
-      <div className={`relative w-11 h-11 rounded-full bg-gradient-to-br ${avatarGradient(member.id)} flex items-center justify-center text-white text-sm font-bold shadow-md flex-shrink-0 transition-all duration-300 ${checkedIn ? "ring-2 ring-emerald-400 ring-offset-1 ring-offset-[#18181B]" : confirmed ? "ring-2 ring-green-400 ring-offset-1 ring-offset-[#18181B]" : ""}`}>
+      <div className={`relative w-11 h-11 rounded-full bg-gradient-to-br ${avatarGradient(member.id)} flex items-center justify-center text-white text-sm font-bold shadow-md flex-shrink-0 transition-all duration-300 ${checkedIn ? "ring-2 ring-emerald-400 ring-offset-1 ring-offset-[#050506]" : confirmed ? "ring-2 ring-green-400 ring-offset-1 ring-offset-[#050506]" : ""}`}>
         {getInitials(member.name)}
         {member.isMe ? (
-          <span className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-violet-500 border-2 border-[#18181B] flex items-center justify-center">
+          <span className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-zinc-600 border-2 border-[#050506] flex items-center justify-center">
             <svg className="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 24 24">
               <path d="M12 2a5 5 0 110 10A5 5 0 0112 2zm0 12c5.33 0 8 2.67 8 4v2H4v-2c0-1.33 2.67-4 8-4z" />
             </svg>
           </span>
         ) : checkedIn ? (
-          <span className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-emerald-500 border-2 border-[#18181B] flex items-center justify-center">
+          <span className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-emerald-500 border-2 border-[#050506] flex items-center justify-center">
             <svg className="w-2 h-2 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
           </span>
         ) : confirmed ? (
-          <span className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-green-500 border-2 border-[#18181B] flex items-center justify-center">
+          <span className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-green-500 border-2 border-[#050506] flex items-center justify-center">
             <svg className="w-2 h-2 text-white" fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
@@ -240,13 +240,13 @@ function TimelineSection({ grupo, nameMap }: { grupo: GrupoData; nameMap: Map<st
   const CFG = {
     confirmed:   { icon: "✓", bg: "bg-green-500/15 text-green-400",    getLabel: (uid: string) => `${nameMap.get(uid)?.split(" ")[0] ?? "Alguém"} confirmou presença` },
     checkin:     { icon: "📍", bg: "bg-emerald-500/15 text-emerald-400", getLabel: (uid: string) => `${nameMap.get(uid)?.split(" ")[0] ?? "Alguém"} chegou ao local` },
-    event_start: { icon: "✦", bg: "bg-violet-500/15 text-violet-400",   getLabel: () => "Evento iniciado" },
+    event_start: { icon: "✦", bg: "bg-amber-500/15 text-amber-400",     getLabel: () => "Evento iniciado" },
     event_end:   { icon: "◼", bg: "bg-white/10 text-zinc-500",          getLabel: () => "Evento encerrado" },
   };
 
   return (
     <div>
-      <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-3">Atividade</p>
+      <p className="text-zinc-500 uppercase mb-3" style={{ fontFamily: "var(--font-geist-mono), monospace", fontSize: "10px", letterSpacing: "0.18em" }}>Atividade</p>
       <div className="flex flex-col">
         {events.map((ev, i) => {
           const cfg = CFG[ev.type];
@@ -325,7 +325,7 @@ function ChatSection({
           <div className="flex gap-2 px-5 pb-3 overflow-x-auto">
             {QUICK_ACTIONS.map((qa) => (
               <button key={qa} onClick={() => send(qa)} disabled={sending}
-                className="flex-shrink-0 text-xs px-3 py-1.5 rounded-full bg-white/5 hover:bg-violet-500/10 hover:text-violet-400 text-zinc-400 border border-white/10 hover:border-violet-500/20 transition-colors disabled:opacity-50 active:scale-95">
+                className="flex-shrink-0 text-xs px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/[0.09] hover:text-zinc-200 text-zinc-400 border border-white/10 hover:border-white/20 transition-colors disabled:opacity-50 active:scale-95">
                 {qa}
               </button>
             ))}
@@ -334,7 +334,7 @@ function ChatSection({
             <input value={input} onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(input); } }}
               placeholder="Mensagem..." maxLength={500} disabled={sending}
-              className="flex-1 text-sm px-4 py-2.5 rounded-xl border border-white/10 bg-white/5 text-[#FAFAFA] focus:outline-none focus:border-violet-500/40 focus:bg-white/8 transition-colors placeholder:text-zinc-600 disabled:opacity-60" />
+              className="flex-1 text-sm px-4 py-2.5 rounded-xl border border-white/10 bg-white/5 text-[#FAFAFA] focus:outline-none focus:border-white/25 focus:bg-white/[0.08] transition-colors placeholder:text-zinc-600 disabled:opacity-60" />
             <button onClick={() => send(input)} disabled={!input.trim() || sending}
               className="w-10 h-10 rounded-xl bg-violet-500 hover:bg-violet-400 disabled:bg-white/10 flex items-center justify-center transition-all duration-200 active:scale-90 flex-shrink-0">
               {sending
@@ -387,7 +387,7 @@ function FeedbackSection({ grupo, onSubmit }: {
   const display = hovered || rating;
 
   return (
-    <div className="border-t border-violet-500/20 bg-gradient-to-b from-violet-500/10 to-transparent px-5 py-5 flex flex-col gap-4">
+    <div className="border-t border-white/[0.06] bg-gradient-to-b from-white/[0.04] to-transparent px-5 py-5 flex flex-col gap-4">
       <div>
         <p className="text-sm font-bold text-[#FAFAFA]">Como foi sua experiência?</p>
         <p className="text-xs text-[#A1A1AA] mt-0.5">Avalie o encontro com seu grupo</p>
@@ -406,7 +406,7 @@ function FeedbackSection({ grupo, onSubmit }: {
       {rating > 0 && (
         <input value={comment} onChange={(e) => setComment(e.target.value)}
           placeholder="Deixe um comentário (opcional)..." maxLength={200}
-          className="text-sm px-4 py-2.5 rounded-xl border border-white/10 bg-white/5 text-[#FAFAFA] focus:outline-none focus:border-violet-500/40 transition-colors placeholder:text-zinc-600" />
+          className="text-sm px-4 py-2.5 rounded-xl border border-white/10 bg-white/5 text-[#FAFAFA] focus:outline-none focus:border-white/25 transition-colors placeholder:text-zinc-600" />
       )}
       {rating > 0 && (
         <button onClick={handleSubmit} disabled={submitting}
@@ -434,7 +434,7 @@ function EndedSummary({ grupo }: { grupo: GrupoData }) {
         </div>
         {pct > 0 && (
           <div className="flex flex-col gap-0.5">
-            <span className="text-2xl font-black text-violet-400 tabular-nums">{pct}%</span>
+            <span className="text-2xl font-black text-amber-400 tabular-nums">{pct}%</span>
             <span className="text-xs text-zinc-500">compatibilidade</span>
           </div>
         )}
@@ -462,8 +462,8 @@ function GrupoCard({
   const liveStatus    = getLiveStatus(grupo);
   const statusCfg     = LIVE_STATUS_CONFIG[liveStatus];
   const pct           = grupo.avgCompat;
-  const compatColor   = pct >= 75 ? "text-violet-400" : pct >= 55 ? "text-emerald-400" : "text-amber-400";
-  const compatBg      = pct >= 75 ? "bg-violet-500/10 border-violet-500/20" : pct >= 55 ? "bg-emerald-500/10 border-emerald-500/20" : "bg-amber-500/10 border-amber-500/20";
+  const compatColor   = pct >= 75 ? "text-amber-400" : pct >= 55 ? "text-emerald-400" : "text-zinc-300";
+  const compatBg      = pct >= 75 ? "bg-amber-500/10 border-amber-500/20" : pct >= 55 ? "bg-emerald-500/10 border-emerald-500/20" : "bg-white/[0.06] border-white/[0.10]";
 
   const sortedMembers  = [...grupo.members].sort((a, b) => (a.isMe ? -1 : b.isMe ? 1 : 0));
   const isMeConfirmed  = grupo.confirmations.some((c) => c.user_id === currentUserId);
@@ -481,7 +481,7 @@ function GrupoCard({
   async function handleCheckin()  { if (isMeCheckedIn) return; setCheckingIn(true); await onCheckin(grupo.group_id); setCheckingIn(false); }
 
   return (
-    <div className={`bg-[#18181B] border border-white/10 rounded-2xl overflow-hidden transition-all duration-300 ${statusCfg.cardRing}`}>
+    <div className={`border border-white/[0.08] rounded-2xl overflow-hidden transition-all duration-300 ${statusCfg.cardRing}`} style={{ background: "rgba(255,255,255,0.04)" }}>
       {tipo && <div className={`h-1 w-full ${tipo.bar}`} />}
 
       <div className="p-5 sm:p-6 flex flex-col gap-5">
@@ -519,7 +519,7 @@ function GrupoCard({
                 </span>
               )}
               {countdown && !isEnded && (
-                <span className={`flex items-center gap-1 text-xs font-semibold ${isLive ? "text-violet-400" : "text-zinc-500"}`}>
+                <span className={`flex items-center gap-1 text-xs font-semibold ${isLive ? "text-amber-400" : "text-zinc-500"}`}>
                   <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
@@ -541,7 +541,7 @@ function GrupoCard({
         {/* Members */}
         <div className="flex flex-col gap-3">
           <div className="flex items-center justify-between flex-wrap gap-y-1">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">
+            <p className="text-zinc-500 uppercase" style={{ fontFamily: "var(--font-geist-mono), monospace", fontSize: "10px", letterSpacing: "0.18em" }}>
               {memberCount} membro{memberCount !== 1 ? "s" : ""}
             </p>
             <div className="flex items-center gap-3">
@@ -572,7 +572,7 @@ function GrupoCard({
         {/* Timeline toggle */}
         {hasTimeline && (
           <button onClick={() => setShowTimeline((v) => !v)}
-            className="flex items-center gap-1.5 text-xs text-zinc-500 hover:text-violet-400 transition-colors w-fit active:scale-95">
+            className="flex items-center gap-1.5 text-xs text-zinc-500 hover:text-zinc-300 transition-colors w-fit active:scale-95">
             <svg className={`w-3 h-3 transition-transform duration-200 ${showTimeline ? "rotate-90" : ""}`} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
             </svg>
@@ -615,13 +615,13 @@ function GrupoCard({
 
             {/* Chat */}
             <button onClick={() => setChatOpen((v) => !v)}
-              className={`relative flex items-center gap-2 py-2.5 px-4 rounded-xl text-sm font-semibold border transition-all duration-200 active:scale-95 ${chatOpen ? "bg-white/15 border-white/15 text-[#FAFAFA]" : "bg-white/5 border-white/10 text-zinc-400 hover:border-violet-500/40 hover:text-violet-400"}`}>
+              className={`relative flex items-center gap-2 py-2.5 px-4 rounded-xl text-sm font-semibold border transition-all duration-200 active:scale-95 ${chatOpen ? "bg-white/15 border-white/15 text-[#FAFAFA]" : "bg-white/5 border-white/10 text-zinc-400 hover:border-white/25 hover:text-zinc-300"}`}>
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
               </svg>
               Chat
               {grupo.messages.length > 0 && (
-                <span className="w-5 h-5 rounded-full bg-violet-500 text-white text-[10px] font-bold flex items-center justify-center">
+                <span className="w-5 h-5 rounded-full bg-amber-500 text-white text-[10px] font-bold flex items-center justify-center">
                   {grupo.messages.length > 9 ? "9+" : grupo.messages.length}
                 </span>
               )}
@@ -655,9 +655,9 @@ function GrupoCard({
 
 function EmptyGruposState() {
   return (
-    <div className="flex flex-col items-center gap-6 py-14 px-6 text-center bg-[#18181B] border border-white/10 rounded-2xl">
-      <div className="w-16 h-16 rounded-2xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center">
-        <svg className="w-8 h-8 text-violet-400" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+    <div className="flex flex-col items-center gap-6 py-14 px-6 text-center border border-white/[0.08] rounded-2xl" style={{ background: "rgba(255,255,255,0.04)" }}>
+      <div className="w-16 h-16 rounded-2xl bg-white/[0.06] border border-white/[0.10] flex items-center justify-center">
+        <svg className="w-8 h-8 text-zinc-300" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
         </svg>
       </div>
@@ -673,9 +673,9 @@ function EmptyGruposState() {
           { icon: "2️⃣", text: <>O SOLO encontra pessoas compatíveis no mesmo evento</>, violet: false },
           { icon: "3️⃣", text: <>Confirme presença, faça check-in e avalie o encontro</>, violet: true },
         ].map(({ icon, text, violet }) => (
-          <div key={icon} className={`flex items-start gap-3 px-4 py-3 rounded-xl text-left border ${violet ? "bg-violet-500/10 border-violet-500/20" : "bg-white/5 border-white/10"}`}>
+          <div key={icon} className={`flex items-start gap-3 px-4 py-3 rounded-xl text-left border ${violet ? "bg-amber-500/[0.07] border-amber-500/20" : "bg-white/5 border-white/10"}`}>
             <span className="text-base mt-0.5 flex-shrink-0">{icon}</span>
-            <p className={`text-xs leading-relaxed ${violet ? "text-violet-400" : "text-zinc-400"}`}>{text}</p>
+            <p className={`text-xs leading-relaxed ${violet ? "text-amber-300" : "text-zinc-400"}`}>{text}</p>
           </div>
         ))}
       </div>
@@ -885,13 +885,14 @@ export default function GruposPage() {
   const totalMembros = grupos.reduce((acc, g) => acc + g.members.filter((m) => !m.isMe).length, 0);
 
   return (
-    <div className="min-h-screen bg-[#0F0F11] text-[#FAFAFA]">
+    <div className="min-h-screen bg-[#050506] text-[#FAFAFA]">
       <Navbar />
       <main className="max-w-2xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
         <div className="mb-10">
-          <span className="text-xs font-semibold uppercase tracking-widest text-violet-500">Sua rede</span>
+          <span className="text-zinc-500 uppercase" style={{ fontFamily: "var(--font-geist-mono), monospace", fontSize: "10px", letterSpacing: "0.18em" }}>Sua rede</span>
           <h1 className="text-3xl sm:text-4xl font-black text-[#FAFAFA] mt-3 mb-3" style={{ letterSpacing: "-0.02em" }}>
-            Seus <span className="text-violet-500">Grupos</span>
+            Seus{" "}
+            <span className="text-[#F8FAFC]" style={{ fontFamily: "var(--font-dm-serif), serif", fontStyle: "italic" }}>Grupos</span>
           </h1>
           <p className="text-[#A1A1AA] text-base max-w-md">Confirme, chegue, converse e avalie o encontro.</p>
         </div>
@@ -920,15 +921,15 @@ export default function GruposPage() {
         ) : (
           <>
             {totalMembros > 0 && (
-              <div className="flex items-center gap-3 mb-8 px-4 py-3.5 bg-violet-500/10 border border-violet-500/20 rounded-2xl">
+              <div className="flex items-center gap-3 mb-8 px-4 py-3.5 border border-white/[0.08] rounded-2xl" style={{ background: "rgba(255,255,255,0.04)" }}>
                 <div className="flex -space-x-2">
                   {grupos.flatMap((g) => g.members.filter((m) => !m.isMe)).slice(0, 4).map((m) => (
-                    <div key={`${m.id}-stack`} className={`w-8 h-8 rounded-full bg-gradient-to-br ${avatarGradient(m.id)} border-2 border-[#0F0F11] flex items-center justify-center text-white text-xs font-bold`}>
+                    <div key={`${m.id}-stack`} className={`w-8 h-8 rounded-full bg-gradient-to-br ${avatarGradient(m.id)} border-2 border-[#050506] flex items-center justify-center text-white text-xs font-bold`}>
                       {getInitials(m.name)}
                     </div>
                   ))}
                 </div>
-                <p className="text-sm text-violet-400">
+                <p className="text-sm text-zinc-300">
                   <span className="font-bold">{totalMembros}</span>{" "}
                   pessoa{totalMembros !== 1 ? "s" : ""} em{" "}
                   <span className="font-bold">{grupos.length}</span> grupo{grupos.length !== 1 ? "s" : ""}
