@@ -21,7 +21,7 @@ const EVENTO_META: Record<string, { tipo: EventType; emoji: string; nome: string
 };
 
 const TIPO_CONFIG: Record<EventType, { label: string; color: string; bg: string; bar: string }> = {
-  balada:  { label: "Balada",        color: "text-purple-400",  bg: "bg-purple-500/10 border-purple-500/20",  bar: "bg-purple-500"  },
+  balada:  { label: "Balada",        color: "text-rose-400",    bg: "bg-rose-500/10 border-rose-500/20",      bar: "bg-rose-500"    },
   bar:     { label: "Bar descolado", color: "text-amber-400",   bg: "bg-amber-500/10 border-amber-500/20",    bar: "bg-amber-500"   },
   rooftop: { label: "Rooftop",       color: "text-sky-400",     bg: "bg-sky-500/10 border-sky-500/20",        bar: "bg-sky-500"     },
   show:    { label: "Show ao vivo",  color: "text-emerald-400", bg: "bg-emerald-500/10 border-emerald-500/20", bar: "bg-emerald-500" },
@@ -149,7 +149,7 @@ function getLiveStatus(grupo: GrupoData): LiveStatus {
 const LIVE_STATUS_CONFIG: Record<LiveStatus, { label: string; dot: string; badge: string; cardRing?: string }> = {
   forming:   { label: "Formando",              dot: "bg-amber-500",   badge: "bg-amber-500/10 border-amber-500/20 text-amber-400",    cardRing: "" },
   almost:    { label: "Quase completo",         dot: "bg-orange-500",  badge: "bg-orange-500/10 border-orange-500/20 text-orange-400", cardRing: "" },
-  waiting:   { label: "Aguardando confirmação", dot: "bg-blue-400",    badge: "bg-blue-500/10 border-blue-500/20 text-blue-400",       cardRing: "" },
+  waiting:   { label: "Aguardando confirmação", dot: "bg-zinc-400",    badge: "bg-white/5 border-white/10 text-zinc-400",              cardRing: "" },
   confirmed: { label: "Confirmado",             dot: "bg-green-500",   badge: "bg-green-500/10 border-green-500/20 text-green-400",    cardRing: "" },
   live:      { label: "Em andamento",           dot: "bg-amber-400",   badge: "bg-amber-500/10 border-amber-500/30 text-amber-400",    cardRing: "ring-2 ring-amber-500/20 shadow-lg shadow-amber-500/10" },
   ended:     { label: "Finalizado",             dot: "bg-zinc-500",    badge: "bg-white/5 border-white/10 text-zinc-500",              cardRing: "" },
@@ -310,7 +310,7 @@ function ChatSection({
           return (
             <div key={msg.id} className={`flex flex-col gap-0.5 ${isMe ? "items-end" : "items-start"}`}>
               {!isMe && <span className="text-[10px] text-zinc-500 px-1">{senderName.split(" ")[0]}</span>}
-              <div className={`max-w-[80%] px-3 py-2 rounded-2xl text-sm leading-relaxed ${isMe ? "bg-violet-500 text-white rounded-tr-sm" : "bg-white/10 text-[#FAFAFA] rounded-tl-sm"}`}>
+              <div className={`max-w-[80%] px-3 py-2 rounded-2xl text-sm leading-relaxed ${isMe ? "bg-gradient-to-br from-[#C94A1E] to-[#7A2540] text-white rounded-tr-sm" : "bg-white/10 text-[#FAFAFA] rounded-tl-sm"}`}>
                 {msg.body}
               </div>
               <span className="text-[10px] text-zinc-500 px-1">{fmtTime(msg.created_at)}</span>
@@ -336,7 +336,7 @@ function ChatSection({
               placeholder="Mensagem..." maxLength={500} disabled={sending}
               className="flex-1 text-sm px-4 py-2.5 rounded-xl border border-white/10 bg-white/5 text-[#FAFAFA] focus:outline-none focus:border-white/25 focus:bg-white/[0.08] transition-colors placeholder:text-zinc-600 disabled:opacity-60" />
             <button onClick={() => send(input)} disabled={!input.trim() || sending}
-              className="w-10 h-10 rounded-xl bg-violet-500 hover:bg-violet-400 disabled:bg-white/10 flex items-center justify-center transition-all duration-200 active:scale-90 flex-shrink-0">
+              className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#C94A1E] to-[#7A2540] hover:from-[#E05525] hover:to-[#8B2F4C] disabled:opacity-40 disabled:bg-none disabled:bg-white/10 flex items-center justify-center transition-all duration-200 active:scale-90 flex-shrink-0">
               {sending
                 ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                 : <svg className={`w-4 h-4 ${input.trim() ? "text-white" : "text-zinc-500"}`} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -410,7 +410,7 @@ function FeedbackSection({ grupo, onSubmit }: {
       )}
       {rating > 0 && (
         <button onClick={handleSubmit} disabled={submitting}
-          className="w-full py-3 bg-violet-500 hover:bg-violet-400 disabled:bg-violet-500/40 text-white font-semibold rounded-xl text-sm transition-all duration-200 active:scale-95 shadow-md shadow-violet-500/20">
+          className="w-full py-3 bg-gradient-to-r from-[#C94A1E] to-[#7A2540] hover:from-[#E05525] hover:to-[#8B2F4C] disabled:opacity-50 text-white font-semibold rounded-xl text-sm transition-all duration-200 active:scale-95 shadow-md shadow-black/20 solo-shimmer-btn">
           {submitting
             ? <span className="flex items-center justify-center gap-2"><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />Enviando...</span>
             : "Enviar avaliação"}
@@ -498,8 +498,8 @@ function GrupoCard({
               <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${statusCfg.badge}`}>
                 {isLive ? (
                   <span className="relative flex items-center justify-center w-2 h-2 flex-shrink-0">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75" />
-                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-violet-500" />
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-amber-500" />
                   </span>
                 ) : (
                   <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${statusCfg.dot} ${liveStatus === "forming" || liveStatus === "almost" ? "animate-pulse" : ""}`} />
@@ -604,7 +604,7 @@ function GrupoCard({
               className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-semibold transition-all duration-200 active:scale-95 disabled:opacity-50 ${
                 isMeConfirmed
                   ? "bg-green-500/10 border border-green-500/20 text-green-400 hover:bg-red-500/10 hover:border-red-500/20 hover:text-red-400"
-                  : "bg-violet-500 hover:bg-violet-400 text-white shadow-md shadow-violet-500/20 hover:-translate-y-0.5"
+                  : "bg-gradient-to-r from-[#C94A1E] to-[#7A2540] hover:from-[#E05525] hover:to-[#8B2F4C] text-white shadow-md shadow-black/20 hover:-translate-y-0.5"
               }`}>
               {confirming
                 ? <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
@@ -679,7 +679,7 @@ function EmptyGruposState() {
           </div>
         ))}
       </div>
-      <Link href="/eventos" className="mt-1 px-6 py-3 bg-violet-500 hover:bg-violet-400 text-white font-semibold rounded-xl text-sm transition-all duration-200 shadow-lg shadow-violet-500/20 hover:-translate-y-0.5 active:scale-95">
+      <Link href="/eventos" className="mt-1 px-6 py-3 bg-gradient-to-r from-[#C94A1E] to-[#7A2540] hover:from-[#E05525] hover:to-[#8B2F4C] text-white font-semibold rounded-xl text-sm transition-all duration-200 shadow-lg shadow-black/20 hover:-translate-y-0.5 active:scale-95 solo-shimmer-btn">
         Ver eventos disponíveis →
       </Link>
     </div>
@@ -899,7 +899,7 @@ export default function GruposPage() {
 
         {!ready ? (
           <div className="flex flex-col items-center gap-4 py-24">
-            <div className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border-2 border-amber-500/40 border-t-[#C94A1E] rounded-full animate-spin" />
             <p className="text-sm text-zinc-500">Carregando seus grupos...</p>
           </div>
         ) : initError ? (
@@ -912,7 +912,7 @@ export default function GruposPage() {
             <p className="text-[#FAFAFA] font-semibold text-sm">Algo deu errado</p>
             <p className="text-[#A1A1AA] text-xs max-w-xs">{initError}</p>
             <button onClick={() => window.location.reload()}
-              className="mt-1 px-5 py-2.5 bg-violet-500 hover:bg-violet-400 text-white text-sm font-semibold rounded-xl transition-colors">
+              className="mt-1 px-5 py-2.5 bg-gradient-to-r from-[#C94A1E] to-[#7A2540] hover:from-[#E05525] hover:to-[#8B2F4C] text-white text-sm font-semibold rounded-xl transition-all duration-200 solo-shimmer-btn">
               Tentar novamente
             </button>
           </div>

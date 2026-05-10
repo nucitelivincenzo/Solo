@@ -52,7 +52,7 @@ export default function DashboardPage() {
         <p className="text-[#FAFAFA] font-semibold text-sm">Algo deu errado</p>
         <p className="text-[#A1A1AA] text-xs max-w-xs">{initError}</p>
         <button onClick={() => window.location.reload()}
-          className="mt-1 px-5 py-2.5 bg-violet-500 hover:bg-violet-400 text-white text-sm font-semibold rounded-xl transition-colors">
+          className="mt-1 px-5 py-2.5 bg-gradient-to-r from-[#C94A1E] to-[#7A2540] hover:from-[#E05525] hover:to-[#8B2F4C] text-white text-sm font-semibold rounded-xl transition-all duration-200 solo-shimmer-btn">
           Tentar novamente
         </button>
       </div>
@@ -62,7 +62,7 @@ export default function DashboardPage() {
   if (!ready) {
     return (
       <div className="min-h-screen bg-[#050506] flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-amber-500/40 border-t-[#C94A1E] rounded-full animate-spin" />
       </div>
     );
   }

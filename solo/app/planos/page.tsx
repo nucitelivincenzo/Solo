@@ -68,9 +68,9 @@ const FREE_DETAILS = [
 
 function Toast({ plan, onClose }: { plan: "plus" | "black"; onClose: () => void }) {
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] flex items-center gap-3 px-5 py-4 border border-violet-500/20 rounded-2xl shadow-2xl shadow-black/60 max-w-[90vw]" style={{ background: "#0D0D0F" }}>
-      <div className="w-8 h-8 rounded-full bg-violet-500/10 border border-violet-500/20 flex items-center justify-center flex-shrink-0">
-        <svg className="w-4 h-4 text-violet-400" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] flex items-center gap-3 px-5 py-4 border border-amber-500/20 rounded-2xl shadow-2xl shadow-black/60 max-w-[90vw]" style={{ background: "#0D0D0F" }}>
+      <div className="w-8 h-8 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center flex-shrink-0">
+        <svg className="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
         </svg>
       </div>
@@ -90,7 +90,7 @@ function Toast({ plan, onClose }: { plan: "plus" | "black"; onClose: () => void 
 
 // ── Detail row inside modal ────────────────────────────────────────────────────
 
-function DetailRow({ title, desc, accent }: { title: string; desc: string; accent: "violet" | "zinc" }) {
+function DetailRow({ title, desc, accent }: { title: string; desc: string; accent: "amber" | "zinc" }) {
   return (
     <div className="flex flex-col gap-1 py-3.5 border-b border-white/[0.06] last:border-0">
       <span className="text-sm font-semibold text-zinc-200">
@@ -108,7 +108,7 @@ function PlusModal({ onClose, onInterest }: { onClose: () => void; onInterest: (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center px-4 pb-0 sm:pb-0" onClick={onClose}>
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
       <div
-        className="relative z-10 w-full max-w-md border border-violet-500/20 rounded-t-2xl sm:rounded-2xl shadow-2xl shadow-black/60 max-h-[92svh] flex flex-col"
+        className="relative z-10 w-full max-w-md border border-amber-500/20 rounded-t-2xl sm:rounded-2xl shadow-2xl shadow-black/60 max-h-[92svh] flex flex-col"
         style={{ background: "#0D0D0F" }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -118,11 +118,11 @@ function PlusModal({ onClose, onInterest }: { onClose: () => void; onInterest: (
         </div>
 
         {/* Header */}
-        <div className="flex items-start justify-between px-6 pt-4 pb-4 border-b border-violet-500/[0.12]">
+        <div className="flex items-start justify-between px-6 pt-4 pb-4 border-b border-white/[0.08]">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-violet-400/90 uppercase" style={{ fontFamily: "var(--font-geist-mono), monospace", fontSize: "10px", letterSpacing: "0.18em" }}>SOLO Plus</span>
-              <span className="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest bg-violet-500 text-white">
+              <span className="text-amber-400/90 uppercase" style={{ fontFamily: "var(--font-geist-mono), monospace", fontSize: "10px", letterSpacing: "0.18em" }}>SOLO Plus</span>
+              <span className="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest bg-gradient-to-r from-[#C94A1E] to-[#7A2540] text-white">
                 Mais escolhido
               </span>
             </div>
@@ -145,7 +145,7 @@ function PlusModal({ onClose, onInterest }: { onClose: () => void; onInterest: (
           <p className="text-zinc-500 uppercase" style={{ fontFamily: "var(--font-geist-mono), monospace", fontSize: "10px", letterSpacing: "0.18em" }}>O que muda na prática</p>
           <div className="flex flex-col">
             {PLUS_DETAILS.map((d) => (
-              <DetailRow key={d.title} title={d.title} desc={d.desc} accent="violet" />
+              <DetailRow key={d.title} title={d.title} desc={d.desc} accent="amber" />
             ))}
           </div>
 
@@ -385,13 +385,13 @@ export default function PlanosPage() {
           </div>
 
           {/* PLUS */}
-          <div className="relative rounded-2xl border border-violet-500/40 bg-violet-500/[0.06] p-6 flex flex-col gap-5"
+          <div className="relative rounded-2xl border border-amber-500/30 bg-amber-500/[0.04] p-6 flex flex-col gap-5"
             style={{ boxShadow: "0 0 48px rgba(139,92,246,0.05)" }}>
             <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full px-3.5 py-1 text-[9px] font-bold uppercase tracking-widest text-white whitespace-nowrap" style={{ background: "linear-gradient(135deg, #C94A1E, #7A2540)" }}>
               Mais escolhido
             </div>
 
-            <span className="text-violet-400/90 uppercase pt-1" style={{ fontFamily: "var(--font-geist-mono), monospace", fontSize: "10px", letterSpacing: "0.18em" }}>SOLO Plus</span>
+            <span className="text-amber-400/90 uppercase pt-1" style={{ fontFamily: "var(--font-geist-mono), monospace", fontSize: "10px", letterSpacing: "0.18em" }}>SOLO Plus</span>
 
             <div>
               <p className="text-4xl font-black text-[#FAFAFA]" style={{ letterSpacing: "-0.03em" }}>
@@ -402,7 +402,7 @@ export default function PlanosPage() {
               </p>
             </div>
 
-            <div className="flex flex-col gap-2.5 border-t border-violet-500/[0.14] pt-4">
+            <div className="flex flex-col gap-2.5 border-t border-white/[0.10] pt-4">
               {[
                 { text: "Tudo do Free", first: true },
                 { text: "Até 3 convites por semana", first: false },
@@ -480,18 +480,18 @@ export default function PlanosPage() {
               </div>
             </div>
 
-            <div className="rounded-2xl border border-violet-500/30 bg-violet-500/[0.05] p-5 flex flex-col gap-4">
+            <div className="rounded-2xl border border-amber-500/20 bg-amber-500/[0.04] p-5 flex flex-col gap-4">
               <div className="flex items-center gap-3">
-                <span className="w-8 h-8 rounded-full bg-violet-500/15 border border-violet-500/25 flex items-center justify-center text-[10px] font-bold text-violet-400 flex-shrink-0">P</span>
+                <span className="w-8 h-8 rounded-full bg-amber-500/15 border border-amber-500/25 flex items-center justify-center text-[10px] font-bold text-amber-400 flex-shrink-0">P</span>
                 <div>
                   <p className="text-sm font-bold text-[#FAFAFA]">SOLO Plus</p>
-                  <p className="text-violet-400/70" style={{ fontFamily: "var(--font-geist-mono), monospace", fontSize: "10px", letterSpacing: "0.12em" }}>Para sair mais vezes.</p>
+                  <p className="text-amber-400/70" style={{ fontFamily: "var(--font-geist-mono), monospace", fontSize: "10px", letterSpacing: "0.12em" }}>Para sair mais vezes.</p>
                 </div>
               </div>
               <div className="flex flex-col gap-2 text-[13px] text-zinc-300 font-light leading-snug">
-                <p className="flex items-start gap-2"><span className="text-violet-500/60 flex-shrink-0">+</span>Até 3 convites por semana</p>
-                <p className="flex items-start gap-2"><span className="text-violet-500/60 flex-shrink-0">+</span>Prioridade em grupos compatíveis</p>
-                <p className="flex items-start gap-2"><span className="text-violet-500/60 flex-shrink-0">+</span>Acesso antecipado a alguns rolês</p>
+                <p className="flex items-start gap-2"><span className="text-amber-500/60 flex-shrink-0">+</span>Até 3 convites por semana</p>
+                <p className="flex items-start gap-2"><span className="text-amber-500/60 flex-shrink-0">+</span>Prioridade em grupos compatíveis</p>
+                <p className="flex items-start gap-2"><span className="text-amber-500/60 flex-shrink-0">+</span>Acesso antecipado a alguns rolês</p>
               </div>
             </div>
 
@@ -514,7 +514,7 @@ export default function PlanosPage() {
           <div className="flex items-center gap-2 text-[11px] text-zinc-600 font-medium flex-wrap">
             <span className="px-2.5 py-1 rounded-full border border-white/10 bg-white/5 text-zinc-500">Free</span>
             <span>→</span>
-            <span className="px-2.5 py-1 rounded-full border border-violet-500/30 bg-violet-500/10 text-violet-400">Plus</span>
+            <span className="px-2.5 py-1 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-400">Plus</span>
             <span>→</span>
             <span className="px-2.5 py-1 rounded-full border border-white/15 bg-white/[0.04] text-zinc-300">Black</span>
             <span className="ml-2 text-zinc-700">Cada nível amplia acesso, prioridade e exclusividade.</span>

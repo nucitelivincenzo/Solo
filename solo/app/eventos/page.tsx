@@ -78,7 +78,7 @@ const EVENTOS: Evento[] = [
 ];
 
 const TIPO_CONFIG: Record<EventType, { emoji: string; color: string; bg: string; bar: string }> = {
-  balada: { emoji: "🎉", color: "text-purple-400", bg: "bg-purple-500/10 border-purple-500/20", bar: "bg-purple-500" },
+  balada: { emoji: "🎉", color: "text-rose-400", bg: "bg-rose-500/10 border-rose-500/20", bar: "bg-rose-500" },
   bar:    { emoji: "🍹", color: "text-amber-400",  bg: "bg-amber-500/10 border-amber-500/20",   bar: "bg-amber-500"  },
 };
 
@@ -152,7 +152,7 @@ const INTENCAO_TEXT: Record<Intencao, string> = {
 };
 
 const MATCH_GRADIENTS = [
-  "from-violet-500 to-violet-600", "from-purple-500 to-purple-600",
+  "from-rose-500 to-rose-600",     "from-orange-500 to-orange-600",
   "from-sky-500 to-sky-600",       "from-emerald-500 to-emerald-600",
   "from-rose-500 to-rose-600",     "from-amber-500 to-amber-600",
   "from-pink-500 to-pink-600",     "from-teal-500 to-teal-600",
@@ -187,10 +187,10 @@ function MatchCard({ user }: { user: MatchedUser }) {
   const pct = user.percentage;
   const isHigh = pct >= 80;
   const isMid  = pct >= 60;
-  const pctColor   = isHigh ? "text-violet-400"  : isMid ? "text-emerald-400" : "text-amber-400";
-  const cardBorder = isHigh ? "border-violet-500/20 hover:border-violet-500/40" : "border-white/10 hover:border-white/20";
+  const pctColor   = isHigh ? "text-amber-400"  : isMid ? "text-emerald-400" : "text-amber-400";
+  const cardBorder = isHigh ? "border-amber-500/20 hover:border-amber-500/40" : "border-white/10 hover:border-white/20";
   const badgeCls   = isHigh
-    ? "bg-violet-500/10 border-violet-500/20 text-violet-400"
+    ? "bg-amber-500/10 border-amber-500/20 text-amber-400"
     : isMid
     ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
     : "bg-amber-500/10 border-amber-500/20 text-amber-400";
@@ -221,7 +221,7 @@ function MatchCard({ user }: { user: MatchedUser }) {
         <div className="flex flex-wrap gap-1.5">
           {badges.map((b) => (
             <span key={b} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-white/5 border border-white/10 text-zinc-400">
-              <span className="w-1.5 h-1.5 rounded-full bg-violet-400 flex-shrink-0" />
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 flex-shrink-0" />
               {b}
             </span>
           ))}
@@ -237,8 +237,8 @@ function MatchCard({ user }: { user: MatchedUser }) {
 function EmptyMatchState() {
   return (
     <div className="flex flex-col items-center gap-5 py-10 px-6 text-center border border-white/[0.08] rounded-2xl" style={{ background: "rgba(255,255,255,0.04)" }}>
-      <div className="w-14 h-14 rounded-2xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center">
-        <svg className="w-7 h-7 text-violet-400" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+      <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">
+        <svg className="w-7 h-7 text-amber-400" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
         </svg>
       </div>
@@ -248,9 +248,9 @@ function EmptyMatchState() {
           Quando outros participantes confirmados tiverem perfil compatível com o seu, eles aparecem aqui.
         </p>
       </div>
-      <div className="flex items-start gap-3 w-full max-w-xs px-4 py-3 bg-violet-500/10 border border-violet-500/20 rounded-xl text-left">
+      <div className="flex items-start gap-3 w-full max-w-xs px-4 py-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-left">
         <span className="text-base mt-0.5 flex-shrink-0">✨</span>
-        <p className="text-violet-400 text-xs leading-relaxed">Inscreva-se em mais eventos para aumentar suas chances de match</p>
+        <p className="text-amber-400 text-xs leading-relaxed">Inscreva-se em mais eventos para aumentar suas chances de match</p>
       </div>
     </div>
   );
@@ -328,8 +328,8 @@ function VillaJkModal({ onContinue, onClose }: { onContinue: () => void; onClose
         style={{ background: "#0D0D0F" }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="w-10 h-10 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center mb-4">
-          <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+        <div className="w-10 h-10 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-4">
+          <svg className="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
           </svg>
         </div>
@@ -382,7 +382,7 @@ function EventoCard({
 
   return (
     <div className={`border rounded-2xl overflow-hidden flex flex-col transition-all duration-200 group hover:-translate-y-0.5 hover:shadow-md hover:shadow-black/20
-      ${interesseGrupo ? "border-violet-500/40" : "border-white/[0.08] hover:border-white/20"}`}
+      ${interesseGrupo ? "border-amber-500/40" : "border-white/[0.08] hover:border-white/20"}`}
       style={{ background: "rgba(255,255,255,0.04)" }}>
       <div className={`h-1 w-full ${tipo.bar}`} />
       <div className="p-6 flex flex-col gap-5 flex-1">
@@ -403,7 +403,7 @@ function EventoCard({
             {tkt.label}
           </span>
           {interesseGrupo && (
-            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-violet-500/10 border border-violet-500/20 text-violet-400">
+            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 border border-amber-500/20 text-amber-400">
               Na fila
             </span>
           )}
@@ -448,14 +448,14 @@ function EventoCard({
           </div>
           {interesseSimples ? (
             <div className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 bg-white/5 border border-white/10 text-zinc-400 text-xs font-medium rounded-xl select-none">
-              <svg className="w-3 h-3 text-violet-400" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+              <svg className="w-3 h-3 text-amber-400" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
               Demonstrei interesse
             </div>
           ) : (
             <button
               onClick={() => onQueroIr(evento.id)}
               disabled={savingSimples}
-              className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 bg-white/5 border border-white/10 hover:border-violet-500/30 hover:text-violet-400 text-zinc-300 text-xs font-medium rounded-xl transition-all duration-200"
+              className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 bg-white/5 border border-white/10 hover:border-amber-500/30 hover:text-amber-400 text-zinc-300 text-xs font-medium rounded-xl transition-all duration-200"
             >
               {savingSimples ? (
                 <span className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -482,7 +482,7 @@ function EventoCard({
               <span className="text-xs text-zinc-500">{fila.atual} de {fila.total} pessoas interessadas</span>
               <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-violet-500 rounded-full"
+                  className="h-full bg-amber-500 rounded-full"
                   style={{ width: `${(fila.atual / fila.total) * 100}%` }}
                 />
               </div>
@@ -536,12 +536,12 @@ function EventoCard({
 function Toast({ nome, onClose }: { nome: string; onClose: () => void }) {
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-4 border border-white/[0.08] rounded-2xl shadow-xl shadow-black/60" style={{ background: "#0D0D0F" }}>
-      <div className="w-8 h-8 rounded-full bg-violet-500/10 border border-violet-500/20 flex items-center justify-center flex-shrink-0">
-        <svg className="w-4 h-4 text-violet-400" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+      <div className="w-8 h-8 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center flex-shrink-0">
+        <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
       </div>
       <div>
         <p className="text-[#FAFAFA] text-sm font-semibold">Inscrição confirmada!</p>
-        <p className="text-[#A1A1AA] text-xs mt-0.5">Você está na lista de <span className="text-violet-400 font-medium">{nome}</span>.</p>
+        <p className="text-[#A1A1AA] text-xs mt-0.5">Você está na lista de <span className="text-amber-400 font-medium">{nome}</span>.</p>
       </div>
       <button onClick={onClose} className="ml-2 text-zinc-600 hover:text-zinc-400 transition-colors">
         <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
@@ -570,14 +570,14 @@ function CancelToast({ onClose }: { onClose: () => void }) {
 function QueueToast({ nome, onClose }: { nome: string; onClose: () => void }) {
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-4 border border-white/[0.08] rounded-2xl shadow-xl shadow-black/60 max-w-sm" style={{ background: "#0D0D0F" }}>
-      <div className="w-8 h-8 rounded-full bg-violet-500/10 border border-violet-500/20 flex items-center justify-center flex-shrink-0">
-        <svg className="w-4 h-4 text-violet-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+      <div className="w-8 h-8 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center flex-shrink-0">
+        <svg className="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
         </svg>
       </div>
       <div className="min-w-0">
         <p className="text-[#FAFAFA] text-sm font-semibold">Você entrou na fila deste rolê.</p>
-        <p className="text-[#A1A1AA] text-xs mt-0.5">A SOLO está buscando pessoas compatíveis para <span className="text-violet-400 font-medium">{nome}</span>.</p>
+        <p className="text-[#A1A1AA] text-xs mt-0.5">A SOLO está buscando pessoas compatíveis para <span className="text-amber-400 font-medium">{nome}</span>.</p>
         <p className="text-zinc-600 text-xs mt-0.5">Seu convite gratuito da semana foi usado.</p>
       </div>
       <button onClick={onClose} className="ml-1 text-zinc-600 hover:text-zinc-400 transition-colors flex-shrink-0">
@@ -816,7 +816,7 @@ export default function EventosPage() {
           <span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-green-500" />Vagas disponíveis</span>
           <span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />Últimas vagas</span>
           {inscritos.size > 0 && (
-            <span className="flex items-center gap-2 text-violet-400 font-medium">
+            <span className="flex items-center gap-2 text-amber-400 font-medium">
               <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
               {inscritos.size} inscri{inscritos.size > 1 ? "ções" : "ção"} confirmada{inscritos.size > 1 ? "s" : ""}
             </span>
@@ -941,7 +941,7 @@ export default function EventosPage() {
 
         <p className="text-center text-zinc-500 text-sm mt-12">
           Novos eventos toda semana. Parceiro?{" "}
-          <span className="text-violet-400 hover:text-violet-300 transition-colors">Cadastre seu estabelecimento →</span>
+          <span className="text-zinc-400 hover:text-zinc-300 transition-colors">Cadastre seu estabelecimento →</span>
         </p>
       </main>
 
@@ -981,9 +981,9 @@ export default function EventosPage() {
       )}
 
       {grupoFormadoToast && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-4 border border-violet-500/20 rounded-2xl shadow-xl shadow-violet-500/20" style={{ background: "#0D0D0F" }}>
-          <div className="w-8 h-8 rounded-full bg-violet-500/10 border border-violet-500/20 flex items-center justify-center flex-shrink-0">
-            <svg className="w-4 h-4 text-violet-400" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-4 border border-amber-500/20 rounded-2xl shadow-xl shadow-amber-500/20" style={{ background: "#0D0D0F" }}>
+          <div className="w-8 h-8 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center flex-shrink-0">
+            <svg className="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
             </svg>
           </div>
@@ -991,7 +991,7 @@ export default function EventosPage() {
             <p className="text-[#FAFAFA] text-sm font-semibold">Grupo formado! ✨</p>
             <p className="text-[#A1A1AA] text-xs mt-0.5">
               Veja seu grupo em{" "}
-              <Link href="/grupos" className="text-violet-400 font-medium hover:text-violet-300">
+              <Link href="/grupos" className="text-amber-400 font-medium hover:text-amber-300">
                 /grupos →
               </Link>
             </p>

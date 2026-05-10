@@ -132,7 +132,7 @@ export default function OnboardingPage() {
           <div className="flex items-center gap-2">
             {STEPS.map((s) => (
               <div key={s.number} className="flex-1 h-1 rounded-full overflow-hidden bg-white/10">
-                <div className="h-full rounded-full bg-violet-500 transition-all duration-500" style={{ width: step >= s.number ? "100%" : "0%" }} />
+                <div className="h-full rounded-full bg-amber-500 transition-all duration-500" style={{ width: step >= s.number ? "100%" : "0%" }} />
               </div>
             ))}
           </div>

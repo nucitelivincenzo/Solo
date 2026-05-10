@@ -38,7 +38,7 @@ function ProgressBar({ current, total }: { current: number; total: number }) {
       </div>
       <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
         <div
-          className="h-full bg-violet-500 rounded-full transition-all duration-300 ease-out"
+          className="h-full bg-amber-500 rounded-full transition-all duration-300 ease-out"
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -57,7 +57,7 @@ function OptionButton({ label, selected, onClick }: {
       onClick={onClick}
       className={`w-full px-5 py-[1.05rem] rounded-2xl border text-left text-sm font-medium transition-all duration-150 flex items-center justify-between gap-3
         ${selected
-          ? "bg-violet-500 border-violet-500 text-white shadow-md shadow-violet-500/20"
+          ? "bg-gradient-to-r from-[#C94A1E] to-[#7A2540] border-transparent text-white shadow-md shadow-black/20"
           : "bg-white/5 border-white/10 text-[#FAFAFA] hover:border-white/20 hover:bg-white/10"
         }`}
     >
