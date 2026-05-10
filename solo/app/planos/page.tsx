@@ -162,8 +162,7 @@ function PlusModal({ onClose, onInterest }: { onClose: () => void; onInterest: (
         <div className="px-6 pb-6 pt-4 border-t border-white/[0.06] flex flex-col gap-2.5">
           <button
             onClick={onInterest}
-            className="w-full py-3.5 rounded-xl bg-violet-500 hover:bg-violet-400 active:bg-violet-600 transition-colors text-white text-sm font-semibold"
-            style={{ boxShadow: "0 0 24px rgba(139,92,246,0.30)" }}
+            className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#C94A1E] to-[#7A2540] hover:from-[#E05525] hover:to-[#8B2F4C] transition-all duration-200 text-white text-sm font-semibold shadow-md shadow-black/25 solo-shimmer-btn"
           >
             Registrar interesse no Plus
           </button>
@@ -388,7 +387,7 @@ export default function PlanosPage() {
           {/* PLUS */}
           <div className="relative rounded-2xl border border-violet-500/40 bg-violet-500/[0.06] p-6 flex flex-col gap-5"
             style={{ boxShadow: "0 0 48px rgba(139,92,246,0.05)" }}>
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-violet-500 rounded-full px-3.5 py-1 text-[9px] font-bold uppercase tracking-widest text-white whitespace-nowrap">
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full px-3.5 py-1 text-[9px] font-bold uppercase tracking-widest text-white whitespace-nowrap" style={{ background: "linear-gradient(135deg, #C94A1E, #7A2540)" }}>
               Mais escolhido
             </div>
 
@@ -418,8 +417,7 @@ export default function PlanosPage() {
 
             <button
               onClick={() => setOpenModal("plus")}
-              className="mt-auto w-full py-3 rounded-xl bg-violet-500 hover:bg-violet-400 active:bg-violet-600 transition-colors text-white text-xs font-semibold"
-              style={{ boxShadow: "0 0 24px rgba(139,92,246,0.30)" }}>
+              className="mt-auto w-full py-3 rounded-xl bg-gradient-to-r from-[#C94A1E] to-[#7A2540] hover:from-[#E05525] hover:to-[#8B2F4C] transition-all duration-200 text-white text-xs font-semibold shadow-md shadow-black/25 solo-shimmer-btn">
               Ver detalhes do Plus →
             </button>
           </div>

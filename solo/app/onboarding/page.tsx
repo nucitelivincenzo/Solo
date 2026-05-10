@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { SoloAmbientShapes } from "@/components/SoloAmbientShapes";
 
 const STEP1_OPTIONS = [
   { id: "happy_hour",     label: "Happy hour",      emoji: "🍸" },
@@ -117,6 +118,7 @@ export default function OnboardingPage() {
   return (
     <main className="min-h-screen bg-[#050506] flex flex-col items-center justify-center px-6 py-10 relative overflow-hidden">
       <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 55% 45% at 50% 0%, rgba(255,179,122,0.05) 0%, transparent 70%)" }} />
+      <SoloAmbientShapes />
 
       <div className="relative z-10 w-full max-w-sm flex flex-col gap-8">
         {/* Header */}
@@ -178,7 +180,7 @@ export default function OnboardingPage() {
             </button>
           )}
           <button onClick={goNext} disabled={!canAdvance() || saving}
-            className="flex-1 py-3.5 rounded-xl bg-violet-500 hover:bg-violet-400 disabled:bg-white/10 disabled:text-zinc-500 disabled:cursor-not-allowed text-white font-semibold transition-all duration-200 shadow-lg shadow-violet-500/20 hover:-translate-y-0.5 active:translate-y-0 text-sm">
+            className="flex-1 py-3.5 rounded-xl bg-gradient-to-r from-[#C94A1E] to-[#7A2540] hover:from-[#E05525] hover:to-[#8B2F4C] disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold transition-all duration-200 shadow-lg shadow-black/25 hover:-translate-y-0.5 active:translate-y-0 text-sm solo-shimmer-btn">
             {saving ? (
               <span className="flex items-center justify-center gap-2">
                 <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />

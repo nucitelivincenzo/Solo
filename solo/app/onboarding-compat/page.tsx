@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import { SoloAmbientShapes } from "@/components/SoloAmbientShapes";
 import { isCompatComplete } from "@/lib/types";
 import type { Ambiente, Intencao } from "@/lib/types";
 
@@ -332,7 +333,7 @@ export default function OnboardingCompatPage() {
         </div>
         <button
           onClick={() => { setInitError(""); setRetryCount((c) => c + 1); }}
-          className="mt-2 px-5 py-2.5 bg-violet-500 hover:bg-violet-400 text-white text-sm font-semibold rounded-xl transition-colors"
+          className="mt-2 px-5 py-2.5 bg-gradient-to-r from-[#C94A1E] to-[#7A2540] hover:from-[#E05525] hover:to-[#8B2F4C] text-white text-sm font-semibold rounded-xl transition-all duration-200 solo-shimmer-btn"
         >
           Tentar novamente
         </button>
@@ -349,7 +350,8 @@ export default function OnboardingCompatPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#050506] flex flex-col">
+    <main className="min-h-screen bg-[#050506] flex flex-col relative overflow-hidden">
+      <SoloAmbientShapes />
 
       {/* Header */}
       <div className="flex items-center justify-between px-6 pt-5 pb-4">
@@ -413,7 +415,7 @@ export default function OnboardingCompatPage() {
         <button
           onClick={goNext}
           disabled={!canAdvance() || saving}
-          className="flex-1 py-4 rounded-2xl bg-violet-500 hover:bg-violet-400 active:bg-violet-600 disabled:bg-white/10 disabled:text-zinc-500 disabled:cursor-not-allowed text-white font-semibold text-sm transition-all duration-200 shadow-md shadow-violet-500/20 hover:-translate-y-px active:translate-y-0 flex items-center justify-center gap-2"
+          className="flex-1 py-4 rounded-2xl bg-gradient-to-r from-[#C94A1E] to-[#7A2540] hover:from-[#E05525] hover:to-[#8B2F4C] disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold text-sm transition-all duration-200 shadow-md shadow-black/25 hover:-translate-y-px active:translate-y-0 flex items-center justify-center gap-2 solo-shimmer-btn"
         >
           {saving && (
             <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />

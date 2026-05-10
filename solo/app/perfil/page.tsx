@@ -188,7 +188,7 @@ export default function PerfilPage() {
   if (!ready) {
     return (
       <div className="min-h-screen bg-[#050506] flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-amber-500/60 border-t-[#C94A1E] rounded-full animate-spin" />
       </div>
     );
   }
@@ -299,7 +299,7 @@ export default function PerfilPage() {
             </div>
             <Link
               href="/onboarding-compat?edit=true"
-              className="mt-1 text-xs text-violet-400 hover:text-violet-300 transition-colors font-medium"
+              className="mt-1 text-xs text-amber-400 hover:text-amber-300 transition-colors font-medium"
             >
               Atualizar respostas →
             </Link>
@@ -312,7 +312,7 @@ export default function PerfilPage() {
               </p>
               <Link
                 href="/onboarding-compat?edit=true"
-                className="self-start flex items-center gap-1.5 px-4 py-2.5 bg-violet-500 hover:bg-violet-400 transition-colors text-white text-xs font-semibold rounded-xl"
+                className="self-start flex items-center gap-1.5 px-4 py-2.5 bg-gradient-to-r from-[#C94A1E] to-[#7A2540] hover:from-[#E05525] hover:to-[#8B2F4C] transition-all duration-200 text-white text-xs font-semibold rounded-xl shadow-sm shadow-black/20 solo-shimmer-btn"
               >
                 Atualizar respostas →
               </Link>
@@ -378,7 +378,7 @@ export default function PerfilPage() {
             </p>
             <div className="flex items-center gap-3 pt-1">
               <Link href="/planos"
-                className="flex-1 flex items-center justify-center py-2.5 rounded-xl bg-violet-500 hover:bg-violet-400 transition-colors text-white text-xs font-semibold">
+                className="flex-1 flex items-center justify-center py-2.5 rounded-xl bg-gradient-to-r from-[#C94A1E] to-[#7A2540] hover:from-[#E05525] hover:to-[#8B2F4C] transition-all duration-200 text-white text-xs font-semibold shadow-sm shadow-black/20 solo-shimmer-btn">
                 Conhecer Plus →
               </Link>
               <Link href="/planos"
@@ -400,8 +400,8 @@ export default function PerfilPage() {
                 : saveState === "error"
                 ? "bg-red-500 shadow-red-500/20 text-white"
                 : saveState === "saving"
-                ? "bg-violet-500/60 shadow-violet-500/10 text-white cursor-not-allowed"
-                : "bg-violet-500 hover:bg-violet-400 shadow-violet-500/20 hover:shadow-violet-400/30 text-white hover:-translate-y-0.5 active:translate-y-0"
+                ? "bg-gradient-to-r from-[#C94A1E] to-[#7A2540] opacity-60 text-white cursor-not-allowed"
+                : "bg-gradient-to-r from-[#C94A1E] to-[#7A2540] hover:from-[#E05525] hover:to-[#8B2F4C] shadow-lg shadow-black/25 text-white hover:-translate-y-0.5 active:translate-y-0 solo-shimmer-btn"
               }`}
           >
             {saveState === "saving" && <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />}

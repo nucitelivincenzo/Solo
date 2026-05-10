@@ -301,8 +301,7 @@ function FreeLimitModal({ onClose }: { onClose: () => void }) {
         <div className="flex flex-col gap-2.5">
           <Link
             href="/planos"
-            className="w-full flex items-center justify-center py-3 rounded-xl bg-violet-500 hover:bg-violet-400 active:bg-violet-600 transition-colors text-white text-sm font-semibold"
-            style={{ boxShadow: "0 0 20px rgba(139,92,246,0.25)" }}
+            className="w-full flex items-center justify-center py-3 rounded-xl bg-gradient-to-r from-[#C94A1E] to-[#7A2540] hover:from-[#E05525] hover:to-[#8B2F4C] transition-all duration-200 text-white text-sm font-semibold shadow-md shadow-black/25 solo-shimmer-btn"
           >
             Conhecer Plus →
           </Link>
@@ -343,8 +342,7 @@ function VillaJkModal({ onContinue, onClose }: { onContinue: () => void; onClose
         <div className="flex flex-col gap-2.5">
           <Link
             href="/planos"
-            className="w-full flex items-center justify-center py-3 rounded-xl bg-violet-500 hover:bg-violet-400 active:bg-violet-600 transition-colors text-white text-sm font-semibold"
-            style={{ boxShadow: "0 0 20px rgba(139,92,246,0.25)" }}
+            className="w-full flex items-center justify-center py-3 rounded-xl bg-gradient-to-r from-[#C94A1E] to-[#7A2540] hover:from-[#E05525] hover:to-[#8B2F4C] transition-all duration-200 text-white text-sm font-semibold shadow-md shadow-black/25 solo-shimmer-btn"
           >
             Conhecer Plus →
           </Link>
@@ -509,7 +507,7 @@ function EventoCard({
           <button
             onClick={() => onQueroGrupo(evento.id)}
             disabled={savingGrupo}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-violet-500 hover:bg-violet-400 active:bg-violet-600 disabled:bg-violet-500/40 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-xl transition-all duration-200 shadow-md shadow-violet-500/20 hover:-translate-y-0.5 active:translate-y-0"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-[#C94A1E] to-[#7A2540] hover:from-[#E05525] hover:to-[#8B2F4C] disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-xl transition-all duration-200 shadow-md shadow-black/25 hover:-translate-y-0.5 active:translate-y-0 solo-shimmer-btn"
           >
             {savingGrupo ? (
               <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -526,7 +524,7 @@ function EventoCard({
 
         <p className="text-center text-[11px] text-zinc-600 leading-relaxed">
           Plus e Black aumentam sua prioridade em experiências mais disputadas.{" "}
-          <Link href="/planos" className="text-violet-500/70 hover:text-violet-400 transition-colors">
+          <Link href="/planos" className="text-amber-500/70 hover:text-amber-400 transition-colors">
             Ver planos →
           </Link>
         </p>
@@ -834,7 +832,7 @@ export default function EventosPage() {
               <span className="text-zinc-700">·</span>
               <span className="text-xs text-zinc-500">1 grupo/semana</span>
             </div>
-            <Link href="/planos" className="text-xs text-violet-400 hover:text-violet-300 transition-colors font-medium flex-shrink-0">
+            <Link href="/planos" className="text-xs text-amber-400 hover:text-amber-300 transition-colors font-medium flex-shrink-0">
               Conhecer Plus →
             </Link>
           </div>
@@ -893,7 +891,7 @@ export default function EventosPage() {
 
         {loadingPage ? (
           <div className="flex justify-center py-20">
-            <div className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border-2 border-amber-500/40 border-t-[#C94A1E] rounded-full animate-spin" />
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">

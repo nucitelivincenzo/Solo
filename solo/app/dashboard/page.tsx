@@ -176,7 +176,7 @@ export default function DashboardPage() {
               Com Plus, você sai mais vezes e entra com prioridade nos grupos compatíveis.
             </p>
             <Link href="/planos"
-              className="mt-1 flex items-center justify-center py-2.5 rounded-xl bg-violet-500 hover:bg-violet-400 transition-colors text-white text-xs font-semibold">
+              className="mt-1 flex items-center justify-center py-2.5 rounded-xl bg-gradient-to-r from-[#C94A1E] to-[#7A2540] hover:from-[#E05525] hover:to-[#8B2F4C] transition-all duration-200 text-white text-xs font-semibold shadow-md shadow-black/20 solo-shimmer-btn">
               Conhecer Plus →
             </Link>
           </div>

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { SoloAmbientShapes } from "@/components/SoloAmbientShapes";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -59,6 +60,7 @@ export default function LoginPage() {
   return (
     <main className="min-h-screen bg-[#050506] flex items-center justify-center px-6 relative overflow-hidden">
       <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 50% 40% at 50% 0%, rgba(255,179,122,0.05) 0%, transparent 70%)" }} />
+      <SoloAmbientShapes />
 
       <div className="relative z-10 w-full max-w-sm">
         <div className="text-center mb-8">
@@ -96,7 +98,7 @@ export default function LoginPage() {
           )}
 
           <button type="submit" disabled={loading}
-            className="mt-1 w-full py-3.5 bg-violet-500 hover:bg-violet-400 disabled:bg-violet-500/40 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-black/20 hover:-translate-y-0.5 active:translate-y-0 text-sm flex items-center justify-center gap-2">
+            className="mt-1 w-full py-3.5 bg-gradient-to-r from-[#C94A1E] to-[#7A2540] hover:from-[#E05525] hover:to-[#8B2F4C] disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-black/25 hover:-translate-y-0.5 active:translate-y-0 text-sm flex items-center justify-center gap-2 solo-shimmer-btn">
             {loading ? (
               <>
                 <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
