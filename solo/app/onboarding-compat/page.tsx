@@ -33,7 +33,7 @@ function ProgressBar({ current, total }: { current: number; total: number }) {
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between">
         <span className="text-xs text-zinc-500 tabular-nums">{current + 1} / {total}</span>
-        <span className="text-xs font-semibold text-violet-400 tabular-nums">{pct}%</span>
+        <span className="text-xs font-semibold text-zinc-400 tabular-nums">{pct}%</span>
       </div>
       <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
         <div
@@ -86,7 +86,7 @@ function QuestionLayout<T extends number | string>({
   return (
     <div className="flex flex-col gap-7">
       <div className="flex flex-col gap-2.5">
-        <span className="text-[11px] font-bold uppercase tracking-widest text-violet-400">
+        <span className="text-zinc-500 uppercase" style={{ fontFamily: "var(--font-geist-mono), monospace", fontSize: "10px", letterSpacing: "0.18em" }}>
           {step}
         </span>
         <h1
@@ -320,7 +320,7 @@ export default function OnboardingCompatPage() {
 
   if (initError) {
     return (
-      <div className="min-h-screen bg-[#0F0F11] flex flex-col items-center justify-center gap-4 px-6 text-center">
+      <div className="min-h-screen bg-[#050506] flex flex-col items-center justify-center gap-4 px-6 text-center">
         <div className="w-12 h-12 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center">
           <svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
@@ -342,23 +342,23 @@ export default function OnboardingCompatPage() {
 
   if (!ready) {
     return (
-      <div className="min-h-screen bg-[#0F0F11] flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[#050506] flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-white/30 border-t-white/80 rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <main className="min-h-screen bg-[#0F0F11] flex flex-col">
+    <main className="min-h-screen bg-[#050506] flex flex-col">
 
       {/* Header */}
       <div className="flex items-center justify-between px-6 pt-5 pb-4">
-        <span
-          className="text-xl font-black text-violet-500 glow-violet"
-          style={{ letterSpacing: "-0.04em" }}
-        >
-          SOLO
-        </span>
+        <div className="flex items-center gap-1.5">
+          <div className="relative w-[16px] h-[16px] rounded-full flex-shrink-0" style={{ background: "linear-gradient(135deg,#F8FAFC,#94A3B8)" }}>
+            <div className="absolute inset-[3px] rounded-full" style={{ background: "#050506" }} />
+          </div>
+          <span className="text-[#F8FAFC]" style={{ fontFamily: "var(--font-dm-serif), serif", fontStyle: "italic", fontSize: "19px", letterSpacing: "-0.01em" }}>SOLO</span>
+        </div>
         {editMode ? (
           <Link href="/perfil" className="text-xs text-zinc-500 hover:text-zinc-400 transition-colors">
             Cancelar
@@ -373,7 +373,7 @@ export default function OnboardingCompatPage() {
       {/* Edit-mode title */}
       {editMode && (
         <div className="px-6 pb-4">
-          <p className="text-[11px] font-bold uppercase tracking-widest text-violet-400 mb-1">Editar perfil</p>
+          <p className="text-zinc-500 uppercase mb-1" style={{ fontFamily: "var(--font-geist-mono), monospace", fontSize: "10px", letterSpacing: "0.18em" }}>Editar perfil</p>
           <p className="text-[#A1A1AA] text-xs">Essas respostas ajudam a SOLO a montar grupos melhores para você.</p>
         </div>
       )}

@@ -57,13 +57,16 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#0F0F11] flex items-center justify-center px-6 relative overflow-hidden">
-      <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 50% 40% at 50% 0%, rgba(139,92,246,0.12) 0%, transparent 70%)" }} />
+    <main className="min-h-screen bg-[#050506] flex items-center justify-center px-6 relative overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 50% 40% at 50% 0%, rgba(255,179,122,0.05) 0%, transparent 70%)" }} />
 
       <div className="relative z-10 w-full max-w-sm">
         <div className="text-center mb-8">
-          <Link href="/" className="inline-block mb-6">
-            <span className="text-4xl font-black text-violet-500 glow-violet" style={{ letterSpacing: "-0.04em" }}>SOLO</span>
+          <Link href="/" className="inline-flex items-center gap-2 mb-6 justify-center">
+            <div className="relative w-[22px] h-[22px] rounded-full flex-shrink-0" style={{ background: "linear-gradient(135deg,#F8FAFC,#94A3B8)" }}>
+              <div className="absolute inset-[3px] rounded-full" style={{ background: "#050506" }} />
+            </div>
+            <span className="text-[#F8FAFC]" style={{ fontFamily: "var(--font-dm-serif), serif", fontStyle: "italic", fontSize: "34px", letterSpacing: "-0.01em" }}>SOLO</span>
           </Link>
           <h2 className="text-2xl font-bold text-[#FAFAFA]">Bem-vindo de volta</h2>
           <p className="text-[#A1A1AA] text-sm mt-1">Entre na sua conta</p>
@@ -75,7 +78,7 @@ export default function LoginPage() {
             <input
               id="email" name="email" type="email" autoComplete="email"
               value={form.email} onChange={handleChange} placeholder="seuemail@exemplo.com"
-              className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-[#FAFAFA] placeholder-zinc-600 outline-none focus:border-violet-500/60 focus:ring-1 focus:ring-violet-500/40 transition-colors text-sm"
+              className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-[#FAFAFA] placeholder-zinc-600 outline-none focus:border-white/30 focus:ring-1 focus:ring-white/10 transition-colors text-sm"
             />
           </div>
 
@@ -84,7 +87,7 @@ export default function LoginPage() {
             <input
               id="password" name="password" type="password" autoComplete="current-password"
               value={form.password} onChange={handleChange} placeholder="••••••••"
-              className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-[#FAFAFA] placeholder-zinc-600 outline-none focus:border-violet-500/60 focus:ring-1 focus:ring-violet-500/40 transition-colors text-sm"
+              className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-[#FAFAFA] placeholder-zinc-600 outline-none focus:border-white/30 focus:ring-1 focus:ring-white/10 transition-colors text-sm"
             />
           </div>
 
@@ -93,7 +96,7 @@ export default function LoginPage() {
           )}
 
           <button type="submit" disabled={loading}
-            className="mt-1 w-full py-3.5 bg-violet-500 hover:bg-violet-400 disabled:bg-violet-500/40 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-violet-500/20 hover:-translate-y-0.5 active:translate-y-0 text-sm flex items-center justify-center gap-2">
+            className="mt-1 w-full py-3.5 bg-violet-500 hover:bg-violet-400 disabled:bg-violet-500/40 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-black/20 hover:-translate-y-0.5 active:translate-y-0 text-sm flex items-center justify-center gap-2">
             {loading ? (
               <>
                 <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -105,7 +108,7 @@ export default function LoginPage() {
 
         <p className="text-center text-zinc-400 text-sm mt-6">
           Não tem uma conta?{" "}
-          <Link href="/cadastro" className="text-violet-400 hover:text-violet-300 font-medium transition-colors">Cadastre-se grátis</Link>
+          <Link href="/cadastro" className="text-zinc-400 hover:text-zinc-200 font-medium transition-colors">Cadastre-se grátis</Link>
         </p>
       </div>
     </main>

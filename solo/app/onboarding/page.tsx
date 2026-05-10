@@ -39,16 +39,16 @@ function Chip({ emoji, label, sub, selected, onClick }: {
     <button type="button" onClick={onClick}
       className={`flex items-center gap-3 px-4 py-3.5 rounded-xl border text-left transition-all duration-150 w-full
         ${selected
-          ? "bg-violet-500/10 border-violet-500/40 shadow-sm shadow-violet-500/10"
+          ? "bg-white/[0.09] border-white/25"
           : "bg-white/5 border-white/10 hover:border-white/20 hover:bg-white/10"}`}
     >
       <span className="text-xl leading-none">{emoji}</span>
       <span className="flex flex-col flex-1">
-        <span className={`font-semibold text-sm ${selected ? "text-violet-400" : "text-[#FAFAFA]"}`}>{label}</span>
+        <span className="font-semibold text-sm text-[#FAFAFA]">{label}</span>
         {sub && <span className="text-xs text-zinc-500 mt-0.5">{sub}</span>}
       </span>
       {selected && (
-        <span className="flex-shrink-0 w-5 h-5 rounded-full bg-violet-500 flex items-center justify-center">
+        <span className="flex-shrink-0 w-5 h-5 rounded-full bg-white/30 flex items-center justify-center">
           <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
           </svg>
@@ -115,13 +115,18 @@ export default function OnboardingPage() {
   const currentStep = STEPS[step - 1];
 
   return (
-    <main className="min-h-screen bg-[#0F0F11] flex flex-col items-center justify-center px-6 py-10 relative overflow-hidden">
-      <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 55% 45% at 50% 0%, rgba(139,92,246,0.12) 0%, transparent 70%)" }} />
+    <main className="min-h-screen bg-[#050506] flex flex-col items-center justify-center px-6 py-10 relative overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 55% 45% at 50% 0%, rgba(255,179,122,0.05) 0%, transparent 70%)" }} />
 
       <div className="relative z-10 w-full max-w-sm flex flex-col gap-8">
         {/* Header */}
         <div className="flex flex-col gap-4">
-          <span className="text-2xl font-black text-violet-500 glow-violet text-center" style={{ letterSpacing: "-0.04em" }}>SOLO</span>
+          <div className="flex items-center gap-2 justify-center">
+            <div className="relative w-[18px] h-[18px] rounded-full flex-shrink-0" style={{ background: "linear-gradient(135deg,#F8FAFC,#94A3B8)" }}>
+              <div className="absolute inset-[3px] rounded-full" style={{ background: "#050506" }} />
+            </div>
+            <span className="text-[#F8FAFC]" style={{ fontFamily: "var(--font-dm-serif), serif", fontStyle: "italic", fontSize: "22px", letterSpacing: "-0.01em" }}>SOLO</span>
+          </div>
           <div className="flex items-center gap-2">
             {STEPS.map((s) => (
               <div key={s.number} className="flex-1 h-1 rounded-full overflow-hidden bg-white/10">
