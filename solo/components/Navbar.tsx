@@ -28,11 +28,14 @@ export function Navbar({ onLogout }: { onLogout?: () => void }) {
   }
 
   return (
-    <header className="relative border-b border-white/10 px-6 py-4 flex items-center justify-between sticky top-0 bg-[#0F0F11]/80 backdrop-blur-xl z-40">
-      <Link href="/" onClick={() => setOpen(false)}
-        className="text-2xl font-black text-violet-500 glow-violet"
-        style={{ letterSpacing: "-0.04em" }}>
-        SOLO
+    <header className="relative border-b border-white/[0.06] px-6 py-4 flex items-center justify-between sticky top-0 bg-[#050506]/90 backdrop-blur-xl z-40">
+      <Link href="/" onClick={() => setOpen(false)} className="flex items-center gap-2">
+        <div className="relative w-[18px] h-[18px] rounded-full flex-shrink-0" style={{ background: "linear-gradient(135deg,#F8FAFC,#94A3B8)" }}>
+          <div className="absolute inset-[3px] rounded-full" style={{ background: "#050506" }} />
+        </div>
+        <span className="text-[#F8FAFC]" style={{ fontFamily: "var(--font-dm-serif), serif", fontStyle: "italic", fontSize: "19px", letterSpacing: "-0.01em" }}>
+          SOLO
+        </span>
       </Link>
 
       {/* Desktop nav */}
@@ -43,7 +46,7 @@ export function Navbar({ onLogout }: { onLogout?: () => void }) {
             <Link key={href} href={href}
               className={`text-sm transition-colors ${
                 active
-                  ? "font-medium text-[#FAFAFA] border-b-2 border-violet-500 pb-0.5"
+                  ? "font-semibold text-[#FAFAFA]"
                   : "text-[#A1A1AA] hover:text-[#FAFAFA]"
               }`}>
               {label}
@@ -81,7 +84,7 @@ export function Navbar({ onLogout }: { onLogout?: () => void }) {
       {open && (
         <>
           <div className="fixed inset-0 z-30" onClick={() => setOpen(false)} />
-          <div className="absolute top-full left-0 right-0 z-50 bg-[#18181B] border-b border-white/10 shadow-lg shadow-black/40 md:hidden">
+          <div className="absolute top-full left-0 right-0 z-50 bg-[#050506] border-b border-white/[0.06] shadow-lg shadow-black/60 md:hidden">
             <nav className="flex flex-col px-4 py-2">
               {NAV_LINKS.map(({ href, label }) => {
                 const active = pathname === href;
@@ -90,10 +93,10 @@ export function Navbar({ onLogout }: { onLogout?: () => void }) {
                     onClick={() => setOpen(false)}
                     className={`flex items-center justify-between px-3 py-3.5 rounded-xl text-sm font-medium transition-colors
                       ${active
-                        ? "text-violet-400 bg-violet-500/10"
+                        ? "text-[#FAFAFA] bg-white/[0.07]"
                         : "text-[#A1A1AA] hover:text-[#FAFAFA] hover:bg-white/5"}`}>
                     {label}
-                    {active && <span className="w-1.5 h-1.5 rounded-full bg-violet-500 flex-shrink-0" />}
+                    {active && <span className="w-1.5 h-1.5 rounded-full bg-white/40 flex-shrink-0" />}
                   </Link>
                 );
               })}

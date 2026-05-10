@@ -57,16 +57,16 @@ function Chip({ emoji, label, sub, selected, onClick }: {
     <button type="button" onClick={onClick}
       className={`flex items-center gap-3 px-4 py-3 rounded-xl border text-left transition-all duration-150 w-full
         ${selected
-          ? "bg-violet-500/10 border-violet-500/40 shadow-sm shadow-violet-500/10"
-          : "bg-[#18181B] border-white/10 hover:border-white/20 hover:bg-white/5"}`}
+          ? "bg-white/[0.09] border-white/25"
+          : "bg-white/[0.03] border-white/[0.08] hover:border-white/20 hover:bg-white/[0.06]"}`}
     >
       <span className="text-xl leading-none">{emoji}</span>
       <span className="flex flex-col flex-1 min-w-0">
-        <span className={`font-semibold text-sm ${selected ? "text-violet-400" : "text-[#FAFAFA]"}`}>{label}</span>
+        <span className={`font-semibold text-sm ${selected ? "text-[#FAFAFA]" : "text-[#FAFAFA]"}`}>{label}</span>
         {sub && <span className="text-xs text-zinc-500 mt-0.5 truncate">{sub}</span>}
       </span>
       {selected && (
-        <span className="flex-shrink-0 w-4 h-4 rounded-full bg-violet-500 flex items-center justify-center">
+        <span className="flex-shrink-0 w-4 h-4 rounded-full bg-white/30 flex items-center justify-center">
           <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
           </svg>
@@ -80,7 +80,7 @@ function Section({ title, hint, children }: { title: string; hint?: string; chil
   return (
     <div className="flex flex-col gap-3">
       <div>
-        <h2 className="text-xs font-bold text-zinc-500 uppercase tracking-wide">{title}</h2>
+        <h2 className="text-zinc-500 uppercase" style={{ fontFamily: "var(--font-geist-mono), monospace", fontSize: "10px", letterSpacing: "0.18em" }}>{title}</h2>
         {hint && <p className="text-xs text-zinc-500 mt-0.5">{hint}</p>}
       </div>
       {children}
@@ -187,7 +187,7 @@ export default function PerfilPage() {
 
   if (!ready) {
     return (
-      <div className="min-h-screen bg-[#0F0F11] flex items-center justify-center">
+      <div className="min-h-screen bg-[#050506] flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -198,14 +198,14 @@ export default function PerfilPage() {
     : user!.email?.[0].toUpperCase() ?? "?";
 
   return (
-    <div className="min-h-screen bg-[#0F0F11] text-[#FAFAFA]">
+    <div className="min-h-screen bg-[#050506] text-[#FAFAFA]">
       <Navbar />
 
       <main className="max-w-xl mx-auto px-6 py-12 flex flex-col gap-10">
 
         {/* Avatar + título */}
         <div className="flex items-center gap-5">
-          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-violet-500 to-violet-700 flex items-center justify-center text-white text-2xl font-bold shadow-xl shadow-violet-500/20 flex-shrink-0">
+          <div className="w-20 h-20 rounded-full flex items-center justify-center text-white text-2xl font-bold shadow-xl flex-shrink-0" style={{ background: "linear-gradient(135deg,#3a2b22,#9a5a3a 65%,#FFB37A)" }}>
             {initials}
           </div>
           <div>
@@ -225,7 +225,7 @@ export default function PerfilPage() {
                 id="name" type="text" value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Seu nome"
-                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-[#FAFAFA] placeholder-zinc-600 outline-none focus:border-violet-500/60 focus:ring-1 focus:ring-violet-500/40 transition-colors text-sm"
+                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-[#FAFAFA] placeholder-zinc-600 outline-none focus:border-white/30 focus:ring-1 focus:ring-white/10 transition-colors text-sm"
               />
             </div>
 
@@ -306,7 +306,7 @@ export default function PerfilPage() {
           </Section>
         ) : (
           <Section title="Seu perfil de compatibilidade" hint="Como a SOLO entende sua vibe para montar grupos melhores.">
-            <div className="flex flex-col gap-4 px-4 py-4 bg-violet-500/5 border border-violet-500/15 rounded-xl">
+            <div className="flex flex-col gap-4 px-4 py-4 border border-white/[0.08] rounded-xl" style={{ background: "rgba(255,255,255,0.04)" }}>
               <p className="text-sm text-zinc-400 leading-relaxed">
                 Atualize seu perfil para melhorar a compatibilidade dos grupos.
               </p>
@@ -338,7 +338,7 @@ export default function PerfilPage() {
                     icon: "📊",
                   },
                 ].map(({ label, value, icon }) => (
-                  <div key={label} className="flex flex-col gap-2 px-4 py-3.5 bg-[#18181B] border border-white/10 rounded-xl">
+                  <div key={label} className="flex flex-col gap-2 px-4 py-3.5 border border-white/[0.08] rounded-xl" style={{ background: "rgba(255,255,255,0.04)" }}>
                     <span className="text-xl leading-none">{icon}</span>
                     <div>
                       <span className="text-2xl font-black text-[#FAFAFA] tabular-nums leading-none">{value}</span>
@@ -354,10 +354,10 @@ export default function PerfilPage() {
         {/* Plano */}
         <div className="h-px bg-white/10" />
 
-        <div className="rounded-2xl border border-white/10 bg-[#18181B] overflow-hidden">
+        <div className="rounded-2xl border border-white/[0.08] overflow-hidden" style={{ background: "rgba(255,255,255,0.04)" }}>
           <div className="flex items-center justify-between px-5 py-4 border-b border-white/8">
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Seu plano</p>
+              <p className="text-zinc-500 uppercase" style={{ fontFamily: "var(--font-geist-mono), monospace", fontSize: "10px", letterSpacing: "0.18em" }}>Seu plano</p>
               <p className="text-base font-black text-[#FAFAFA] mt-0.5">SOLO Free</p>
             </div>
             <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-white/5 border border-white/10 text-zinc-400">

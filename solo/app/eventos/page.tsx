@@ -203,7 +203,7 @@ function MatchCard({ user }: { user: MatchedUser }) {
   if (user.sbClose && badges.length < 3)   badges.push("Estilo social próximo");
 
   return (
-    <div className={`bg-[#18181B] border rounded-2xl p-5 flex flex-col gap-4 transition-all duration-200 hover:shadow-lg hover:shadow-black/20 hover:-translate-y-0.5 ${cardBorder}`}>
+    <div className={`border rounded-2xl p-5 flex flex-col gap-4 transition-all duration-200 hover:shadow-lg hover:shadow-black/20 hover:-translate-y-0.5 ${cardBorder}`} style={{ background: "rgba(255,255,255,0.04)" }}>
       <div className="flex items-center gap-4">
         <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${matchGradient(user.id)} flex items-center justify-center text-white text-sm font-bold flex-shrink-0 shadow-md`}>
           {matchInitials(user.name)}
@@ -236,7 +236,7 @@ function MatchCard({ user }: { user: MatchedUser }) {
 
 function EmptyMatchState() {
   return (
-    <div className="flex flex-col items-center gap-5 py-10 px-6 text-center bg-[#18181B] border border-white/10 rounded-2xl">
+    <div className="flex flex-col items-center gap-5 py-10 px-6 text-center border border-white/[0.08] rounded-2xl" style={{ background: "rgba(255,255,255,0.04)" }}>
       <div className="w-14 h-14 rounded-2xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center">
         <svg className="w-7 h-7 text-violet-400" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
@@ -283,7 +283,8 @@ function FreeLimitModal({ onClose }: { onClose: () => void }) {
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center px-4 pb-6 sm:pb-0" onClick={onClose}>
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
       <div
-        className="relative z-10 w-full max-w-sm bg-[#18181B] border border-white/10 rounded-2xl p-6 shadow-2xl shadow-black/60"
+        className="relative z-10 w-full max-w-sm border border-white/[0.08] rounded-2xl p-6 shadow-2xl shadow-black/60"
+        style={{ background: "#0D0D0F" }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="w-10 h-10 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-4">
@@ -324,7 +325,8 @@ function VillaJkModal({ onContinue, onClose }: { onContinue: () => void; onClose
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center px-4 pb-6 sm:pb-0" onClick={onClose}>
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
       <div
-        className="relative z-10 w-full max-w-sm bg-[#18181B] border border-white/10 rounded-2xl p-6 shadow-2xl shadow-black/60"
+        className="relative z-10 w-full max-w-sm border border-white/[0.08] rounded-2xl p-6 shadow-2xl shadow-black/60"
+        style={{ background: "#0D0D0F" }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="w-10 h-10 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center mb-4">
@@ -381,8 +383,9 @@ function EventoCard({
   const faltam  = fila.total - fila.atual;
 
   return (
-    <div className={`bg-[#18181B] border rounded-2xl overflow-hidden flex flex-col transition-all duration-200 group hover:-translate-y-0.5 hover:shadow-md hover:shadow-black/20
-      ${interesseGrupo ? "border-violet-500/40" : "border-white/10 hover:border-white/20"}`}>
+    <div className={`border rounded-2xl overflow-hidden flex flex-col transition-all duration-200 group hover:-translate-y-0.5 hover:shadow-md hover:shadow-black/20
+      ${interesseGrupo ? "border-violet-500/40" : "border-white/[0.08] hover:border-white/20"}`}
+      style={{ background: "rgba(255,255,255,0.04)" }}>
       <div className={`h-1 w-full ${tipo.bar}`} />
       <div className="p-6 flex flex-col gap-5 flex-1">
 
@@ -401,9 +404,6 @@ function EventoCard({
           <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium border ${tkt.bg} ${tkt.color}`}>
             {tkt.label}
           </span>
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-white/5 border border-white/10 text-zinc-500">
-            Vibe: {evento.vibe}
-          </span>
           {interesseGrupo && (
             <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-violet-500/10 border border-violet-500/20 text-violet-400">
               Na fila
@@ -413,14 +413,14 @@ function EventoCard({
 
         {/* Title + description */}
         <div className="flex flex-col gap-1.5">
-          <h2 className="text-lg font-black text-[#FAFAFA] group-hover:text-violet-400 transition-colors">{evento.nome}</h2>
+          <h2 className="text-lg font-black text-[#FAFAFA] group-hover:text-amber-300 transition-colors">{evento.nome}</h2>
           <p className="text-sm text-[#A1A1AA] leading-relaxed">{evento.descricao}</p>
         </div>
 
         {/* Benefício SOLO */}
-        <div className="flex items-start gap-2.5 px-3 py-2.5 bg-violet-500/5 border border-violet-500/15 rounded-xl">
-          <span className="w-1.5 h-1.5 rounded-full bg-violet-500 flex-shrink-0 mt-1.5" />
-          <p className="text-xs text-violet-300/80 leading-relaxed">{evento.beneficio}</p>
+        <div className="flex items-start gap-2.5 px-3 py-2.5 bg-amber-500/5 border border-amber-500/15 rounded-xl">
+          <span className="w-1.5 h-1.5 rounded-full bg-amber-500 flex-shrink-0 mt-1.5" />
+          <p className="text-xs text-amber-300/80 leading-relaxed">{evento.beneficio}</p>
         </div>
 
         {/* Day + time */}
@@ -431,7 +431,7 @@ function EventoCard({
           ].map((item, i) => (
             <div key={i} className="flex items-center gap-2 text-zinc-400 text-sm">
               <div className="w-6 h-6 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0">
-                <svg className="w-3 h-3 text-violet-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                <svg className="w-3 h-3 text-zinc-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d={item.icon} />
                 </svg>
               </div>
@@ -470,9 +470,9 @@ function EventoCard({
 
         {/* "Quero ir em grupo" — uses 1 invite / group queue status + cancel */}
         {interesseGrupo ? (
-          <div className="flex flex-col gap-3 bg-violet-500/5 border border-violet-500/20 rounded-2xl p-4">
+          <div className="flex flex-col gap-3 border border-white/[0.08] rounded-2xl p-4" style={{ background: "rgba(255,255,255,0.04)" }}>
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-violet-500/20 border border-violet-500/30 text-violet-400">
+              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white/[0.08] border border-white/[0.12] text-zinc-300">
                 Na fila
               </span>
             </div>
@@ -488,7 +488,7 @@ function EventoCard({
                   style={{ width: `${(fila.atual / fila.total) * 100}%` }}
                 />
               </div>
-              <p className="text-xs text-violet-400">
+              <p className="text-xs text-zinc-300">
                 {faltam === 1 ? "Falta 1 pessoa" : `Faltam ${faltam} pessoas`} para confirmar o grupo.
               </p>
             </div>
@@ -537,7 +537,7 @@ function EventoCard({
 
 function Toast({ nome, onClose }: { nome: string; onClose: () => void }) {
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-4 bg-[#18181B] border border-white/10 rounded-2xl shadow-xl shadow-black/40">
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-4 border border-white/[0.08] rounded-2xl shadow-xl shadow-black/60" style={{ background: "#0D0D0F" }}>
       <div className="w-8 h-8 rounded-full bg-violet-500/10 border border-violet-500/20 flex items-center justify-center flex-shrink-0">
         <svg className="w-4 h-4 text-violet-400" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
       </div>
@@ -554,7 +554,7 @@ function Toast({ nome, onClose }: { nome: string; onClose: () => void }) {
 
 function CancelToast({ onClose }: { onClose: () => void }) {
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-4 bg-[#18181B] border border-white/10 rounded-2xl shadow-xl shadow-black/40">
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-4 border border-white/[0.08] rounded-2xl shadow-xl shadow-black/60" style={{ background: "#0D0D0F" }}>
       <div className="w-8 h-8 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center flex-shrink-0">
         <svg className="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
       </div>
@@ -571,7 +571,7 @@ function CancelToast({ onClose }: { onClose: () => void }) {
 
 function QueueToast({ nome, onClose }: { nome: string; onClose: () => void }) {
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-4 bg-[#18181B] border border-violet-500/20 rounded-2xl shadow-xl shadow-black/40 max-w-sm">
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-4 border border-white/[0.08] rounded-2xl shadow-xl shadow-black/60 max-w-sm" style={{ background: "#0D0D0F" }}>
       <div className="w-8 h-8 rounded-full bg-violet-500/10 border border-violet-500/20 flex items-center justify-center flex-shrink-0">
         <svg className="w-4 h-4 text-violet-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
@@ -795,18 +795,19 @@ export default function EventosPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0F0F11] text-[#FAFAFA]">
+    <div className="min-h-screen bg-[#050506] text-[#FAFAFA]">
       <Navbar />
       <main className="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
 
         <div className="mb-10">
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-xs font-semibold uppercase tracking-widest text-violet-500">São Paulo</span>
+            <span className="text-zinc-400 uppercase" style={{ fontFamily: "var(--font-geist-mono), monospace", fontSize: "10px", letterSpacing: "0.18em" }}>São Paulo</span>
             <span className="text-zinc-600">·</span>
-            <span className="text-xs text-zinc-500">Esta semana</span>
+            <span className="text-zinc-500" style={{ fontFamily: "var(--font-geist-mono), monospace", fontSize: "10px", letterSpacing: "0.12em" }}>Esta semana</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-black text-[#FAFAFA] mb-3" style={{ letterSpacing: "-0.02em" }}>
-            Eventos <span className="text-violet-500">SOLO</span>
+            Eventos{" "}
+            <span className="text-[#F8FAFC]" style={{ fontFamily: "var(--font-dm-serif), serif", fontStyle: "italic" }}>SOLO</span>
           </h1>
           <p className="text-[#A1A1AA] text-base sm:text-lg max-w-xl">
             Experiências parceiras com grupos organizados pela SOLO por compatibilidade.
@@ -825,7 +826,7 @@ export default function EventosPage() {
         </div>
 
         {/* Plan indicator */}
-        <div className="mb-4 bg-[#18181B] border border-white/10 rounded-xl overflow-hidden">
+        <div className="mb-4 border border-white/[0.08] rounded-xl overflow-hidden" style={{ background: "rgba(255,255,255,0.04)" }}>
           <div className="flex items-center justify-between px-4 py-3">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Plano atual</span>
@@ -875,7 +876,7 @@ export default function EventosPage() {
             ).map((step, i, arr) => (
               <div key={step.n} className="flex items-center gap-2">
                 <div className="flex items-center gap-1.5">
-                  <span className="w-5 h-5 rounded-full bg-violet-500/20 border border-violet-500/30 text-violet-400 text-[10px] font-bold flex items-center justify-center flex-shrink-0">
+                  <span className="w-5 h-5 rounded-full bg-white/[0.08] border border-white/[0.12] text-zinc-300 text-[10px] font-bold flex items-center justify-center flex-shrink-0">
                     {step.n}
                   </span>
                   <span className="text-[11px] text-zinc-500">{step.t}</span>
@@ -917,11 +918,11 @@ export default function EventosPage() {
           <section className="mt-14">
             <div className="mb-6">
               <div className="flex items-center gap-2 mb-2">
-                <span className="w-2 h-2 rounded-full bg-violet-500 animate-pulse" />
-                <span className="text-xs font-bold uppercase tracking-widest text-violet-500">Compatibilidade</span>
+                <span className="w-2 h-2 rounded-full bg-zinc-500 animate-pulse" />
+                <span className="text-zinc-500 uppercase" style={{ fontFamily: "var(--font-geist-mono), monospace", fontSize: "10px", letterSpacing: "0.18em" }}>Compatibilidade</span>
               </div>
               <h2 className="text-2xl font-black text-[#FAFAFA]" style={{ letterSpacing: "-0.02em" }}>
-                Pessoas que <span className="text-violet-500">combinam</span> com você
+                Pessoas que <span className="text-[#F8FAFC]" style={{ fontFamily: "var(--font-dm-serif), serif", fontStyle: "italic" }}>combinam</span> com você
               </h2>
               <p className="text-[#A1A1AA] text-sm mt-1">
                 {matchedUsers.length > 0
@@ -951,7 +952,7 @@ export default function EventosPage() {
       {queueToast && <QueueToast nome={queueToast} onClose={() => setQueueToast(null)} />}
 
       {actionError && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-4 bg-[#18181B] border border-red-500/20 rounded-2xl shadow-xl shadow-black/40">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-4 border border-red-500/20 rounded-2xl shadow-xl shadow-black/60" style={{ background: "#0D0D0F" }}>
           <div className="w-8 h-8 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center flex-shrink-0">
             <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
@@ -982,7 +983,7 @@ export default function EventosPage() {
       )}
 
       {grupoFormadoToast && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-4 bg-[#18181B] border border-violet-500/20 rounded-2xl shadow-xl shadow-violet-500/20">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-4 border border-violet-500/20 rounded-2xl shadow-xl shadow-violet-500/20" style={{ background: "#0D0D0F" }}>
           <div className="w-8 h-8 rounded-full bg-violet-500/10 border border-violet-500/20 flex items-center justify-center flex-shrink-0">
             <svg className="w-4 h-4 text-violet-400" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
